@@ -1,0 +1,1093 @@
+<title>آتلیه رواق</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&family=Cinzel:wght@400;500;600&display=swap">
+<style>
+/* ===================== TOKENS: light (default) ===================== */
+:root{
+  --ground:#EFEDE8; --surface:#FBFAF7; --surface-2:#E5E2DA;
+  --line:#D8D3CA; --line-2:#BEB7AB;
+  --text:#1A1714; --text-2:#5C544A; --text-3:#847B6F;
+  --brass:#8A6224; --brass-2:#A87B36; --brass-ink:#FFFFFF;
+  --shade:rgba(26,23,20,.10);
+  --grain:.030;
+  --sky-top:#EDEAE4; --sky-bot:#D6D0C5;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#100E0C; --surface:#171412; --surface-2:#201C19;
+    --line:#2B2622; --line-2:#3D362F;
+    --text:#F0EBE4; --text-2:#A79D91; --text-3:#7D746A;
+    --brass:#C9964F; --brass-2:#DCB067; --brass-ink:#17120A;
+    --shade:rgba(0,0,0,.5);
+    --grain:.055;
+    --sky-top:#14110F; --sky-bot:#241E19;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#100E0C; --surface:#171412; --surface-2:#201C19;
+  --line:#2B2622; --line-2:#3D362F;
+  --text:#F0EBE4; --text-2:#A79D91; --text-3:#7D746A;
+  --brass:#C9964F; --brass-2:#DCB067; --brass-ink:#17120A;
+  --shade:rgba(0,0,0,.5);
+  --grain:.055;
+  --sky-top:#14110F; --sky-bot:#241E19;
+  color-scheme:dark;
+}
+
+/* ===================== BASE ===================== */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  margin:0; background:var(--ground); color:var(--text);
+  font-family:Vazirmatn,"Segoe UI",Tahoma,system-ui,sans-serif;
+  font-size:16px; line-height:1.75; font-weight:350;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.rtl{direction:rtl}
+h1,h2,h3,h4{margin:0; font-weight:250; line-height:1.15; text-wrap:balance; letter-spacing:-.01em}
+p{margin:0}
+a{color:inherit}
+img{max-width:100%}
+::selection{background:var(--brass); color:var(--brass-ink)}
+:focus-visible{outline:2px solid var(--brass); outline-offset:3px; border-radius:2px}
+
+.wrap{width:min(1240px,92vw); margin-inline:auto}
+.measure{max-width:62ch}
+.eyebrow{
+  font-size:.72rem; letter-spacing:.22em; font-weight:600;
+  color:var(--brass); text-transform:uppercase;
+  display:flex; align-items:center; gap:.7rem;
+}
+.eyebrow::after{content:""; flex:1; height:1px; background:var(--line-2); opacity:.7}
+.lat{font-family:Cinzel,Georgia,serif; font-weight:500; letter-spacing:.06em}
+.num{font-variant-numeric:tabular-nums}
+
+/* ===================== NAV ===================== */
+header.nav{
+  position:sticky; top:0; z-index:60;
+  backdrop-filter:blur(14px) saturate(1.4);
+  background:color-mix(in srgb, var(--ground) 82%, transparent);
+  border-bottom:1px solid var(--line);
+}
+.nav-in{display:flex; align-items:center; gap:1.5rem; height:68px}
+.brand{display:flex; align-items:baseline; gap:.55rem; text-decoration:none; margin-inline-end:auto}
+.brand b{font-weight:500; font-size:1.16rem; letter-spacing:-.02em}
+.brand .lat{font-size:.7rem; color:var(--text-3)}
+.nav a.lnk{
+  text-decoration:none; color:var(--text-2); font-size:.9rem;
+  padding:.4rem 0; position:relative; transition:color .2s ease;
+}
+.nav a.lnk::after{
+  content:""; position:absolute; inset-inline:0; bottom:0; height:1px;
+  background:var(--brass); transform:scaleX(0); transition:transform .25s ease;
+}
+.nav a.lnk:hover{color:var(--text)} .nav a.lnk:hover::after{transform:scaleX(1)}
+.nav-links{display:flex; gap:1.6rem}
+.icon-btn{
+  width:38px; height:38px; display:grid; place-items:center; cursor:pointer;
+  background:transparent; border:1px solid var(--line-2); border-radius:50%;
+  color:var(--text-2); transition:.2s ease;
+}
+.icon-btn:hover{color:var(--brass); border-color:var(--brass)}
+@media(max-width:860px){.nav-links{display:none}}
+
+/* ===================== HERO / SCENE ===================== */
+.hero{position:relative; height:min(94vh,860px); min-height:540px; overflow:hidden; background:var(--ground)}
+#scene{position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab; touch-action:pan-y}
+#scene.drag{cursor:grabbing}
+.hero-grad{
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    linear-gradient(to bottom, color-mix(in srgb,var(--ground) 62%,transparent) 0%, transparent 22%, transparent 64%, color-mix(in srgb,var(--ground) 94%,transparent) 100%);
+}
+/* readability scrim under the headline (starts at the reading edge) */
+.hero-scrim{
+  position:absolute; inset-block:0; inset-inline-start:0; width:min(58%,720px);
+  pointer-events:none;
+  background:linear-gradient(to var(--scrim-dir,left),
+    color-mix(in srgb,var(--ground) 92%,transparent) 0%,
+    color-mix(in srgb,var(--ground) 80%,transparent) 46%,
+    transparent 100%);
+}
+.rtl .hero-scrim{--scrim-dir:left}
+@media(max-width:860px){
+  .hero-scrim{
+    width:100%; height:70%; inset-block-end:auto;
+    background:linear-gradient(to bottom,
+      color-mix(in srgb,var(--ground) 93%,transparent) 0%,
+      color-mix(in srgb,var(--ground) 88%,transparent) 48%,
+      color-mix(in srgb,var(--ground) 70%,transparent) 72%,
+      transparent 100%);
+  }
+}
+.hero-copy{position:absolute; inset-inline-start:0; inset-block-start:16%; width:min(560px,86vw); padding-inline-start:max(4vw,calc((100vw - 1240px)/2)); pointer-events:none}
+.hero-copy h1{font-size:clamp(2.6rem,6.4vw,5.2rem); font-weight:200; letter-spacing:-.035em}
+.hero-copy h1 em{font-style:normal; font-weight:600; color:var(--brass)}
+.hero-copy p{margin-top:1.1rem; color:var(--text-2); font-size:clamp(.98rem,1.4vw,1.1rem); max-width:40ch}
+.hero-badge{
+  display:inline-flex; align-items:center; gap:.5rem; margin-bottom:1.2rem;
+  font-size:.72rem; letter-spacing:.18em; font-weight:600; color:var(--brass);
+  border:1px solid color-mix(in srgb,var(--brass) 40%,transparent);
+  padding:.35rem .8rem; border-radius:100px;
+  background:color-mix(in srgb,var(--brass) 10%,transparent);
+}
+.pulse{width:6px; height:6px; border-radius:50%; background:var(--brass); animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* control rail */
+.rail{
+  position:absolute; inset-block-end:0; inset-inline:0; z-index:5;
+  border-top:1px solid var(--line);
+  background:color-mix(in srgb,var(--ground) 80%,transparent);
+  backdrop-filter:blur(16px);
+}
+.rail-in{display:flex; align-items:center; gap:1.6rem; padding:.85rem 0; flex-wrap:wrap}
+.ctl{display:flex; align-items:center; gap:.6rem}
+.ctl > span{font-size:.7rem; letter-spacing:.14em; color:var(--text-3); font-weight:600; white-space:nowrap}
+.chips{display:flex; gap:.35rem; flex-wrap:wrap}
+.chip{
+  font:inherit; font-size:.8rem; cursor:pointer; white-space:nowrap;
+  padding:.34rem .8rem; border-radius:100px; border:1px solid var(--line-2);
+  background:transparent; color:var(--text-2); transition:.18s ease;
+}
+.chip:hover{color:var(--text); border-color:var(--text-3)}
+.chip[aria-pressed="true"]{background:var(--brass); border-color:var(--brass); color:var(--brass-ink); font-weight:500}
+input[type=range]{
+  -webkit-appearance:none; appearance:none; width:130px; height:2px;
+  background:var(--line-2); border-radius:2px; cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none; width:14px; height:14px; border-radius:50%;
+  background:var(--brass); border:2px solid var(--ground); cursor:pointer;
+}
+input[type=range]::-moz-range-thumb{
+  width:14px; height:14px; border-radius:50%; background:var(--brass);
+  border:2px solid var(--ground); cursor:pointer;
+}
+.clock{font-size:.8rem; color:var(--text-2); min-width:3.4em}
+.loading{
+  position:absolute; inset:0; display:grid; place-items:center; z-index:8;
+  background:var(--ground); transition:opacity .7s ease;
+}
+.loading.done{opacity:0; pointer-events:none}
+.loading .bar{width:150px; height:1px; background:var(--line-2); overflow:hidden}
+.loading .bar i{display:block; height:100%; width:40%; background:var(--brass); animation:slide 1.2s ease-in-out infinite}
+@keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
+.loading p{margin-top:1rem; font-size:.74rem; letter-spacing:.2em; color:var(--text-3)}
+@media(max-width:860px){
+  .hero{height:min(92vh,760px); min-height:600px}
+  .hero-copy{inset-block-start:11%; padding-inline:5vw}
+  .ctl.hide-sm{display:none}
+  .rail-in{
+    gap:1.1rem; padding-block:.65rem; flex-wrap:nowrap;
+    overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch;
+  }
+  .rail-in::-webkit-scrollbar{display:none}
+  .ctl{flex:0 0 auto}
+  .chips{flex-wrap:nowrap}
+  input[type=range]{width:96px}
+}
+
+/* ===================== SECTIONS ===================== */
+section{padding-block:clamp(4.5rem,9vw,8rem)}
+.sec-head{display:grid; gap:1.4rem; margin-bottom:3.4rem}
+.sec-head h2{font-size:clamp(1.9rem,3.6vw,3rem)}
+.sec-head p{color:var(--text-2)}
+
+.two{display:grid; grid-template-columns:1fr 1fr; gap:clamp(2rem,5vw,5rem); align-items:start}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
+
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border-block:1px solid var(--line)}
+.stat{background:var(--ground); padding:1.8rem 1.2rem; text-align:center}
+.stat b{display:block; font-size:clamp(1.8rem,4vw,2.9rem); font-weight:200; color:var(--brass); letter-spacing:-.03em}
+.stat span{font-size:.78rem; color:var(--text-3); letter-spacing:.06em}
+@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+.svc{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line)}
+.svc article{background:var(--ground); padding:2.2rem 1.8rem; transition:background .3s ease}
+.svc article:hover{background:var(--surface-2)}
+.svc h3{font-size:1.12rem; font-weight:500; margin-block:1rem .6rem}
+.svc p{font-size:.9rem; color:var(--text-2)}
+.svc svg{color:var(--brass)}
+@media(max-width:900px){.svc{grid-template-columns:1fr}}
+
+/* projects */
+.grid{display:grid; grid-template-columns:repeat(6,1fr); grid-auto-rows:264px; gap:1.4rem}
+.card{
+  position:relative; overflow:hidden; text-decoration:none; display:block;
+  border:1px solid var(--line); background:var(--surface);
+  transition:border-color .3s ease;
+}
+.card:nth-child(1){grid-column:span 4; grid-row:span 2}
+.card:nth-child(2),.card:nth-child(3){grid-column:span 2}
+.card:nth-child(4){grid-column:span 3; grid-row:span 2}
+.card:nth-child(5),.card:nth-child(6){grid-column:span 3}
+.card:hover{border-color:var(--brass)}
+.card .art{position:absolute; inset:0; width:100%; height:100%; display:block}
+.card .meta{
+  position:absolute; inset-inline:0; inset-block-end:0; padding:1.4rem;
+  background:linear-gradient(to top, rgba(8,7,6,.88), rgba(8,7,6,.35) 55%, transparent);
+  color:#F4EFE8;
+}
+.card .meta b{display:block; font-weight:500; font-size:1.06rem}
+.card .meta span{font-size:.78rem; opacity:.75; letter-spacing:.05em}
+.card .tag{
+  position:absolute; inset-block-start:1rem; inset-inline-end:1rem;
+  font-size:.68rem; letter-spacing:.12em; padding:.25rem .6rem;
+  background:color-mix(in srgb,var(--ground) 88%,transparent); color:var(--brass);
+  border:1px solid color-mix(in srgb,var(--brass) 35%,transparent);
+}
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr; grid-auto-rows:230px}
+  .card{grid-column:span 1 !important; grid-row:span 1 !important}
+}
+
+/* process */
+.steps{display:grid; gap:0; border-top:1px solid var(--line)}
+.step{
+  display:grid; grid-template-columns:5rem 1fr 1fr; gap:2rem; align-items:baseline;
+  padding-block:2rem; border-bottom:1px solid var(--line);
+  transition:background .3s ease; padding-inline:.6rem;
+}
+.step:hover{background:var(--surface-2)}
+.step .n{font-family:Cinzel,Georgia,serif; font-size:1.5rem; color:var(--brass); font-variant-numeric:tabular-nums}
+.step h3{font-size:1.16rem; font-weight:500}
+.step p{color:var(--text-2); font-size:.92rem}
+@media(max-width:800px){.step{grid-template-columns:3rem 1fr; gap:1rem}.step p{grid-column:2}}
+
+/* contact */
+.form{display:grid; gap:1.1rem}
+.field{display:grid; gap:.45rem}
+.field label{font-size:.78rem; letter-spacing:.1em; color:var(--text-3); font-weight:600}
+.field input,.field textarea,.field select{
+  font:inherit; font-size:.94rem; color:var(--text); padding:.8rem .9rem;
+  background:var(--surface); border:1px solid var(--line-2); border-radius:2px;
+  transition:border-color .2s ease;
+}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--brass); outline:none}
+.field .hint{font-size:.74rem; color:var(--text-3)}
+.btn{
+  font:inherit; font-weight:500; cursor:pointer; padding:.9rem 2rem;
+  background:var(--brass); color:var(--brass-ink); border:1px solid var(--brass);
+  border-radius:2px; transition:.2s ease; justify-self:start;
+}
+.btn:hover{background:var(--brass-2); border-color:var(--brass-2)}
+.note{padding:.85rem 1rem; border-inline-start:2px solid var(--brass); background:var(--surface-2); font-size:.88rem}
+.note[hidden]{display:none}
+
+footer{border-top:1px solid var(--line); padding-block:3rem; color:var(--text-3); font-size:.86rem}
+.foot{display:flex; gap:2rem; flex-wrap:wrap; align-items:center; justify-content:space-between}
+
+/* reveal */
+.rv{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s cubic-bezier(.22,.7,.3,1)}
+.rv.in{opacity:1; transform:none}
+@media (prefers-reduced-motion:reduce){
+  .rv{opacity:1; transform:none; transition:none}
+  .pulse,.loading .bar i{animation:none}
+}
+</style>
+
+<div class="rtl">
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top">
+      <b>آتلیه رواق</b><span class="lat">RAVAGH</span>
+    </a>
+    <nav class="nav-links">
+      <a class="lnk" href="#approach">رویکرد</a>
+      <a class="lnk" href="#services">خدمات</a>
+      <a class="lnk" href="#projects">پروژه‌ها</a>
+      <a class="lnk" href="#process">فرایند</a>
+      <a class="lnk" href="#contact">تماس</a>
+    </nav>
+    <button class="icon-btn" id="theme" type="button" aria-label="تغییر روشنایی صفحه">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO: 3D ROOM ============ -->
+<div class="hero">
+  <canvas id="scene" role="img"
+    aria-label="نمای سه‌بعدی تعاملی از یک نشیمن با مبل، میز قهوه، آباژور، قفسه کتاب و پنجره قدی. با کشیدن ماوس زاویه دید می‌چرخد."></canvas>
+  <div class="hero-grad"></div>
+  <div class="hero-scrim"></div>
+
+  <div class="hero-copy">
+    <span class="hero-badge"><i class="pulse"></i> پذیرش پروژه ۱۴۰۵</span>
+    <h1>فضا را <em>می‌سازیم</em>،<br>نه فقط تزئین</h1>
+    <p>استودیو معماری داخلی رواق — طراحی خانه، دفتر و فضاهای تجاری با تکیه بر نور طبیعی، مصالح صادق و جزئیات دقیق اجرایی.</p>
+  </div>
+
+  <div class="loading" id="load">
+    <div style="text-align:center">
+      <div class="bar"><i></i></div>
+      <p>در حال ساخت صحنه</p>
+    </div>
+  </div>
+
+  <div class="rail">
+    <div class="wrap rail-in">
+      <div class="ctl">
+        <span>پالت مصالح</span>
+        <div class="chips" id="schemes" role="group" aria-label="انتخاب پالت مصالح">
+          <button class="chip" type="button" data-s="0" aria-pressed="true">خاک رس</button>
+          <button class="chip" type="button" data-s="1" aria-pressed="false">اسکاندیناوی</button>
+          <button class="chip" type="button" data-s="2" aria-pressed="false">شبانه</button>
+          <button class="chip" type="button" data-s="3" aria-pressed="false">جنگل</button>
+        </div>
+      </div>
+
+      <div class="ctl">
+        <span>ساعت روز</span>
+        <input type="range" id="tod" min="6" max="22" step="0.25" value="10.5" aria-label="ساعت روز برای نورپردازی صحنه">
+        <output class="clock num" id="todv">۱۰:۳۰</output>
+      </div>
+
+      <div class="ctl hide-sm">
+        <span>دوربین</span>
+        <div class="chips" id="cams" role="group" aria-label="زاویه دوربین">
+          <button class="chip" type="button" data-c="0" aria-pressed="true">کلی</button>
+          <button class="chip" type="button" data-c="1" aria-pressed="false">نشیمن</button>
+          <button class="chip" type="button" data-c="2" aria-pressed="false">پنجره</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ STATS ============ -->
+<div class="stats">
+  <div class="stat"><b class="num">۱۴</b><span>سال فعالیت</span></div>
+  <div class="stat"><b class="num">۲۳۰+</b><span>پروژه اجراشده</span></div>
+  <div class="stat"><b class="num">۹</b><span>جایزه طراحی</span></div>
+  <div class="stat"><b class="num">۴۸٬۰۰۰</b><span>مترمربع بازطراحی</span></div>
+</div>
+
+<!-- ============ APPROACH ============ -->
+<section id="approach">
+  <div class="wrap two">
+    <div class="rv">
+      <div class="eyebrow">رویکرد</div>
+      <h2 style="margin-top:1.4rem">طراحی از دلِ نور شروع می‌شود، نه از کاتالوگ مبلمان.</h2>
+    </div>
+    <div class="rv measure" style="display:grid; gap:1.2rem; color:var(--text-2)">
+      <p>هر پروژه را با یک روز کامل در محل شروع می‌کنیم: مسیر نور از صبح تا غروب، صدای فضا، و اینکه ساکنان واقعاً کجا می‌نشینند. نقشه بعد از این شناخت کشیده می‌شود.</p>
+      <p>به مصالحی پایبندیم که با گذر زمان بهتر می‌شوند — چوب روغن‌خورده، گچ کشته، برنج خام، سنگ بی‌پولیش. سطحی که بعد از پنج سال زیباتر باشد، انتخاب درستی بوده است.</p>
+      <p>مدل سه‌بعدی برای ما ابزار تصمیم‌گیری است نه فروش. پیش از خرید هر قلم، فضا را در نور واقعی همان ساعت شبانه‌روز می‌بینید — دقیقاً مثل صحنه بالای همین صفحه.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section id="services" style="padding-block-start:0">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">خدمات</div>
+      <h2>از ایده تا تحویل کلید</h2>
+    </div>
+    <div class="svc rv">
+      <article>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-7h6v7"/>
+        </svg>
+        <h3>طراحی داخلی مسکونی</h3>
+        <p>بازطراحی کامل خانه و آپارتمان، از چیدمان پلان و نورپردازی تا انتخاب مصالح و مبلمان سفارشی.</p>
+      </article>
+      <article>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 10h18M9 10v10"/>
+        </svg>
+        <h3>فضاهای اداری و تجاری</h3>
+        <p>دفتر کار، کافه و فروشگاه — با تمرکز بر جریان حرکت مخاطب، آکوستیک و هویت بصری برند.</p>
+      </article>
+      <article>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/>
+        </svg>
+        <h3>مدل‌سازی و پیش‌نمایش سه‌بعدی</h3>
+        <p>رندر واقع‌گرایانه و پیمایش تعاملی فضا پیش از اجرا، همراه با تحلیل نور طبیعی در ساعات مختلف.</p>
+      </article>
+      <article>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <path d="M4 20h16M6 20V8l6-4 6 4v12"/>
+        </svg>
+        <h3>نظارت و مدیریت اجرا</h3>
+        <p>هماهنگی پیمانکاران، کنترل کیفیت مصالح و بازدید دوره‌ای تا تطابق کامل اجرا با نقشه.</p>
+      </article>
+      <article>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+        </svg>
+        <h3>طراحی نور</h3>
+        <p>محاسبه شدت و دمای رنگ نور برای هر کاربری، طراحی سناریوهای روشنایی و انتخاب چراغ.</p>
+      </article>
+      <article>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <path d="M20 7 9 18l-5-5"/>
+        </svg>
+        <h3>مشاوره کوتاه‌مدت</h3>
+        <p>جلسه تخصصی برای بازبینی نقشه موجود، اصلاح چیدمان یا انتخاب پالت رنگ و مصالح.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROJECTS ============ -->
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">پروژه‌ها</div>
+      <h2>کارهای اخیر</h2>
+      <p class="measure">شش پروژه منتخب از سه سال گذشته. هر کارت، طرح‌واره‌ای از پلان و نورگیری همان فضاست.</p>
+    </div>
+    <div class="grid rv" id="grid"></div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section id="process" style="background:var(--surface); border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">فرایند</div>
+      <h2>پنج مرحله، بدون غافلگیری</h2>
+    </div>
+    <div class="steps rv">
+      <div class="step"><span class="n num">۰۱</span><h3>بازدید و شناخت</h3><p>یک روز کامل در محل، برداشت ابعاد، رصد مسیر نور و گفت‌وگو با ساکنان درباره الگوی واقعی زندگی‌شان.</p></div>
+      <div class="step"><span class="n num">۰۲</span><h3>کانسپت و پلان</h3><p>دو گزینه چیدمان با منطق متفاوت، همراه با تخته مصالح و برآورد اولیه بودجه برای هر گزینه.</p></div>
+      <div class="step"><span class="n num">۰۳</span><h3>مدل سه‌بعدی</h3><p>ساخت مدل کامل و پیمایش تعاملی؛ تصمیم‌های نهایی رنگ، نور و مبلمان روی مدل گرفته می‌شود.</p></div>
+      <div class="step"><span class="n num">۰۴</span><h3>نقشه‌های اجرایی</h3><p>جزئیات کارگاهی، دیتیل ساخت مبلمان سفارشی، نقشه برق و نور، و فهرست دقیق مصالح.</p></div>
+      <div class="step"><span class="n num">۰۵</span><h3>اجرا و نظارت</h3><p>بازدید هفتگی، کنترل کیفیت و تحویل نهایی همراه با دفترچه نگهداری مصالح.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact">
+  <div class="wrap two">
+    <div class="rv">
+      <div class="eyebrow">تماس</div>
+      <h2 style="margin-block:1.4rem 1.2rem">پروژه‌ای در ذهن دارید؟</h2>
+      <p class="measure" style="color:var(--text-2)">فرم را پر کنید یا مستقیم تماس بگیرید. معمولاً ظرف دو روز کاری پاسخ می‌دهیم و جلسه شناخت اولیه رایگان است.</p>
+      <div style="margin-top:2rem; display:grid; gap:.7rem; font-size:.94rem">
+        <div>تهران، خیابان ولیعصر، کوچه بیدار، پلاک ۲۴</div>
+        <div class="num" style="direction:ltr; text-align:right">+۹۸ ۲۱ ۸۸۷۹ ۴۴۱۰</div>
+        <div>studio@ravagh.example</div>
+      </div>
+    </div>
+
+    <form class="form rv" id="form" novalidate>
+      <div class="field">
+        <label for="nm">نام و نام خانوادگی</label>
+        <input id="nm" name="nm" type="text" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="em">ایمیل یا شماره تماس</label>
+        <input id="em" name="em" type="text" autocomplete="email" required>
+        <span class="hint">برای هماهنگی جلسه اولیه استفاده می‌شود.</span>
+      </div>
+      <div class="field">
+        <label for="tp">نوع پروژه</label>
+        <select id="tp" name="tp">
+          <option>مسکونی — آپارتمان</option>
+          <option>مسکونی — ویلا</option>
+          <option>اداری</option>
+          <option>کافه و رستوران</option>
+          <option>فروشگاه</option>
+          <option>مشاوره کوتاه‌مدت</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="ms">توضیح کوتاه</label>
+        <textarea id="ms" name="ms" rows="4" placeholder="متراژ، موقعیت و بازه زمانی مدنظرتان"></textarea>
+      </div>
+      <button class="btn" type="submit">ارسال درخواست</button>
+      <p class="note" id="note" hidden></p>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>© ۱۴۰۵ آتلیه رواق — <span class="lat">RAVAGH STUDIO</span></div>
+    <div>نمونه‌کار نمایشی؛ اطلاعات تماس واقعی نیست.</div>
+  </div>
+</footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.159.0/build/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+var FA=["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹"];
+function fa(n){return String(n).replace(/\d/g,function(d){return FA[+d];});}
+var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------------- theme ---------------- */
+var root=document.documentElement;
+function currentTheme(){
+  var s=root.getAttribute("data-theme");
+  if(s) return s;
+  return matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
+}
+document.getElementById("theme").addEventListener("click",function(){
+  root.setAttribute("data-theme", currentTheme()==="dark"?"light":"dark");
+  if(window.__syncScene) window.__syncScene();
+});
+
+/* ---------------- projects ---------------- */
+var PROJ=[
+  {t:"بازسازی آپارتمان نیاوران",m:"۱۸۰ مترمربع · ۱۴۰۴",g:"مسکونی",a:"#C08A52",b:"#3E2F24"},
+  {t:"دفتر مرکزی استودیو هاد",m:"۴۲۰ مترمربع · ۱۴۰۴",g:"اداری",a:"#7E8C7A",b:"#26302A"},
+  {t:"کافه بامداد",m:"۹۵ مترمربع · ۱۴۰۳",g:"تجاری",a:"#B4643F",b:"#33211A"},
+  {t:"ویلای جنگلی نوشهر",m:"۳۱۰ مترمربع · ۱۴۰۳",g:"مسکونی",a:"#8A9A6B",b:"#232B20"},
+  {t:"گالری فرش دستباف پارسه",m:"۲۲۰ مترمربع · ۱۴۰۳",g:"تجاری",a:"#A8763C",b:"#2E2417"},
+  {t:"پنت‌هاوس الهیه",m:"۲۶۰ مترمربع · ۱۴۰۲",g:"مسکونی",a:"#9C8BA0",b:"#272130"}
+];
+function art(p,i){
+  var w=p.b, a=p.a, id=i;
+  function head(){
+    return '<svg class="art" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+    +'<defs><linearGradient id="g'+id+'" x1="0" y1="0" x2="0" y2="1">'
+    +'<stop offset="0" stop-color="'+w+'"/><stop offset="1" stop-color="#0C0A08"/></linearGradient>'
+    +'<linearGradient id="l'+id+'" x1="0" y1="0" x2="1" y2="1">'
+    +'<stop offset="0" stop-color="'+a+'" stop-opacity=".5"/>'
+    +'<stop offset="1" stop-color="'+a+'" stop-opacity="0"/></linearGradient></defs>'
+    +'<rect width="400" height="300" fill="url(#g'+id+')"/>';
+  }
+  var o={A:' opacity=".9"',B:' opacity=".62"',C:' opacity=".4"',D:' opacity=".22"'};
+  var b=head(), F='fill="'+a+'"', SK='stroke="'+a+'" fill="none"';
+
+  if(id===0){            /* آپارتمان — نشیمن با پنجره قدی */
+    b+='<rect x="40" y="40" width="78" height="158" '+F+o.D+'/>'
+      +'<path d="M40 40 L118 40 L236 300 L48 300 Z" fill="url(#l'+id+')"/>'
+      +'<line x1="79" y1="40" x2="79" y2="198" stroke="'+w+'" stroke-width="3"/>'
+      +'<line x1="40" y1="119" x2="118" y2="119" stroke="'+w+'" stroke-width="3"/>'
+      +'<line x1="0" y1="212" x2="400" y2="212" '+SK+' stroke-width="1"'+o.C+'/>'
+      +'<rect x="176" y="174" width="146" height="38" rx="5" '+F+o.A+'/>'
+      +'<rect x="176" y="146" width="146" height="32" rx="6" '+F+o.B+'/>'
+      +'<rect x="184" y="212" width="7" height="13" '+F+o.C+'/><rect x="307" y="212" width="7" height="13" '+F+o.C+'/>'
+      +'<ellipse cx="250" cy="248" rx="54" ry="11" '+F+o.D+'/>'
+      +'<rect x="206" y="62" width="64" height="48" '+SK+' stroke-width="2"'+o.B+'/>'
+      +'<line x1="352" y1="212" x2="352" y2="126" stroke="'+a+'" stroke-width="2"'+o.B+'/>'
+      +'<path d="M336 126 L368 126 L360 102 L344 102 Z" '+F+o.A+'/>'
+      +'<circle cx="352" cy="130" r="27" '+F+o.D+'/>';
+  } else if(id===1){     /* دفتر — ردیف میزهای کار زیر نور خطی */
+    b+='<rect x="24" y="52" width="352" height="62" '+F+o.D+'/>'
+      +'<path d="M24 52 L376 52 L376 114 L24 114 Z" fill="url(#l'+id+')"/>'
+      +'<line x1="142" y1="52" x2="142" y2="114" stroke="'+w+'" stroke-width="3"/>'
+      +'<line x1="258" y1="52" x2="258" y2="114" stroke="'+w+'" stroke-width="3"/>'
+      +'<rect x="60" y="30" width="280" height="5" rx="2" '+F+o.A+'/>'
+      +'<rect x="96" y="34" width="208" height="16" fill="'+a+'" opacity=".14"/>'
+      +'<line x1="0" y1="206" x2="400" y2="206" '+SK+' stroke-width="1"'+o.C+'/>';
+    [46,158,270].forEach(function(x){
+      b+='<rect x="'+x+'" y="168" width="88" height="9" rx="2" '+F+o.A+'/>'
+        +'<rect x="'+(x+4)+'" y="177" width="5" height="30" '+F+o.C+'/>'
+        +'<rect x="'+(x+79)+'" y="177" width="5" height="30" '+F+o.C+'/>'
+        +'<rect x="'+(x+30)+'" y="143" width="30" height="22" rx="2" '+SK+' stroke-width="2"'+o.B+'/>'
+        +'<rect x="'+(x+18)+'" y="186" width="20" height="20" rx="3" '+F+o.B+'/>';
+    });
+  } else if(id===2){     /* کافه — پیشخوان و چراغ‌های آویز */
+    b+='<rect x="248" y="44" width="120" height="128" '+F+o.D+'/>'
+      +'<path d="M248 44 L368 44 L330 300 L190 300 Z" fill="url(#l'+id+')"/>'
+      +'<line x1="308" y1="44" x2="308" y2="172" stroke="'+w+'" stroke-width="3"/>'
+      +'<line x1="0" y1="214" x2="400" y2="214" '+SK+' stroke-width="1"'+o.C+'/>'
+      +'<rect x="34" y="160" width="188" height="54" '+F+o.A+'/>'
+      +'<rect x="34" y="152" width="188" height="10" rx="2" '+F+o.B+'/>'
+      +'<rect x="52" y="98" width="152" height="6" rx="2" '+F+o.C+'/>'
+      +'<rect x="52" y="126" width="152" height="6" rx="2" '+F+o.C+'/>';
+    [70,104,138,172].forEach(function(x){
+      b+='<rect x="'+x+'" y="106" width="9" height="20" '+F+o.B+'/>';
+    });
+    [96,148,200].forEach(function(x){
+      b+='<line x1="'+x+'" y1="20" x2="'+x+'" y2="66" stroke="'+a+'" stroke-width="1.5"'+o.B+'/>'
+        +'<path d="M'+(x-15)+' 66 L'+(x+15)+' 66 L'+(x+9)+' 48 L'+(x-9)+' 48 Z" '+F+o.A+'/>'
+        +'<circle cx="'+x+'" cy="74" r="17" '+F+o.D+'/>';
+    });
+    [258,306,354].forEach(function(x){
+      b+='<ellipse cx="'+x+'" cy="238" rx="17" ry="6" '+F+o.B+'/>'
+        +'<rect x="'+(x-2)+'" y="240" width="4" height="26" '+F+o.C+'/>';
+    });
+  } else if(id===3){     /* ویلا — پنجره پانوراما و مبل کوتاه */
+    b+='<rect x="30" y="56" width="340" height="112" '+F+o.D+'/>'
+      +'<path d="M30 56 L370 56 L340 300 L60 300 Z" fill="url(#l'+id+')"/>'
+      +'<line x1="143" y1="56" x2="143" y2="168" stroke="'+w+'" stroke-width="4"/>'
+      +'<line x1="257" y1="56" x2="257" y2="168" stroke="'+w+'" stroke-width="4"/>'
+      +'<path d="M30 150 L120 118 L206 146 L292 112 L370 140" '+SK+' stroke-width="2"'+o.C+'/>'
+      +'<line x1="0" y1="204" x2="400" y2="204" '+SK+' stroke-width="1"'+o.C+'/>'
+      +'<rect x="112" y="196" width="182" height="30" rx="4" '+F+o.A+'/>'
+      +'<rect x="112" y="176" width="182" height="24" rx="5" '+F+o.B+'/>'
+      +'<ellipse cx="203" cy="252" rx="86" ry="14" '+F+o.D+'/>'
+      +'<rect x="176" y="238" width="56" height="8" rx="2" '+F+o.B+'/>'
+      +'<path d="M330 204 q-20 -46 4 -74 q22 30 6 74 Z" '+F+o.B+'/>'
+      +'<rect x="322" y="204" width="24" height="20" rx="3" '+F+o.A+'/>';
+  } else if(id===4){     /* گالری فرش — ریل آویز و نورافکن */
+    b+='<line x1="0" y1="228" x2="400" y2="228" '+SK+' stroke-width="1"'+o.C+'/>'
+      +'<rect x="20" y="34" width="360" height="5" rx="2" '+F+o.B+'/>';
+    [[52,120],[126,158],[200,134],[274,168]].forEach(function(r,k){
+      var x=r[0],h=r[1];
+      b+='<rect x="'+x+'" y="39" width="62" height="'+h+'" '+F+(k%2?o.B:o.A)+'/>'
+        +'<rect x="'+(x+8)+'" y="'+(39+h*0.18)+'" width="46" height="'+(h*0.5)+'" fill="'+w+'" opacity=".28"/>';
+    });
+    [83,157,231,305].forEach(function(x){
+      b+='<circle cx="'+x+'" cy="22" r="5" '+F+o.A+'/>'
+        +'<path d="M'+x+' 26 L'+(x-26)+' 228 L'+(x+26)+' 228 Z" fill="url(#l4)" opacity=".55"/>';
+    });
+    b+='<rect x="336" y="150" width="46" height="78" '+F+o.C+'/>';
+  } else {               /* پنت‌هاوس — پنجره گوشه و میز ناهارخوری */
+    b+='<rect x="212" y="36" width="156" height="150" '+F+o.D+'/>'
+      +'<path d="M212 36 L368 36 L322 300 L150 300 Z" fill="url(#l'+id+')"/>'
+      +'<line x1="290" y1="36" x2="290" y2="186" stroke="'+w+'" stroke-width="3"/>'
+      +'<line x1="212" y1="112" x2="368" y2="112" stroke="'+w+'" stroke-width="3"/>'
+      +'<path d="M212 150 l30 -22 l26 20 l24 -30 l30 26 l28 -18" '+SK+' stroke-width="1.5"'+o.C+'/>'
+      +'<line x1="0" y1="216" x2="400" y2="216" '+SK+' stroke-width="1"'+o.C+'/>'
+      +'<ellipse cx="150" cy="206" rx="80" ry="17" '+F+o.A+'/>'
+      +'<rect x="146" y="212" width="8" height="42" '+F+o.C+'/>'
+      +'<ellipse cx="150" cy="256" rx="30" ry="8" '+F+o.C+'/>';
+    [[74,196],[112,186],[188,186],[226,196]].forEach(function(c){
+      b+='<rect x="'+c[0]+'" y="'+c[1]+'" width="16" height="30" rx="4" '+F+o.B+'/>'
+        +'<rect x="'+c[0]+'" y="'+(c[1]-22)+'" width="16" height="24" rx="5" '+F+o.C+'/>';
+    });
+    b+='<line x1="150" y1="28" x2="150" y2="60" stroke="'+a+'" stroke-width="1.5"'+o.B+'/>'
+      +'<ellipse cx="150" cy="66" rx="26" ry="9" '+F+o.A+'/>'
+      +'<circle cx="150" cy="76" r="24" '+F+o.D+'/>';
+  }
+  return b+'</svg>';
+}
+document.getElementById("grid").innerHTML=PROJ.map(function(p,i){
+  return '<a class="card" href="#projects">'+art(p,i)
+    +'<span class="tag">'+p.g+'</span>'
+    +'<span class="meta"><b>'+p.t+'</b><span>'+p.m+'</span></span></a>';
+}).join("");
+
+/* ---------------- contact form ---------------- */
+var form=document.getElementById("form"), note=document.getElementById("note");
+form.addEventListener("submit",function(e){
+  e.preventDefault();
+  var nm=document.getElementById("nm"), em=document.getElementById("em");
+  if(!nm.value.trim()||!em.value.trim()){
+    note.hidden=false;
+    note.textContent="لطفاً نام و راه ارتباطی را کامل کنید.";
+    (!nm.value.trim()?nm:em).focus();
+    return;
+  }
+  note.hidden=false;
+  note.textContent="درخواست ثبت شد. این یک صفحه نمایشی است و اطلاعات جایی ارسال نمی‌شود.";
+  form.reset();
+});
+
+/* ---------------- reveal ---------------- */
+if("IntersectionObserver" in window && !reduce){
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(en){ if(en.isIntersecting){en.target.classList.add("in"); io.unobserve(en.target);} });
+  },{threshold:.12, rootMargin:"0px 0px -60px 0px"});
+  document.querySelectorAll(".rv").forEach(function(el){io.observe(el);});
+}else{
+  document.querySelectorAll(".rv").forEach(function(el){el.classList.add("in");});
+}
+})();
+</script>
+
+<script>
+(function(){
+"use strict";
+if(!window.THREE){ document.getElementById("load").innerHTML='<p style="font-size:.85rem">بارگذاری موتور سه‌بعدی ممکن نشد.</p>'; return; }
+var T=THREE;
+var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+var FA=["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹"];
+function fa(n){return String(n).replace(/\d/g,function(d){return FA[+d];});}
+
+var canvas=document.getElementById("scene");
+var renderer=new T.WebGLRenderer({canvas:canvas, antialias:true, powerPreference:"high-performance"});
+renderer.outputColorSpace=T.SRGBColorSpace;
+renderer.toneMapping=T.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.05;
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=T.PCFSoftShadowMap;
+
+var scene=new T.Scene();
+var camera=new T.PerspectiveCamera(42,1,.1,120);
+
+/* ---------- palettes ---------- */
+var SCHEMES=[
+  {name:"خاک رس", wall:0xD9CFC2, floor:0x8B6547, sofa:0xB2724A, rug:0xA8815C, wood:0x7A5334, accent:0xC08A52, cushion:0xE0CDB6, metal:0xB08D5A, bg:[0xEFEDE8,0x14110F]},
+  {name:"اسکاندیناوی", wall:0xEDEAE4, floor:0xC7A87C, sofa:0xAFB6B4, rug:0xE2DDD3, wood:0xC9A874, accent:0x8FA3A0, cushion:0xF2EFE9, metal:0xC9C4BC, bg:[0xF4F2EE,0x161917]},
+  {name:"شبانه", wall:0x2E3138, floor:0x3B3229, sofa:0x2B4A52, rug:0x33383F, wood:0x4A3B2C, accent:0xC9964F, cushion:0x5C6B70, metal:0xC08B45, bg:[0xDCDDE0,0x0C0E10]},
+  {name:"جنگل", wall:0xDDDCCF, floor:0x6E5A3E, sofa:0x51684E, rug:0x8B8B6A, wood:0x5F4A30, accent:0x8A9A6B, cushion:0xD8D8C4, metal:0x9A8B5A, bg:[0xEDEEE7,0x11140F]}
+];
+var si=0, S=SCHEMES[0];
+
+/* ---------- material registry (for retint + dispose) ---------- */
+var reg={};
+function M(key, colorKey, opts){
+  opts=opts||{};
+  var m=new T.MeshStandardMaterial({
+    color:S[colorKey],
+    roughness:opts.rough!==undefined?opts.rough:.85,
+    metalness:opts.metal!==undefined?opts.metal:0
+  });
+  if(opts.emissive){ m.emissive=new T.Color(opts.emissive); m.emissiveIntensity=opts.ei||1; }
+  (reg[colorKey]=reg[colorKey]||[]).push(m);
+  return m;
+}
+function retint(){
+  for(var k in reg){ if(S[k]!==undefined){ reg[k].forEach(function(m){ m.color.setHex(S[k]); }); } }
+}
+
+var geos=[];
+function G(g){ geos.push(g); return g; }
+function box(w,h,d,mat,x,y,z,ry){
+  var m=new T.Mesh(G(new T.BoxGeometry(w,h,d)),mat);
+  m.position.set(x,y,z); if(ry)m.rotation.y=ry;
+  m.castShadow=true; m.receiveShadow=true; return m;
+}
+function cyl(rt,rb,h,mat,x,y,z,seg){
+  var m=new T.Mesh(G(new T.CylinderGeometry(rt,rb,h,seg||24)),mat);
+  m.position.set(x,y,z); m.castShadow=true; m.receiveShadow=true; return m;
+}
+
+/* ---------- room shell ---------- */
+var W=9, D=7, H=3.3;
+var matWall=M("wall","wall",{rough:.96});
+var matFloor=M("floor","floor",{rough:.55});
+var matWood=M("wood","wood",{rough:.6});
+var matSofa=M("sofa","sofa",{rough:.9});
+var matCush=M("cushion","cushion",{rough:.95});
+var matRug=M("rug","rug",{rough:1});
+var matAcc=M("accent","accent",{rough:.4,metal:.15});
+var matMetal=M("metal","metal",{rough:.28,metal:.85});
+
+var room=new T.Group(); scene.add(room);
+
+var floor=new T.Mesh(G(new T.PlaneGeometry(W,D)),matFloor);
+floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; room.add(floor);
+
+var ceil=new T.Mesh(G(new T.PlaneGeometry(W,D)),matWall);
+ceil.rotation.x=Math.PI/2; ceil.position.y=H; ceil.receiveShadow=true; room.add(ceil);
+
+var backW=new T.Mesh(G(new T.PlaneGeometry(W,H)),matWall);
+backW.position.set(0,H/2,-D/2); backW.receiveShadow=true; room.add(backW);
+
+var rightW=new T.Mesh(G(new T.PlaneGeometry(D,H)),matWall);
+rightW.rotation.y=-Math.PI/2; rightW.position.set(W/2,H/2,0); rightW.receiveShadow=true; room.add(rightW);
+
+/* left wall with a window opening: build as 4 panels around the hole */
+var winX=-W/2, wy0=.45, wy1=2.85, wz0=-2.1, wz1=1.9;
+function wallPanel(dz,dy,cz,cy){
+  var p=new T.Mesh(G(new T.PlaneGeometry(dz,dy)),matWall);
+  p.rotation.y=Math.PI/2; p.position.set(winX,cy,cz); p.receiveShadow=true; room.add(p);
+}
+wallPanel(D, wy0, 0, wy0/2);                       /* below */
+wallPanel(D, H-wy1, 0, (H+wy1)/2);                 /* above */
+wallPanel((D/2)+wz0, wy1-wy0, (-D/2+wz0)/2 - 0, (wy0+wy1)/2); /* rear jamb */
+wallPanel((D/2)-wz1, wy1-wy0, (wz1+D/2)/2, (wy0+wy1)/2);      /* front jamb */
+
+/* window frame + mullions */
+var fr=matMetal;
+function mull(h,d,y,z){ var m=box(.06,h,d,fr,winX+.03,y,z); room.add(m); }
+mull(wy1-wy0,.07,(wy0+wy1)/2,wz0); mull(wy1-wy0,.07,(wy0+wy1)/2,wz1);
+mull(wy1-wy0,.07,(wy0+wy1)/2,(wz0+wz1)/2);
+room.add(box(.06,.07,wz1-wz0,fr,winX+.03,wy0,(wz0+wz1)/2));
+room.add(box(.06,.07,wz1-wz0,fr,winX+.03,wy1,(wz0+wz1)/2));
+room.add(box(.06,.07,wz1-wz0,fr,winX+.03,(wy0+wy1)/2,(wz0+wz1)/2));
+
+/* sky plate seen through the window */
+var skyMat=new T.MeshBasicMaterial({color:0xBFD4E4});
+var skyPlate=new T.Mesh(G(new T.PlaneGeometry(wz1-wz0+.4,wy1-wy0+.3)),skyMat);
+skyPlate.rotation.y=Math.PI/2; skyPlate.position.set(winX-.12,(wy0+wy1)/2,(wz0+wz1)/2);
+room.add(skyPlate);
+
+/* ---------- rug ---------- */
+var rug=new T.Mesh(G(new T.BoxGeometry(4.6,.03,3.4)),matRug);
+rug.position.set(.5,.016,.35); rug.receiveShadow=true; room.add(rug);
+var rugIn=new T.Mesh(G(new T.BoxGeometry(4.2,.034,3.0)),matAcc);
+rugIn.position.set(.5,.02,.35); rugIn.receiveShadow=true; room.add(rugIn);
+
+/* ---------- sofa ---------- */
+var sofa=new T.Group(); sofa.position.set(.5,0,-2.15); room.add(sofa);
+sofa.add(box(3.2,.42,1.05,matSofa,0,.38,0));
+sofa.add(box(3.2,.72,.26,matSofa,0,.78,-.4));
+sofa.add(box(.26,.56,1.05,matSofa,-1.47,.62,0));
+sofa.add(box(.26,.56,1.05,matSofa,1.47,.62,0));
+[-.95,0,.95].forEach(function(x){ sofa.add(box(.92,.16,.92,matCush,x,.66,.06)); });
+[-1.05,1.05].forEach(function(x){ var p=box(.44,.44,.16,matCush,x,.92,-.24); p.rotation.x=-.22; sofa.add(p); });
+[[-1.5,-.44],[1.5,-.44],[-1.5,.44],[1.5,.44]].forEach(function(o){
+  sofa.add(cyl(.05,.05,.34,matWood,o[0],.17,o[1],12));
+});
+
+/* ---------- armchair ---------- */
+var chair=new T.Group(); chair.position.set(-2.5,0,1.1); chair.rotation.y=.85; room.add(chair);
+chair.add(box(1.0,.36,.98,matSofa,0,.42,0));
+chair.add(box(1.0,.62,.22,matSofa,0,.78,-.38));
+chair.add(box(.2,.44,.98,matSofa,-.4,.6,0));
+chair.add(box(.2,.44,.98,matSofa,.4,.6,0));
+chair.add(box(.78,.14,.78,matCush,0,.66,.04));
+[[-.42,-.4],[.42,-.4],[-.42,.4],[.42,.4]].forEach(function(o){
+  chair.add(cyl(.045,.045,.36,matWood,o[0],.18,o[1],12));
+});
+
+/* ---------- coffee table ---------- */
+var tbl=new T.Group(); tbl.position.set(.5,0,.4); room.add(tbl);
+tbl.add(box(1.9,.09,1.0,matWood,0,.44,0));
+[[-.82,-.38],[.82,-.38],[-.82,.38],[.82,.38]].forEach(function(o){
+  tbl.add(cyl(.035,.035,.44,matMetal,o[0],.22,o[1],12));
+});
+tbl.add(cyl(.16,.20,.10,matMetal,-.5,.54,.1,20));
+tbl.add(box(.42,.05,.30,matAcc,.45,.51,-.05,.3));
+tbl.add(box(.38,.04,.28,matWood,.45,.55,-.05,.22));
+
+/* ---------- side table + shelf ---------- */
+var st=new T.Group(); st.position.set(2.9,0,-1.3); room.add(st);
+st.add(cyl(.32,.32,.06,matWood,0,.55,0,24));
+st.add(cyl(.05,.05,.55,matMetal,0,.28,0,14));
+st.add(cyl(.26,.26,.03,matMetal,0,.02,0,20));
+
+var shelf=new T.Group(); shelf.position.set(4.28,0,.15); shelf.rotation.y=-Math.PI/2; room.add(shelf);
+shelf.add(box(2.2,.06,.34,matWood,0,.9,0));
+shelf.add(box(2.2,.06,.34,matWood,0,1.5,0));
+shelf.add(box(2.2,.06,.34,matWood,0,2.1,0));
+shelf.add(box(.06,2.2,.34,matWood,-1.06,1.5,0));
+shelf.add(box(.06,2.2,.34,matWood,1.06,1.5,0));
+var bookCols=[0xA85A3C,0x8C7B4F,0x5A6B72,0xB98B4A,0x6E7A5E,0x8B4A4A];
+for(var s=0;s<3;s++){
+  var yb=.93+s*.6, xb=-.92;
+  for(var b=0;b<9;b++){
+    var hh=.30+Math.random()*.16, ww=.05+Math.random()*.05;
+    var bm=new T.MeshStandardMaterial({color:bookCols[(s*3+b)%6],roughness:.9});
+    (reg.__books=reg.__books||[]).push(bm);
+    shelf.add(box(ww,hh,.24,bm,xb,yb+hh/2,0));
+    xb+=ww+.018;
+    if(xb>.9) break;
+  }
+}
+
+/* ---------- plant ---------- */
+var plant=new T.Group(); plant.position.set(-3.1,0,-2.3); room.add(plant);
+plant.add(cyl(.30,.22,.52,matAcc,0,.26,0,20));
+plant.add(cyl(.31,.31,.05,matWood,0,.53,0,20));
+var leafMat=new T.MeshStandardMaterial({color:0x4E6B43,roughness:.85,side:T.DoubleSide});
+reg.__leaf=[leafMat];
+for(var L=0;L<14;L++){
+  var ang=(L/14)*Math.PI*2, len=.55+Math.random()*.55;
+  var leaf=new T.Mesh(G(new T.PlaneGeometry(.20,len)),leafMat);
+  leaf.position.set(Math.cos(ang)*.20,.62+len/2*.75,Math.sin(ang)*.20);
+  leaf.rotation.set(Math.random()*.5-.25,ang,Math.cos(ang)*.5);
+  leaf.castShadow=true; plant.add(leaf);
+}
+
+/* ---------- floor lamp ---------- */
+var shadeMat=new T.MeshStandardMaterial({color:0xF3E6CE,roughness:.85,emissive:new T.Color(0xFFC98A),emissiveIntensity:0});
+var lamp=new T.Group(); lamp.position.set(-1.9,0,-2.35); room.add(lamp);
+lamp.add(cyl(.24,.26,.04,matMetal,0,.02,0,24));
+lamp.add(cyl(.026,.026,1.72,matMetal,0,.88,0,14));
+var shade=cyl(.22,.30,.36,shadeMat,0,1.86,0,24); lamp.add(shade);
+
+/* ---------- pendant over table ---------- */
+var pend=new T.Group(); pend.position.set(-.55,0,.9); room.add(pend);
+pend.add(cyl(.012,.012,1.15,matMetal,0,2.72,0,8));
+var pShade=new T.Mesh(G(new T.ConeGeometry(.34,.32,26,1,true)),
+  new T.MeshStandardMaterial({color:S.metal,roughness:.35,metalness:.7,side:T.DoubleSide}));
+reg.metal.push(pShade.material);
+pShade.position.set(0,2.0,0); pShade.castShadow=true; pend.add(pShade);
+var bulb=new T.Mesh(G(new T.SphereGeometry(.07,14,10)),
+  new T.MeshStandardMaterial({color:0xFFE9C4,emissive:new T.Color(0xFFC98A),emissiveIntensity:0}));
+bulb.position.set(0,1.90,0); pend.add(bulb);
+
+/* ---------- wall art ---------- */
+var artG=new T.Group(); artG.position.set(.5,1.95,-D/2+.06); room.add(artG);
+artG.add(box(1.5,1.0,.05,matWood,0,0,0));
+artG.add(box(1.34,.86,.06,matCush,0,0,.01));
+artG.add(box(.5,.5,.07,matAcc,-.24,.05,.02,.4));
+
+/* ---------- lights ---------- */
+var hemi=new T.HemisphereLight(0xCFE0F0,0x6B5B48,.5); scene.add(hemi);
+var amb=new T.AmbientLight(0xFFFFFF,.18); scene.add(amb);
+
+var sun=new T.DirectionalLight(0xFFF0DA,2.4);
+sun.castShadow=true;
+sun.shadow.mapSize.set(1024,1024);
+sun.shadow.camera.near=1; sun.shadow.camera.far=34;
+sun.shadow.camera.left=-9; sun.shadow.camera.right=9;
+sun.shadow.camera.top=9; sun.shadow.camera.bottom=-9;
+sun.shadow.bias=-0.0012; sun.shadow.normalBias=.02;
+scene.add(sun); scene.add(sun.target);
+sun.target.position.set(.6,.8,-.2);
+
+var skyFill=new T.PointLight(0xBFD4E4,6,14,2);
+skyFill.position.set(winX+.9,1.9,(wz0+wz1)/2); scene.add(skyFill);
+var lampL=new T.PointLight(0xFFB870,0,7,2); lampL.position.set(-1.9,1.86,-2.35); scene.add(lampL);
+var pendL=new T.PointLight(0xFFC98A,0,6,2); pendL.position.set(-.55,1.83,.9); scene.add(pendL);
+
+/* ---------- time of day ---------- */
+var CW=new T.Color(), CA=new T.Color(), CB=new T.Color();
+function setTOD(t){
+  var u=(t-6)/16;                       /* 0..1 across 6:00 -> 22:00 */
+  var elev=Math.sin(Math.max(0,Math.min(1,u))*Math.PI);   /* 0 at ends, 1 at 14:00 */
+  var day=Math.pow(elev,.65);
+
+  var az=(u-.5)*Math.PI*1.15;
+  var r=13;
+  sun.position.set(winX-Math.cos(az)*4.5-2.5, 1.0+elev*9.5, Math.sin(az)*r*.55+(wz0+wz1)/2);
+
+  /* warm at the edges of the day, neutral at noon */
+  CW.setHex(0xFF9A44).lerp(new T.Color(0xFFF3DF), Math.min(1,day*1.5));
+  sun.color.copy(CW);
+  sun.intensity=.15+day*3.0;
+
+  hemi.intensity=.12+day*.62;
+  amb.intensity=.10+day*.16;
+  skyFill.intensity=.6+day*6.5;
+  skyFill.color.setHex(0x8FA8C4).lerp(new T.Color(0xCFE2F2),day);
+
+  var night=1-day;
+  lampL.intensity=night*7.0;
+  pendL.intensity=night*5.0;
+  shadeMat.emissiveIntensity=night*.95;
+  bulb.material.emissiveIntensity=night*1.3;
+
+  CA.setHex(0x2A3646).lerp(new T.Color(0xBFD4E4), day);
+  skyMat.color.copy(CA);
+
+  renderer.toneMappingExposure=.92+day*.22;
+
+  var hh=Math.floor(t), mm=Math.round((t-hh)*60);
+  if(mm===60){hh+=1;mm=0;}
+  document.getElementById("todv").textContent=fa(hh)+":"+fa(mm<10?"0"+mm:mm);
+}
+
+/* ---------- background follows page theme ---------- */
+function syncScene(){
+  var dark=(document.documentElement.getAttribute("data-theme")
+    || (matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"))==="dark";
+  CB.setHex(dark?S.bg[1]:S.bg[0]);
+  scene.background=CB.clone();
+  scene.fog=new T.Fog(CB.clone(), 16, 42);
+}
+window.__syncScene=syncScene;
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",syncScene);
+
+/* ---------- camera rig ---------- */
+var VIEWS=[
+  {r:8.8, th:.30, ph:1.19, t:new T.Vector3(-.75,1.12,-.15)},
+  {r:5.0, th:.30, ph:1.30, t:new T.Vector3(.5,.95,-1.1)},
+  {r:6.4, th:-.55, ph:1.24, t:new T.Vector3(-2.2,1.35,-.4)}
+];
+var cur={r:VIEWS[0].r, th:VIEWS[0].th, ph:VIEWS[0].ph, t:VIEWS[0].t.clone()};
+var goal={r:VIEWS[0].r, th:VIEWS[0].th, ph:VIEWS[0].ph, t:VIEWS[0].t.clone()};
+
+function place(){
+  var sp=Math.sin(cur.ph), cp=Math.cos(cur.ph);
+  camera.position.set(
+    cur.t.x + cur.r*sp*Math.sin(cur.th),
+    cur.t.y + cur.r*cp,
+    cur.t.z + cur.r*sp*Math.cos(cur.th)
+  );
+  camera.lookAt(cur.t);
+}
+
+/* drag to orbit */
+var down=false, px=0, py=0, idle=0;
+canvas.addEventListener("pointerdown",function(e){
+  down=true; px=e.clientX; py=e.clientY; idle=0;
+  canvas.classList.add("drag"); canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener("pointermove",function(e){
+  if(!down) return;
+  goal.th -= (e.clientX-px)*.0055;
+  goal.ph = Math.max(.55, Math.min(1.48, goal.ph - (e.clientY-py)*.004));
+  px=e.clientX; py=e.clientY; idle=0;
+});
+function up(e){ down=false; canvas.classList.remove("drag");
+  if(e&&e.pointerId!==undefined&&canvas.hasPointerCapture&&canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId); }
+canvas.addEventListener("pointerup",up); canvas.addEventListener("pointercancel",up);
+canvas.addEventListener("wheel",function(e){
+  e.preventDefault();
+  goal.r=Math.max(3.2,Math.min(13,goal.r+e.deltaY*.0035));
+},{passive:false});
+
+/* ---------- controls ---------- */
+function group(id,attr,fn){
+  var host=document.getElementById(id);
+  if(!host) return;
+  host.addEventListener("click",function(e){
+    var b=e.target.closest("button[data-"+attr+"]"); if(!b) return;
+    host.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed","false");});
+    b.setAttribute("aria-pressed","true");
+    fn(+b.getAttribute("data-"+attr));
+  });
+}
+group("schemes","s",function(i){
+  si=i; S=SCHEMES[i]; retint();
+  pShade.material.color.setHex(S.metal);
+  syncScene();
+});
+group("cams","c",function(i){
+  var v=VIEWS[i]; goal.r=v.r; goal.th=v.th; goal.ph=v.ph; goal.t.copy(v.t); idle=0;
+});
+var tod=document.getElementById("tod");
+tod.addEventListener("input",function(){ setTOD(+tod.value); });
+
+/* ---------- resize ---------- */
+function resize(){
+  var w=canvas.clientWidth||1, h=canvas.clientHeight||1;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.setSize(w,h,false);
+  camera.aspect=w/h;
+  var narrow=camera.aspect<.95;
+  camera.fov=narrow?58:42;
+  camera.updateProjectionMatrix();
+  pull=narrow?1.9:0;
+}
+window.addEventListener("resize",resize);
+
+/* ---------- loop (paused when hero is off-screen) ---------- */
+var visible=true, raf=0, pull=0;
+if("IntersectionObserver" in window){
+  new IntersectionObserver(function(es){
+    visible=es[0].isIntersecting;
+    if(visible && !raf) tick();
+  },{threshold:.02}).observe(canvas);
+}
+function tick(){
+  raf=visible?requestAnimationFrame(tick):0;
+  if(!down && !reduce){ idle++; if(idle>90) goal.th+=.0009; }
+  cur.r  += ((goal.r+pull) - cur.r )*.07;
+  cur.th += (goal.th - cur.th)*.08;
+  cur.ph += (goal.ph - cur.ph)*.08;
+  cur.t.lerp(goal.t,.07);
+  place();
+  renderer.render(scene,camera);
+}
+
+/* ---------- go ---------- */
+setTOD(+tod.value);
+syncScene();
+resize();
+place();
+renderer.render(scene,camera);
+setTimeout(function(){ document.getElementById("load").classList.add("done"); },260);
+tick();
+
+/* ---------- teardown: release GPU memory ---------- */
+window.addEventListener("pagehide",function(){
+  cancelAnimationFrame(raf); visible=false;
+  geos.forEach(function(g){g.dispose();});
+  Object.keys(reg).forEach(function(k){ reg[k].forEach(function(m){m.dispose();}); });
+  [skyMat,shadeMat,bulb.material,pShade.material].forEach(function(m){ if(m&&m.dispose) m.dispose(); });
+  renderer.dispose();
+});
+})();
+</script>
