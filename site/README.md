@@ -36,6 +36,17 @@ Open Graph cover.
 python3 tools/build-images.py path/to/source-panoramas
 ```
 
+## Single-file preview
+
+`tools/build-preview.py` bundles the whole site into one HTML file with every
+image and script inlined, for sharing a running preview where a static host
+isn't available. It is a preview build only — it throws away the progressive
+loading the real site depends on.
+
+```sh
+python3 tools/build-preview.py
+```
+
 ## Configuration
 
 Contact details and the form endpoint are `data-*` attributes on `<body>`.
