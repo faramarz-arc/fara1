@@ -47,6 +47,16 @@ loading the real site depends on.
 python3 tools/build-preview.py
 ```
 
+## Before publishing
+
+```sh
+python3 tools/check-content.py
+```
+
+Lists every value on the site that was invented or carried over as a
+stand-in and still reads as a statement of fact — and blocks outright on any
+claim the images cannot support. Exits non-zero while anything is unresolved.
+
 ## Configuration
 
 Contact details and the form endpoint are `data-*` attributes on `<body>`.
