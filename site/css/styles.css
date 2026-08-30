@@ -30,8 +30,12 @@ h1, h2, h3, h4 { font-weight: 400; }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: var(--nav-h);
 }
+
+/* The tour scenes must land on an exact room: a scroll-padding offset here
+   parks every snap stop short of one, mid-transition. Only the pages below
+   the tour, whose content starts at the top, need to clear the fixed nav. */
+.sheet { scroll-margin-top: var(--nav-h); }
 
 body {
   margin: 0;

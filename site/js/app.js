@@ -235,8 +235,17 @@
         var f = clamp(p - i, 0, 1);
         var blend = easeInOut(clamp((f - (1 - BLEND)) / BLEND, 0, 1));
 
+        /* Two panoramas facing different parts of the house never read as one
+           image when they overlap - a bright wall in one shows straight
+           through the other, and the frame looks split down the middle. So
+           the rooms hand off through the page's ink instead: the outgoing one
+           is gone before the incoming one starts, with a sliver of darkness
+           between them that reads as a cut rather than a double exposure. */
+        var out = 1 - easeInOut(clamp(blend / 0.46, 0, 1));
+        var into = easeInOut(clamp((blend - 0.54) / 0.46, 0, 1));
+
         rooms.forEach(function (r, k) {
-          var a = k === i ? 1 : k === i + 1 ? blend : 0;
+          var a = k === i ? out : k === i + 1 ? into : 0;
           r.mat.uniforms.alpha.value = a;
           r.mesh.visible = a > 0.003;
         });
@@ -696,6 +705,7 @@
   var renderer = new T.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.outputColorSpace = SRGB;
+  renderer.setClearColor(0x0c0b09, 1);   /* --ink, so the cut matches the page */
 
   var camera = new T.PerspectiveCamera(BASE_FOV, innerWidth / innerHeight, 0.1, 400);
   var tour = buildTour();
