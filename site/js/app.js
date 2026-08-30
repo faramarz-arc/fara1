@@ -23,13 +23,25 @@
   var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var smallScreen = matchMedia('(max-width: 900px)').matches;
 
+  /* The six frames are not true 360s - each one's left and right edges show
+     different parts of the house, so there is a hard seam where they meet.
+     `seam` is the arc of camera yaw, measured per room, where that join falls
+     inside the frame; `yaw` sweeps and `limit` bounds are chosen to stay out
+     of it, at the widest field of view and with the drag fully deflected.
+     Re-measure the seam arcs if the panoramas are ever replaced. */
   var ROOMS = [
-    { id: 'entry',    label: 'ورودی',     from: 47,  to: 144 },
-    { id: 'living',   label: 'نشیمن',     from: 40,  to: 198 },
-    { id: 'kitchen',  label: 'آشپزخانه',  from: 194, to: 54  },
-    { id: 'dining',   label: 'ناهارخوری', from: 234, to: 150 },
-    { id: 'corridor', label: 'راهرو',     from: 100, to: 335 },
-    { id: 'bedroom',  label: 'اتاق خواب', from: 223, to: 128 }
+    /* console table and wall rug, turning to the walnut entry cabinetry */
+    { id: 'entry',    label: 'ورودی',     offset: -47,  yaw: [-25,  85], limit: [ -67, 153], seam: [173, 273] },
+    /* along the window wall, round to the sofa and the Tabriz rug */
+    { id: 'living',   label: 'نشیمن',     offset:  57,  yaw: [ 85, 200], limit: [  37, 257], seam: [277,  17] },
+    /* the stone island and walnut run, opening toward the reception */
+    { id: 'kitchen',  label: 'آشپزخانه',  offset:  61,  yaw: [235, 150], limit: [  41, 261], seam: [281,  21] },
+    /* the walnut table under its pendant */
+    { id: 'dining',   label: 'ناهارخوری', offset: -119, yaw: [-75, -15], limit: [-139,  81], seam: [101, 201] },
+    /* down the passage, cove light and rug */
+    { id: 'corridor', label: 'راهرو',     offset: -69,  yaw: [-10,  60], limit: [ -89, 131], seam: [151, 251] },
+    /* the bed between its lamps */
+    { id: 'bedroom',  label: 'اتاق خواب', offset:  43,  yaw: [ 95, 160], limit: [  23, 243], seam: [263,   3] }
   ];
 
   var BASE_FOV = 74, NARROW_FOV = 106, BLEND = 0.22;
@@ -207,14 +219,15 @@
       return r;
     });
 
-    /* Each room continues the heading where the last one stopped, so
-       the walk reads as one continuous turn through the house. */
-    var acc = 0;
+    /* Each room's texture alignment and its camera sweep are independent:
+       the handoff happens through darkness, so the walk does not need one
+       continuous heading, and each room is free to face its own good arc. */
     rooms.forEach(function (r, i) {
-      r.base = acc;
-      r.sweep = ROOMS[i].to - ROOMS[i].from;
-      r.mat.uniforms.uOffset.value = (acc - ROOMS[i].from) / 360;
-      acc += r.sweep;
+      var cfg = ROOMS[i];
+      r.from = cfg.yaw[0];
+      r.sweep = cfg.yaw[1] - cfg.yaw[0];
+      r.limit = cfg.limit;
+      r.mat.uniforms.uOffset.value = cfg.offset / 360;
     });
     rooms[0].mat.uniforms.alpha.value = 1;
 
@@ -250,12 +263,22 @@
           r.mesh.visible = a > 0.003;
         });
 
-        var heading = rooms[i].base + rooms[i].sweep * easeInOut(f);
+        /* The room's own sweep finishes exactly at the darkest point of the
+           handoff, and the next room's starting heading is taken up there —
+           so the change of facing happens while nothing is on screen. */
+        var mid = 1 - BLEND / 2;
+        var live = blend < 0.5 ? rooms[i] : rooms[i + 1];
+        var heading = blend < 0.5
+          ? rooms[i].from + rooms[i].sweep * easeInOut(clamp(f / mid, 0, 1))
+          : rooms[i + 1].from;
+
         var push = Math.sin(Math.PI * blend) * 7;         /* a small lean into each room */
         cam.fov = clamp(this.baseFov - push + this.fovAdjust, MIN_FOV, MAX_FOV);
         cam.updateProjectionMatrix();
 
-        var yaw = heading + look.x * 22 + user.yaw;
+        /* Parallax and drag are added before the clamp, so nothing the viewer
+           does can bring the seam into frame. */
+        var yaw = clamp(heading + look.x * 22 + user.yaw, live.limit[0], live.limit[1]);
         var pitch = -2.5 - look.y * 11 + user.pitch;
         cam.rotation.set(0, 0, 0, 'YXZ');
         cam.rotateY(T.MathUtils.degToRad(yaw));
