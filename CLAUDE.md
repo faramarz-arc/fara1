@@ -15,6 +15,7 @@ the reference data that backs them. There is no application code here.
 | `slides` | Strategic HTML presentations with Chart.js |
 | `banner-design` | Banner art direction and platform sizing |
 | `frontend-design` | Anthropic's frontend-design guidance — distinctive, non-templated visual direction |
+| `video-to-website` | Turning a video into a scroll-driven site — ffmpeg frame extraction, canvas playback, GSAP + Lenis choreography |
 | `agent-reach` | Web and platform research |
 
 ## Searchable data
@@ -44,6 +45,8 @@ catalogues under `.claude/skills/uiux-design/data/`.
 
 - **Any UI or visual work starts with `ui-ux-pro-max`** — search the catalogues
   for a direction before writing markup, then implement with `ui-styling`.
+- `video-to-website` needs `ffmpeg`/`ffprobe` on PATH; they are not present in
+  the web sandbox by default, so install them before running that workflow.
 - Skills are also mirrored to `~/.claude/skills/` so they load outside this
   repo. That mirror is not persistent; this repository is the source of truth.
 - `vendor/ui-ux-pro-max/` is upstream reference material, not active code. See
