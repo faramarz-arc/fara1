@@ -41,6 +41,12 @@ reading the CSVs by hand.
 `.claude/skills/design-system/data/`, and `uiux-design` carries logo/CIP/icon
 catalogues under `.claude/skills/uiux-design/data/`.
 
+## Sites built here — `projects/`
+
+| Project | What it is |
+|---------|-----------|
+| `dizarch/` | DizArch interior design studio — bilingual fa/en single-page site, RTL-first, no framework. See its own README for the design thesis and the placeholders to replace before launch. |
+
 ## Working in this repo
 
 - **Any UI or visual work starts with `ui-ux-pro-max`** — search the catalogues

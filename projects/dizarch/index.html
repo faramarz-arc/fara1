@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-lang="fa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دیزآرک — طراحی داخلی با تخصص رنگ و نور</title>
+<meta name="description" content="استودیو دیزآرک: طراحی داخلی و اجرا، با تخصص در رنگ و نور. مشاوره رایگان بگیرید.">
+
+<!-- Vazirmatn ships with the site (SIL OFL, see fonts/Vazirmatn-OFL.txt) rather
+     than loading from a CDN: it renders on first paint, offline, and with no
+     third-party request from your visitors' browsers. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2314110F'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23E8A33D'/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/Vazirmatn-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- ══ the light: one moving source, colour temperature bound to scroll ══ -->
+<div class="lightfall" aria-hidden="true"><div class="lightfall__pool"></div></div>
+<div class="grain" aria-hidden="true"></div>
+
+<a class="skip" href="#main">پرش به محتوا</a>
+
+<header class="masthead">
+  <a class="wordmark" href="#top" aria-label="دیزآرک، برو به بالای صفحه">
+    <span class="wordmark__mark" aria-hidden="true"></span>
+    <span class="wordmark__text">DizArch</span>
+  </a>
+
+  <nav class="masthead__nav" aria-label="ناوبری اصلی">
+    <a href="#services" data-en="Services">خدمات</a>
+    <a href="#light" data-en="Colour &amp; light">رنگ و نور</a>
+    <a href="#story" data-en="Our story">داستان ما</a>
+    <a href="#about" data-en="About">درباره ما</a>
+  </nav>
+
+  <div class="masthead__side">
+    <button class="langtoggle" type="button" id="lang-toggle" aria-label="Switch to English">
+      <span class="langtoggle__on">فا</span><span class="langtoggle__off">EN</span>
+    </button>
+    <a class="btn btn--sm" href="#consult" data-en="Free consultation">مشاورهٔ رایگان</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ═══════════════ 1. HERO — 07:40, north light ═══════════════ -->
+<section class="hero" id="top" data-hour="0740">
+  <div class="hero__grid">
+
+    <div class="hero__copy">
+      <p class="eyebrow"><span class="eyebrow__time">۰۷:۴۰</span><span class="eyebrow__label" data-en="North light" data-en-time="07:40">نور شمالی</span></p>
+
+      <h1 class="hero__title" data-en="Interior design for rooms that come alive with &lt;em&gt;light&lt;/em&gt; and &lt;em&gt;colour&lt;/em&gt;">
+        طراحی داخلی برای فضاهایی که با <em>نور</em> و <em>رنگ</em> زنده‌اند
+      </h1>
+
+      <p class="hero__lead" data-en="DizArch stays with you from the first colour swatch to the last fitted lamp — design and build, under one studio.">
+        دیزآرک از اولین نمونهٔ رنگ تا آخرین چراغِ نصب‌شده کنار شماست — طراحی و اجرا، زیر سقف یک استودیو.
+      </p>
+
+      <div class="hero__actions">
+        <a class="btn btn--lg" href="#consult" data-en="Book a free consultation">مشاورهٔ رایگان بگیرید</a>
+        <a class="link-quiet" href="#services" data-en="See what we do">ببینید چه می‌کنیم</a>
+      </div>
+    </div>
+
+    <!-- The aperture: this is where light enters the page.
+         ▸ TO USE YOUR OWN IMAGE : uncomment the <img> and drop the file in assets/
+         ▸ TO USE YOUR OWN VIDEO : uncomment the <video> instead (keep it muted + looped)
+         Until then this renders as a lit plaster surface — intentional, not broken. -->
+    <figure class="aperture" data-media="placeholder">
+      <div class="aperture__frame">
+
+        <!-- <img src="assets/hero.jpg" alt="نشیمن طراحی‌شده توسط دیزآرک با نورپردازی گرم" class="aperture__media"> -->
+
+        <!-- <video class="aperture__media" src="assets/hero.mp4" autoplay muted loop playsinline
+                  poster="assets/hero-poster.jpg"></video> -->
+
+        <div class="aperture__empty">
+          <span class="aperture__hint" data-en="assets/hero.jpg — your image or video goes here">assets/hero.jpg — تصویر یا ویدیوی شما اینجا</span>
+        </div>
+      </div>
+      <figcaption class="aperture__caption" data-en="Sunlight, 07:40 — the hour a room tells you its real colour">
+        آفتاب ساعت ۷:۴۰ — ساعتی که اتاق رنگ واقعی‌اش را نشان می‌دهد
+      </figcaption>
+    </figure>
+
+  </div>
+
+  <div class="scrollcue" aria-hidden="true">
+    <span class="scrollcue__line"></span>
+    <span class="scrollcue__text" data-en="Scroll — the light moves with you">بچرخانید — نور با شما حرکت می‌کند</span>
+  </div>
+</section>
+
+
+<!-- ═══════════════ 2. SERVICES — 10:00, working light ═══════════════ -->
+<section class="section services" id="services" data-hour="1000" data-anim="clip-reveal">
+  <header class="section__head">
+    <p class="eyebrow"><span class="eyebrow__time">۱۰:۰۰</span><span class="eyebrow__label" data-en="Working light" data-en-time="10:00">نور کار</span></p>
+    <h2 class="section__title" data-en="Two services. One team from first sketch to handover.">
+      دو خدمت. یک تیم، از اولین اسکیس تا تحویل کلید.
+    </h2>
+  </header>
+
+  <div class="services__pair">
+
+    <article class="service">
+      <h3 class="service__name" data-en="Interior design">طراحی داخلی</h3>
+      <p class="service__blurb" data-en="We start with how you actually live in the space, then design the light and the palette around it — not the other way round.">
+        از این شروع می‌کنیم که واقعاً چطور در فضا زندگی می‌کنید، بعد نور و پالت رنگ را دور همان می‌چینیم — نه برعکس.
+      </p>
+      <ul class="service__list">
+        <li data-en="Plans, zoning and furniture layout">پلان، زون‌بندی و چیدمان مبلمان</li>
+        <li data-en="Colour palette tested under your room's own light">پالت رنگ، آزموده زیر نور واقعی خانهٔ شما</li>
+        <li data-en="Lighting design: layers, temperature, fixtures">طراحی نور: لایه‌ها، دمای رنگ، انتخاب چراغ</li>
+        <li data-en="Material and finish selection">انتخاب متریال و پرداخت نهایی</li>
+        <li data-en="3D views you can walk through before we build">تصاویر سه‌بعدی، پیش از آنکه چیزی ساخته شود</li>
+      </ul>
+    </article>
+
+    <article class="service">
+      <h3 class="service__name" data-en="Build &amp; delivery">اجرا</h3>
+      <p class="service__blurb" data-en="The drawing is the easy half. We run the site so the finished room matches the render you approved.">
+        نقشه، نیمهٔ آسان کار است. اجرای کارگاه با ماست تا فضای تمام‌شده همان چیزی باشد که تأیید کرده‌اید.
+      </p>
+      <ul class="service__list">
+        <li data-en="Contractor management and scheduling">مدیریت پیمانکار و زمان‌بندی</li>
+        <li data-en="Renovation and structural changes">بازسازی و تغییرات سازه‌ای</li>
+        <li data-en="Custom joinery and decorative build">ساخت دکور و کابینت سفارشی</li>
+        <li data-en="Electrical and lighting installation">برق‌کشی و نصب روشنایی</li>
+        <li data-en="Site supervision through to handover">نظارت کارگاهی تا تحویل کلید</li>
+      </ul>
+    </article>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════ 3. SIGNATURE — 16:30, the demo ═══════════════ -->
+<section class="section light" id="light" data-hour="1630" data-anim="scale-up">
+  <header class="section__head section__head--center">
+    <p class="eyebrow"><span class="eyebrow__time">۱۶:۳۰</span><span class="eyebrow__label" data-en="Afternoon" data-en-time="16:30">عصر</span></p>
+    <h2 class="section__title" data-en="A colour has no meaning until you say which light it stands in.">
+      رنگ تا وقتی نگویید زیر کدام نور است، معنایی ندارد.
+    </h2>
+    <p class="section__lead" data-en="This is the same paint, unchanged. Only the light moves. Drag it and watch a &quot;warm beige&quot; turn green — the reason we test every palette in your own room before anyone buys a litre of it.">
+      این یک رنگ است، بدون هیچ تغییری. فقط نور جابه‌جا می‌شود. بکشید و ببینید «بژ گرم» چطور سبز می‌شود — دقیقاً به همین دلیل هر پالت را در خانهٔ خودتان آزمایش می‌کنیم، پیش از آنکه یک لیتر رنگ خریده شود.
+    </p>
+  </header>
+
+  <div class="lab">
+    <div class="lab__room">
+      <div class="lab__wall" id="lab-wall">
+        <div class="lab__light" id="lab-light" aria-hidden="true"></div>
+        <div class="lab__shadow" aria-hidden="true"></div>
+      </div>
+      <output class="lab__readout" id="lab-readout" for="lab-kelvin lab-swatch">
+        <span class="lab__kelvin" id="lab-kelvin-text">۲۷۰۰ کلوین</span>
+        <span class="lab__mood" id="lab-mood" data-en="Evening lamp">چراغ شب</span>
+      </output>
+    </div>
+
+    <div class="lab__controls">
+      <div class="field field--range">
+        <label for="lab-kelvin" data-en="Light temperature">دمای نور</label>
+        <input type="range" id="lab-kelvin" min="2200" max="6500" step="50" value="2700"
+               aria-describedby="lab-readout">
+        <div class="field__ends" aria-hidden="true">
+          <span data-en="Candle 2200K">شمع ۲۲۰۰</span><span data-en="Noon 6500K">ظهر ۶۵۰۰</span>
+        </div>
+      </div>
+
+      <fieldset class="chips">
+        <legend data-en="Wall colour">رنگ دیوار</legend>
+        <label class="chip"><input type="radio" name="swatch" id="lab-swatch" value="#CFC3B0" checked><span class="chip__dot" style="--chip:#CFC3B0"></span><span class="chip__name" data-en="Warm beige">بژ گرم</span></label>
+        <label class="chip"><input type="radio" name="swatch" value="#8E9C93"><span class="chip__dot" style="--chip:#8E9C93"></span><span class="chip__name" data-en="Sage">مریم‌گلی</span></label>
+        <label class="chip"><input type="radio" name="swatch" value="#6E7A8A"><span class="chip__dot" style="--chip:#6E7A8A"></span><span class="chip__name" data-en="Slate blue">آبی دودی</span></label>
+        <label class="chip"><input type="radio" name="swatch" value="#A8695C"><span class="chip__dot" style="--chip:#A8695C"></span><span class="chip__name" data-en="Clay">خاک رس</span></label>
+      </fieldset>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ 4. STORY — 18:50, golden hour ═══════════════ -->
+<section class="section story" id="story" data-hour="1850" data-anim="slide-start">
+  <header class="section__head">
+    <p class="eyebrow"><span class="eyebrow__time">۱۸:۵۰</span><span class="eyebrow__label" data-en="Golden hour" data-en-time="18:50">ساعت طلایی</span></p>
+    <h2 class="section__title" data-en="We started because of one cold room.">
+      کار ما با یک اتاقِ سرد شروع شد.
+    </h2>
+  </header>
+
+  <div class="story__body">
+    <p data-en="The plan was right. The furniture was right. The colour was the one from the sample board. And still, at seven in the evening, the room felt like a waiting area.">
+      پلان درست بود. مبلمان درست بود. رنگ هم همان بود که روی تابلوی نمونه انتخاب شده بود. با این حال ساعت هفتِ عصر، آن اتاق حس یک سالن انتظار را می‌داد.
+    </p>
+    <p data-en="It took us a long time to admit the drawings were not the problem. Nobody had asked what the light did in that room after four o'clock.">
+      مدت‌ها طول کشید تا بپذیریم مشکل از نقشه نیست. هیچ‌کس نپرسیده بود بعد از ساعت چهار، نور در آن اتاق چه می‌کند.
+    </p>
+    <p data-en="So we changed the order of our work. Before a single plan is drawn, we spend a full day in your space — morning, afternoon, night — and record how the light arrives, where it dies, and which corner never sees it.">
+      برای همین ترتیب کارمان را عوض کردیم. پیش از آنکه یک خط پلان کشیده شود، یک روز کامل در فضای شما می‌گذرانیم — صبح، عصر، شب — و ثبت می‌کنیم نور از کجا می‌آید، کجا می‌میرد و کدام گوشه هرگز آن را نمی‌بیند.
+    </p>
+    <p data-en="Everything after that — the palette, the fixtures, the finishes — is an answer to what we saw that day. It is slower at the start. It is the reason our rooms still look right in the evening.">
+      هر چیزی بعد از آن — پالت، چراغ‌ها، پرداخت‌ها — پاسخی است به چیزی که آن روز دیدیم. شروعِ کار کندتر است. و دلیل اینکه فضاهای ما شب‌ها هم درست به نظر می‌رسند، همین است.
+    </p>
+  </div>
+
+  <!-- TODO ▸ replace these three numbers with DizArch's real figures before launch -->
+  <dl class="figures">
+    <div class="figure">
+      <dt data-en="Completed projects">پروژهٔ تحویل‌شده</dt>
+      <dd><span class="figure__num" data-value="120">۰</span><span class="figure__suffix">+</span></dd>
+    </div>
+    <div class="figure">
+      <dt data-en="Years in practice">سال سابقه</dt>
+      <dd><span class="figure__num" data-value="11">۰</span></dd>
+    </div>
+    <div class="figure">
+      <dt data-en="Hours of light study per project">ساعت مطالعهٔ نور در هر پروژه</dt>
+      <dd><span class="figure__num" data-value="24">۰</span></dd>
+    </div>
+  </dl>
+</section>
+
+
+<!-- ═══════════════ 5. CONSULTATION — 21:15, lamp light ═══════════════ -->
+<section class="section consult" id="consult" data-hour="2115" data-anim="fade-up">
+  <div class="consult__grid">
+
+    <div class="consult__pitch">
+      <p class="eyebrow"><span class="eyebrow__time">۲۱:۱۵</span><span class="eyebrow__label" data-en="Lamp light" data-en-time="21:15">نور چراغ</span></p>
+      <h2 class="section__title" data-en="Free consultation">مشاورهٔ رایگان</h2>
+      <p class="section__lead" data-en="Tell us about the space. Within one working day you get a call, an honest opinion on what it needs, and a realistic budget range — no obligation to hire us.">
+        از فضایتان بگویید. ظرف یک روز کاری تماس می‌گیریم، صادقانه می‌گوییم آن فضا به چه چیزی نیاز دارد و یک بازهٔ بودجهٔ واقع‌بینانه می‌دهیم — بدون هیچ الزامی برای همکاری.
+      </p>
+      <ul class="consult__promise">
+        <li data-en="A reply within one working day">پاسخ ظرف یک روز کاری</li>
+        <li data-en="No sales script, no pressure">بدون متن فروش، بدون فشار</li>
+        <li data-en="Your details stay with our studio">اطلاعات شما پیش خودمان می‌ماند</li>
+      </ul>
+    </div>
+
+    <form class="form" id="consult-form" novalidate>
+      <h3 class="form__title" data-en="Send your request">درخواستتان را بفرستید</h3>
+
+      <div class="form__alert" id="form-alert" role="alert" tabindex="-1" hidden></div>
+
+      <div class="field">
+        <label for="f-name" data-en="Full name">نام و نام خانوادگی</label>
+        <input type="text" id="f-name" name="name" autocomplete="name" required
+               aria-describedby="e-name">
+        <p class="field__error" id="e-name" data-en="Please enter your name.">نامتان را وارد کنید.</p>
+      </div>
+
+      <div class="field">
+        <label for="f-phone" data-en="Phone number">شمارهٔ تماس</label>
+        <input type="tel" id="f-phone" name="phone" inputmode="tel" autocomplete="tel" required
+               dir="ltr" placeholder="۰۹۱۲ ۰۰۰ ۰۰۰۰" data-en-placeholder="0912 000 0000"
+               aria-describedby="e-phone">
+        <p class="field__error" id="e-phone" data-en="Enter a phone number with at least 10 digits.">شماره‌ای با دست‌کم ۱۰ رقم وارد کنید.</p>
+      </div>
+
+      <div class="field">
+        <label for="f-kind" data-en="What do you need?">چه چیزی لازم دارید؟</label>
+        <select id="f-kind" name="kind" required aria-describedby="e-kind">
+          <option value="" data-en="Choose one">یکی را انتخاب کنید</option>
+          <option value="design" data-en="Interior design">طراحی داخلی</option>
+          <option value="build" data-en="Build &amp; delivery">اجرا</option>
+          <option value="both" data-en="Design and build">طراحی و اجرا</option>
+          <option value="light" data-en="Lighting or colour only">فقط نورپردازی یا مشاورهٔ رنگ</option>
+        </select>
+        <p class="field__error" id="e-kind" data-en="Choose the service you need.">خدمت مورد نظرتان را انتخاب کنید.</p>
+      </div>
+
+      <div class="field">
+        <label for="f-area" data-en="Approximate area (m²) — optional">متراژ تقریبی (متر مربع) — اختیاری</label>
+        <input type="number" id="f-area" name="area" min="1" max="100000" inputmode="numeric" dir="ltr">
+      </div>
+
+      <div class="field">
+        <label for="f-note" data-en="Tell us about the space — optional">کمی از فضا بگویید — اختیاری</label>
+        <textarea id="f-note" name="note" rows="3"
+                  placeholder="مثلاً: آپارتمان ۹۰ متری، نور از سمت شمال، نشیمن همیشه تاریک است."
+                  data-en-placeholder="e.g. 90 m² flat, north-facing, the living room is always dark."></textarea>
+      </div>
+
+      <button class="btn btn--lg btn--block" type="submit" id="form-submit"
+              data-en="Send via Telegram">ارسال از طریق تلگرام</button>
+
+      <p class="form__note" data-en="The button opens Telegram with your message ready — you press send there. Nothing is stored on this page.">
+        دکمه، تلگرام را با پیام آمادهٔ شما باز می‌کند؛ ارسال نهایی با خودتان است. هیچ اطلاعاتی در این صفحه ذخیره نمی‌شود.
+      </p>
+    </form>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════ 6. ABOUT & CONTACT — 22:40, night ═══════════════ -->
+<section class="section about" id="about" data-hour="2240" data-anim="fade-up">
+  <div class="about__grid">
+
+    <div class="about__text">
+      <p class="eyebrow"><span class="eyebrow__time">۲۲:۴۰</span><span class="eyebrow__label" data-en="Night" data-en-time="22:40">شب</span></p>
+      <h2 class="section__title" data-en="About DizArch">دربارهٔ دیزآرک</h2>
+      <p data-en="DizArch is a small interior design studio. Small on purpose: the person who studies your light is the same person who signs off the final site visit.">
+        دیزآرک یک استودیو کوچک طراحی داخلی است. کوچک بودنش عمدی است: همان کسی که نور فضای شما را مطالعه می‌کند، آخرین بازدید کارگاهی را هم تأیید می‌کند.
+      </p>
+      <p data-en="We work on homes, clinics, cafés and offices — anywhere people stay long enough to notice how the light treats them.">
+        روی خانه، کلینیک، کافه و دفتر کار می‌کنیم — هر جایی که آدم‌ها آن‌قدر می‌مانند که متوجه رفتار نور با خودشان بشوند.
+      </p>
+    </div>
+
+    <!-- TODO ▸ replace every value below with DizArch's real contact details -->
+    <div class="contact" id="contact">
+      <h3 class="contact__title" data-en="Get in touch">تماس با ما</h3>
+      <dl class="contact__list">
+        <div>
+          <dt data-en="Phone">تلفن</dt>
+          <dd><a href="tel:+982100000000" dir="ltr">+۹۸ ۲۱ ۰۰۰۰ ۰۰۰۰</a></dd>
+        </div>
+        <div>
+          <dt data-en="Email">ایمیل</dt>
+          <dd><a href="mailto:hello@dizarch.com" dir="ltr">hello@dizarch.com</a></dd>
+        </div>
+        <div>
+          <dt data-en="Telegram">تلگرام</dt>
+          <dd><a href="https://t.me/dizarch" dir="ltr" rel="noopener">@dizarch</a></dd>
+        </div>
+        <div>
+          <dt data-en="Studio">استودیو</dt>
+          <dd data-en="Tehran — visits by appointment">تهران — بازدید با هماهنگی قبلی</dd>
+        </div>
+        <div>
+          <dt data-en="Hours">ساعات کاری</dt>
+          <dd data-en="Sat–Wed, 10:00–18:00">شنبه تا چهارشنبه، ۱۰ تا ۱۸</dd>
+        </div>
+      </dl>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <p class="footer__mark">DizArch</p>
+  <p class="footer__line" data-en="Interior design and build — colour and light.">طراحی داخلی و اجرا — رنگ و نور.</p>
+  <p class="footer__legal">© <span id="year">۱۴۰۴</span> DizArch</p>
+</footer>
+
+<script src="vendor/lenis.min.js"></script>
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
