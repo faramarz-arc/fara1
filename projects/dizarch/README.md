@@ -33,6 +33,32 @@ The signature moment is the **colour lab** in the "رنگ و نور" section: on
 paint colour, one slider from candlelight to noon. It demonstrates the thing
 the studio sells rather than claiming it.
 
+## The scroll sequence
+
+`#craft` is a pinned stage: the viewport holds still while one scroll advances
+one discipline — plan, light, colour, material, build — and each step's scene
+animates as its copy arrives with it. The order is the real order of a project,
+which is the only reason the steps carry numbers.
+
+Each scene animates in its own terms rather than repeating one effect: the plan
+draws itself along its own path lengths, the lighting switches on layer by
+layer, the colour floods up the wall, the material samples fan out, and the site
+wipes from before to after with the progress meter counting up. No two
+consecutive steps share an entrance.
+
+Implementation notes worth knowing before you edit it:
+
+- The stage is pinned by CSS `position: sticky`. GSAP only reports scroll
+  progress — handing the same element to ScrollTrigger's `pin` as well makes
+  the two fight over positioning.
+- `overflow-x: hidden` anywhere up the tree (`body` included) turns that
+  ancestor into a scroll container and silently kills the sticky behaviour.
+  `overflow-x: clip` on `html` does the clipping without that side effect.
+- The snap points are `i / 5`, one per step. `i / (n-1)` looks right and is
+  wrong: it lands each snap on the boundary of the *next* step.
+- Below 60rem and under `prefers-reduced-motion`, the pin is dropped entirely
+  and the five steps simply stack as ordinary sections.
+
 Palette — two opposed lights, never a single accent:
 
 | Token | Hex | Role |

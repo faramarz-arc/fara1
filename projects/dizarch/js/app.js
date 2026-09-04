@@ -8,6 +8,7 @@
    4. figures      numbers count up once, in the active locale
    5. light lab    the signature demo: same paint, moving light
    6. form         validation, then hand off to Telegram
+   7. craft        the pinned sequence — one scroll, one discipline
    ════════════════════════════════════════════════════════════════ */
 
 (() => {
@@ -26,6 +27,8 @@ const localeNum = n => (state.lang === 'fa' ? toFa(n) : String(n));
 const state = { lang: 'fa' };
 
 /* ═══ 1. language ═══════════════════════════════════════════ */
+let craft = { rebuild() {} };   // replaced once the sequence is built
+
 const i18n = (() => {
   // Snapshot the Persian copy that ships in the HTML, so switching back
   // never depends on a second translation table.
@@ -65,6 +68,7 @@ const i18n = (() => {
 
     lab.refresh();
     figures.rewrite();
+    craft.rebuild();
     document.getElementById('year').textContent = localeNum(new Date().getFullYear());
   }
 
@@ -80,6 +84,7 @@ const i18n = (() => {
 const HOURS = {
   '0740': { rgb: [124, 154, 166], strength: 0.34 },  // north light, cool
   '1000': { rgb: [190, 196, 190], strength: 0.24 },  // working light, neutral
+  '1230': { rgb: [206, 198, 182], strength: 0.20 },  // midday, near-white
   '1630': { rgb: [226, 168, 104], strength: 0.32 },  // afternoon, warming
   '1850': { rgb: [232, 163,  61], strength: 0.42 },  // golden hour
   '2115': { rgb: [214, 126,  58], strength: 0.30 },  // lamp light
@@ -384,6 +389,200 @@ function initForm() {
     window.open(share, '_blank', 'noopener');
   });
 }
+
+/* ═══ 7. the craft sequence ═════════════════════════════════ */
+/* A pinned stage: one scroll advances one discipline. Each step owns a
+   timeline that plays when it becomes active and rewinds when it leaves,
+   so scrolling back up replays it rather than showing a spent scene.
+   Every step gets a different entrance — the copy never arrives the same
+   way twice in a row. */
+craft = (() => {
+  const section = document.getElementById('craft');
+  if (!section) return { rebuild() {} };
+
+  const steps = [...section.querySelectorAll('.step')];
+  const rail = [...section.querySelectorAll('.rail__step')];
+  const track = section.querySelector('.craft__track');
+  const stacked = () => reduced || !hasGSAP || window.matchMedia('(max-width: 60rem)').matches;
+
+  /* Each scene animates in its own terms: the plan draws, the light
+     switches on layer by layer, the colour floods up the wall, the
+     samples fan out, the site wipes from before to after. */
+  function scene(step, index) {
+    const tl = gsap.timeline({ paused: true });
+    const q = sel => step.querySelectorAll(sel);
+
+    if (index === 0) {
+      q('.plan__walls path, .plan__openings path').forEach(path => {
+        const len = path.getTotalLength();
+        path.style.setProperty('--len', len);
+        tl.fromTo(path, { strokeDashoffset: len }, {
+          strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut'
+        }, '<0.12');
+      });
+      tl.to(q('.plan__furniture rect, .plan__furniture circle'), {
+        opacity: 1, duration: 0.5, stagger: 0.09, ease: 'power2.out'
+      }, '-=0.3')
+        .to(q('.plan__north'), { opacity: 0.7, duration: 0.5 }, '-=0.2');
+
+    } else if (index === 1) {
+      tl.to(q('.pendant'), { opacity: 1, duration: 0.5, ease: 'power2.out' })
+        .to(q('.layer--ambient'), { opacity: 1, duration: 0.7 }, '-=0.1')
+        .to(q('.layer--task'), { opacity: 1, duration: 0.6 }, '+=0.15')
+        .to(q('.layer--accent'), { opacity: 1, duration: 0.6 }, '+=0.15');
+
+    } else if (index === 2) {
+      tl.to(q('.band'), {
+        scaleY: 1, duration: 0.7, stagger: 0.1, ease: 'power3.out'
+      })
+        .to(q('.palettebar span'), {
+          opacity: 1, duration: 0.35, stagger: 0.07
+        }, '-=0.4');
+
+    } else if (index === 3) {
+      const fan = [-24, -8, 8, 24];
+      const lift = [10, -6, -6, 10];
+      q('.sample').forEach((el, i) => {
+        tl.fromTo(el,
+          { opacity: 0, rotate: 0, x: 0, y: 40 },
+          {
+            opacity: 1, rotate: fan[i], y: lift[i],
+            x: `${fan[i] * 5.2}%`, duration: 0.7, ease: 'back.out(1.4)'
+          }, i * 0.11);
+      });
+
+    } else {
+      const pct = step.querySelector('.site__pct');
+      const counter = { n: 0 };
+      tl.to(q('.site__wipe'), { opacity: 1, duration: 0.25 })
+        .fromTo(q('.site__wipe'), { left: '0%' }, {
+          left: '100%', duration: 1.4, ease: 'power2.inOut'
+        }, 0.25)
+        .fromTo(q('.site__after'),
+          { clipPath: 'inset(0 0 0 100%)' },
+          { clipPath: 'inset(0 0 0 0%)', duration: 1.4, ease: 'power2.inOut' }, 0.25)
+        .to(q('.site__fill'), { backgroundSize: '100% 100%', duration: 1.4, ease: 'power2.inOut' }, 0.25)
+        .to(counter, {
+          n: 100, duration: 1.4, ease: 'power2.inOut',
+          onUpdate: () => { if (pct) pct.textContent = localeNum(Math.round(counter.n)) + '٪'; }
+        }, 0.25)
+        .to(q('.site__wipe'), { opacity: 0, duration: 0.3 }, '-=0.2');
+    }
+    return tl;
+  }
+
+  /* The copy arrives with its scene, and no two neighbours use the same
+     entrance. */
+  const COPY_IN = [
+    { y: 40, opacity: 0 },
+    { x: 60, opacity: 0 },
+    { y: -30, opacity: 0 },
+    { scale: 0.94, opacity: 0 },
+    { clipPath: 'inset(0 0 100% 0)', opacity: 0 }
+  ];
+
+  const COPY_SEL = '.panel__kicker, .panel__title, .panel__body, .panel__list li';
+  const SCENE_SEL = '.scene *';
+
+  function copy(step, index) {
+    const from = { ...COPY_IN[index] };
+    if ('x' in from && doc.dir === 'rtl') from.x = -from.x;
+    return gsap.from(step.querySelectorAll(COPY_SEL), {
+      ...from, duration: 0.75, ease: 'power3.out', stagger: 0.09, paused: true
+    });
+  }
+
+  let timelines = [];
+  let trigger = null;
+  let current = -1;
+
+  function show(index) {
+    if (index === current) return;
+    current = index;
+    steps.forEach((s, i) => s.classList.toggle('is-active', i === index));
+    rail.forEach((r, i) => {
+      r.classList.toggle('is-active', i === index);
+      r.classList.toggle('is-done', i < index);
+    });
+    const t = timelines[index];
+    if (t) { t.scene.restart(); t.copy.restart(); }
+  }
+
+  function build() {
+    teardown();
+    if (stacked()) {
+      steps.forEach(s => s.classList.add('is-active'));
+      return;
+    }
+
+    timelines = steps.map((step, i) => ({ scene: scene(step, i), copy: copy(step, i) }));
+    track.style.height = `${steps.length * 100}svh`;
+
+    // The stage is pinned by CSS `position: sticky`; ScrollTrigger only
+    // reports where we are inside the track. Handing the same element to
+    // GSAP's `pin` as well makes the two fight over positioning.
+    //
+    // There are five steps and therefore five snap points at i/5, one per
+    // step — not i/4, which would drop each landing on the *boundary* of the
+    // next step and show the wrong scene.
+    trigger = ScrollTrigger.create({
+      trigger: track,
+      start: 'top top',
+      end: 'bottom bottom',
+      snap: {
+        snapTo: [...steps.keys()].map(i => i / steps.length),
+        duration: { min: 0.2, max: 0.5 },
+        delay: 0.06,
+        ease: 'power2.inOut'
+      },
+      onUpdate: self => {
+        const i = Math.min(steps.length - 1, Math.floor(self.progress * steps.length));
+        show(i);
+      }
+    });
+    show(0);
+  }
+
+  function teardown() {
+    if (trigger) { trigger.kill(true); trigger = null; }
+    timelines.forEach(t => { t.scene.kill(); t.copy.kill(); });
+    timelines = [];
+    current = -1;
+    track.style.height = '';
+    steps.forEach(s => s.classList.remove('is-active'));
+
+    // Every element a killed tween touched has to lose its inline styles.
+    // Miss one and the next `gsap.from()` reads that leftover (opacity: 0)
+    // as the tween's *destination*, and the element never appears again.
+    steps.forEach(step => {
+      gsap.set(step.querySelectorAll(`${COPY_SEL}, ${SCENE_SEL}`), { clearProps: 'all' });
+    });
+  }
+
+  // the rail is a real table of contents, so let it navigate
+  rail.forEach((r, i) => {
+    r.tabIndex = 0;
+    r.setAttribute('role', 'button');
+    const go = () => {
+      if (stacked()) { steps[i].scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+      const top = track.offsetTop + (i / steps.length) * (track.offsetHeight);
+      window.scrollTo({ top: top + 10, behavior: 'smooth' });
+    };
+    r.addEventListener('click', go);
+    r.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
+    });
+  });
+
+  let resizeTimer;
+  addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(build, 220);
+  });
+
+  build();
+  return { rebuild: build };
+})();
 
 /* ═══ smooth scroll ═════════════════════════════════════════ */
 function initScroll() {

@@ -30,6 +30,7 @@
 
   <nav class="masthead__nav" aria-label="ناوبری اصلی">
     <a href="#services" data-en="Services">خدمات</a>
+    <a href="#craft" data-en="How we work">مراحل کار</a>
     <a href="#light" data-en="Colour &amp; light">رنگ و نور</a>
     <a href="#story" data-en="Our story">داستان ما</a>
     <a href="#about" data-en="About">درباره ما</a>
@@ -139,7 +140,193 @@
 </section>
 
 
-<!-- ═══════════════ 3. SIGNATURE — 16:30, the demo ═══════════════ -->
+<!-- ═══════════════ 3. CRAFT — 12:30, one step per scroll ═══════════════
+     A pinned stage. Each scroll advances one discipline: the scene animates
+     and its copy arrives with it. The order is the real order of a project,
+     which is why the steps are numbered. -->
+<section class="craft" id="craft" data-hour="1230">
+
+  <div class="craft__intro">
+    <p class="eyebrow"><span class="eyebrow__time">۱۲:۳۰</span><span class="eyebrow__label" data-en="Midday" data-en-time="12:30">نیم‌روز</span></p>
+    <h2 class="section__title" data-en="Five disciplines, in the order we actually work.">
+      پنج تخصص، به همان ترتیبی که واقعاً کار می‌کنیم.
+    </h2>
+  </div>
+
+  <div class="craft__track">
+    <div class="craft__stage">
+
+      <ol class="rail" aria-label="مراحل کار">
+        <li class="rail__step is-active"><span class="rail__num">۰۱</span><span class="rail__name" data-en="Plan">پلان</span></li>
+        <li class="rail__step"><span class="rail__num">۰۲</span><span class="rail__name" data-en="Light">نور</span></li>
+        <li class="rail__step"><span class="rail__num">۰۳</span><span class="rail__name" data-en="Colour">رنگ</span></li>
+        <li class="rail__step"><span class="rail__num">۰۴</span><span class="rail__name" data-en="Material">متریال</span></li>
+        <li class="rail__step"><span class="rail__num">۰۵</span><span class="rail__name" data-en="Build">اجرا</span></li>
+      </ol>
+
+      <div class="craft__viewport">
+
+        <!-- ─── 01 plan ─── -->
+        <article class="step is-active" data-step="0">
+          <div class="scene scene--plan">
+            <svg viewBox="0 0 400 300" role="img" aria-label="پلان خطی یک آپارتمان با چیدمان مبلمان">
+              <g class="plan__walls" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round">
+                <path d="M30 40 H370 V260 H30 Z"/>
+                <path d="M215 40 V150 H370"/>
+                <path d="M30 190 H215"/>
+              </g>
+              <g class="plan__openings" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M215 90 A28 28 0 0 1 243 118"/>
+                <path d="M120 190 h48"/>
+              </g>
+              <g class="plan__furniture">
+                <rect x="52" y="62" width="104" height="46" rx="3"/>
+                <rect x="52" y="120" width="46" height="46" rx="3"/>
+                <rect x="252" y="66" width="86" height="34" rx="3"/>
+                <rect x="60" y="212" width="120" height="30" rx="3"/>
+                <circle cx="300" cy="200" r="26"/>
+              </g>
+              <g class="plan__north" stroke="currentColor" fill="none" stroke-width="2">
+                <circle cx="352" cy="232" r="16"/>
+                <path d="M352 220 v24 M346 226 l6 -6 l6 6"/>
+              </g>
+            </svg>
+          </div>
+          <div class="panel">
+            <p class="panel__kicker" data-en="Step 01 — Plan &amp; layout">مرحلهٔ ۰۱ — پلان و چیدمان</p>
+            <h3 class="panel__title" data-en="Where the walls go decides everything after.">
+              جای دیوارها، تکلیف همه‌چیزِ بعدی را روشن می‌کند.
+            </h3>
+            <p class="panel__body" data-en="We measure the space ourselves and redraw it around how you move through it — where you drop your keys, where the sun lands at breakfast, which wall the television should never be on.">
+              فضا را خودمان اندازه می‌گیریم و دوباره ترسیم می‌کنیم، حول اینکه شما چطور در آن حرکت می‌کنید — کلید را کجا می‌گذارید، آفتاب صبحانه کجا می‌افتد، و تلویزیون روی کدام دیوار نباید باشد.
+            </p>
+            <ul class="panel__list">
+              <li data-en="Measured survey and as-built drawings">برداشت دقیق و نقشهٔ وضع موجود</li>
+              <li data-en="Zoning: quiet, social, service">زون‌بندی: آرام، جمعی، خدماتی</li>
+              <li data-en="Circulation and furniture layout">مسیر حرکت و چیدمان مبلمان</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ─── 02 light ─── -->
+        <article class="step" data-step="1">
+          <div class="scene scene--light">
+            <div class="room">
+              <div class="room__wall"></div>
+              <div class="room__floor"></div>
+              <div class="layer layer--ambient"></div>
+              <div class="layer layer--task"></div>
+              <div class="layer layer--accent"></div>
+              <div class="pendant"><span class="pendant__cord"></span><span class="pendant__shade"></span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="panel__kicker" data-en="Step 02 — Lighting">مرحلهٔ ۰۲ — نورپردازی</p>
+            <h3 class="panel__title" data-en="One ceiling light is not lighting design.">
+              یک لامپ وسط سقف، نورپردازی نیست.
+            </h3>
+            <p class="panel__body" data-en="A room needs three layers: a general wash you barely notice, task light exactly where hands work, and accent light that gives the space depth after dark. We specify the temperature and the beam angle of each, not just the fitting.">
+              هر فضا سه لایه نور می‌خواهد: نور عمومی که اصلاً به چشم نمی‌آید، نور کار دقیقاً جایی که دست کار می‌کند، و نور تأکیدی که بعد از تاریکی به فضا عمق می‌دهد. ما دمای رنگ و زاویهٔ پخش هرکدام را مشخص می‌کنیم، نه فقط مدل چراغ را.
+            </p>
+            <ul class="panel__list">
+              <li data-en="Three layers: ambient, task, accent">سه لایه: عمومی، کار، تأکیدی</li>
+              <li data-en="2700–4000 K chosen per room, not per catalogue">۲۷۰۰ تا ۴۰۰۰ کلوین، بر اساس فضا نه کاتالوگ</li>
+              <li data-en="Dimming scenes for day and night">سناریوی دیمر برای روز و شب</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ─── 03 colour ─── -->
+        <article class="step" data-step="2">
+          <div class="scene scene--colour">
+            <div class="swatchwall">
+              <div class="band" style="--band:#B9A793"></div>
+              <div class="band" style="--band:#8E9C93"></div>
+              <div class="band" style="--band:#6E7A8A"></div>
+              <div class="band" style="--band:#A8695C"></div>
+              <div class="band" style="--band:#2F2A26"></div>
+            </div>
+            <div class="palettebar">
+              <span style="--chip:#B9A793"></span><span style="--chip:#8E9C93"></span>
+              <span style="--chip:#6E7A8A"></span><span style="--chip:#A8695C"></span>
+              <span style="--chip:#2F2A26"></span>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="panel__kicker" data-en="Step 03 — Colour">مرحلهٔ ۰۳ — رنگ</p>
+            <h3 class="panel__title" data-en="We paint the sample on your wall, not on a card.">
+              نمونهٔ رنگ را روی دیوار شما می‌زنیم، نه روی کارت.
+            </h3>
+            <p class="panel__body" data-en="Colour is the cheapest thing to change and the most expensive to get wrong. Every palette is trialled as a large patch on the actual wall and looked at three times — morning, afternoon and under your own lamps.">
+              رنگ ارزان‌ترین چیزی است که می‌شود عوض کرد و گران‌ترین چیزی که می‌شود اشتباه گرفت. هر پالت را به شکل یک لکهٔ بزرگ روی دیوار واقعی امتحان می‌کنیم و سه بار نگاهش می‌کنیم — صبح، عصر، و زیر چراغ‌های خودتان.
+            </p>
+            <ul class="panel__list">
+              <li data-en="Large trial patches, never a printed card">لکهٔ آزمایشی بزرگ، نه کارت چاپی</li>
+              <li data-en="Checked at three times of day">بررسی در سه زمان از شبانه‌روز</li>
+              <li data-en="Sheen and finish specified with the colour">درجهٔ براقیت و پرداخت، همراه با خود رنگ</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ─── 04 material ─── -->
+        <article class="step" data-step="3">
+          <div class="scene scene--material">
+            <div class="samples">
+              <div class="sample sample--oak"><span data-en="Oak">بلوط</span></div>
+              <div class="sample sample--stone"><span data-en="Travertine">تراورتن</span></div>
+              <div class="sample sample--brass"><span data-en="Brushed brass">برنج مات</span></div>
+              <div class="sample sample--linen"><span data-en="Linen">کتان</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="panel__kicker" data-en="Step 04 — Materials">مرحلهٔ ۰۴ — متریال و بافت</p>
+            <h3 class="panel__title" data-en="Texture is what a room feels like before you touch it.">
+              بافت، همان چیزی است که فضا پیش از لمس شدن حس می‌شود.
+            </h3>
+            <p class="panel__body" data-en="Matte swallows light, gloss throws it back, timber warms it and stone cools it. We choose finishes for how they behave under the light we just designed — and for whether they will still look good after four years of a family living on them.">
+              مات، نور را می‌بلعد؛ براق، آن را برمی‌گرداند؛ چوب گرمش می‌کند و سنگ سردش. پرداخت‌ها را بر اساس رفتارشان زیر همان نوری که طراحی کرده‌ایم انتخاب می‌کنیم — و بر اساس اینکه بعد از چهار سال زندگیِ یک خانواده روی‌شان، هنوز خوب به نظر برسند.
+            </p>
+            <ul class="panel__list">
+              <li data-en="Finishes tested under the specified lighting">پرداخت‌ها، آزموده زیر نورِ تعیین‌شده</li>
+              <li data-en="Wear, cleaning and cost weighed together">دوام، نظافت و هزینه، با هم سنجیده</li>
+              <li data-en="A physical sample board you keep">تابلوی نمونهٔ فیزیکی، که پیش خودتان می‌ماند</li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- ─── 05 build ─── -->
+        <article class="step" data-step="4">
+          <div class="scene scene--build">
+            <div class="site">
+              <div class="site__before"></div>
+              <div class="site__after"></div>
+              <div class="site__wipe"></div>
+              <div class="site__meter"><span class="site__fill"></span><span class="site__pct">۰٪</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="panel__kicker" data-en="Step 05 — Build &amp; delivery">مرحلهٔ ۰۵ — اجرا و بازسازی</p>
+            <h3 class="panel__title" data-en="The drawing is the easy half.">
+              نقشه، نیمهٔ آسان کار است.
+            </h3>
+            <p class="panel__body" data-en="We run the site: one schedule, one point of contact, and a weekly photo report so you can see progress without standing in the dust. The room you approved is the room you get.">
+              کارگاه با ماست: یک زمان‌بندی، یک نفر پاسخگو، و گزارش تصویری هفتگی تا بدون ایستادن در گرد و خاک، پیشرفت را ببینید. همان فضایی که تأیید کرده‌اید، همان چیزی است که تحویل می‌گیرید.
+            </p>
+            <ul class="panel__list">
+              <li data-en="One schedule, one point of contact">یک زمان‌بندی، یک نفر پاسخگو</li>
+              <li data-en="Weekly photo report from site">گزارش تصویری هفتگی از کارگاه</li>
+              <li data-en="Snagging list closed before handover">رفع نواقص، پیش از تحویل کلید</li>
+            </ul>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ 4. SIGNATURE — 16:30, the demo ═══════════════ -->
 <section class="section light" id="light" data-hour="1630" data-anim="scale-up">
   <header class="section__head section__head--center">
     <p class="eyebrow"><span class="eyebrow__time">۱۶:۳۰</span><span class="eyebrow__label" data-en="Afternoon" data-en-time="16:30">عصر</span></p>
@@ -185,7 +372,7 @@
 </section>
 
 
-<!-- ═══════════════ 4. STORY — 18:50, golden hour ═══════════════ -->
+<!-- ═══════════════ 5. STORY — 18:50, golden hour ═══════════════ -->
 <section class="section story" id="story" data-hour="1850" data-anim="slide-start">
   <header class="section__head">
     <p class="eyebrow"><span class="eyebrow__time">۱۸:۵۰</span><span class="eyebrow__label" data-en="Golden hour" data-en-time="18:50">ساعت طلایی</span></p>
@@ -227,7 +414,7 @@
 </section>
 
 
-<!-- ═══════════════ 5. CONSULTATION — 21:15, lamp light ═══════════════ -->
+<!-- ═══════════════ 6. CONSULTATION — 21:15, lamp light ═══════════════ -->
 <section class="section consult" id="consult" data-hour="2115" data-anim="fade-up">
   <div class="consult__grid">
 
@@ -300,7 +487,7 @@
 </section>
 
 
-<!-- ═══════════════ 6. ABOUT & CONTACT — 22:40, night ═══════════════ -->
+<!-- ═══════════════ 7. ABOUT & CONTACT — 22:40, night ═══════════════ -->
 <section class="section about" id="about" data-hour="2240" data-anim="fade-up">
   <div class="about__grid">
 
