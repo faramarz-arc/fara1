@@ -20,8 +20,8 @@ def read(rel: str) -> str:
     return (ROOT / rel).read_text(encoding="utf-8")
 
 
-def font_data_uri() -> str:
-    raw = (ROOT / "fonts/Vazirmatn-Variable.woff2").read_bytes()
+def font_data_uri(rel: str) -> str:
+    raw = (ROOT / rel).read_bytes()
     return "data:font/woff2;base64," + base64.b64encode(raw).decode("ascii")
 
 
@@ -29,19 +29,16 @@ def main() -> None:
     html = read("index.html")
     css = read("css/style.css")
 
-    # font first: the @font-face url is relative to css/, which stops existing
-    # once the stylesheet is inlined
-    css = re.sub(
-        r"src:\s*url\('\.\./fonts/Vazirmatn-Variable\.woff2'\)[^;]*;",
-        f"src: url('{font_data_uri()}') format('woff2');",
-        css,
-        count=1,
-    )
+    # Every @font-face url is relative to css/, which stops existing once the
+    # stylesheet is inlined — so embed each referenced file, whichever they are.
+    def embed(match: "re.Match[str]") -> str:
+        rel = "fonts/" + match.group(1)
+        return f"url('{font_data_uri(rel)}') format('woff2')"
 
-    html = html.replace(
-        '<link rel="preload" href="fonts/Vazirmatn-Variable.woff2" as="font" type="font/woff2" crossorigin>\n',
-        "",
-    )
+    css = re.sub(r"url\('\.\./fonts/([^']+\.woff2)'\)\s*format\([^)]*\)", embed, css)
+
+    # and drop the now-dangling preloads for those same files
+    html = re.sub(r'\s*<link rel="preload" href="fonts/[^"]+"[^>]*>', "", html)
     html = html.replace(
         '<link rel="stylesheet" href="css/style.css">',
         f"<style>\n{css}\n</style>",

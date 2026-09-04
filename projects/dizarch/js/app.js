@@ -397,11 +397,11 @@ function initForm() {
    the flat means editing five rows of data. */
 
 const ROOMS = [
-  { id: 'living',  x: 0, y: 0, w: 6.4, h: 5.2, fa: 'نشیمن',     en: 'Living',   paint: '#B9A793', material: 'wood',    lamps: [[0.5, 0.42], [0.78, 0.72]] },
-  { id: 'kitchen', x: 6.4, y: 0, w: 5.2, h: 5.2, fa: 'آشپزخانه', en: 'Kitchen',  paint: '#8E9C93', material: 'stone',   lamps: [[0.5, 0.3]] },
-  { id: 'bed1',    x: 0, y: 5.2, w: 5.0, h: 4.4, fa: 'خواب اصلی', en: 'Main bed', paint: '#6E7A8A', material: 'wood',    lamps: [[0.5, 0.55]] },
-  { id: 'bed2',    x: 5.0, y: 5.2, w: 3.8, h: 4.4, fa: 'خواب دوم', en: 'Bedroom 2', paint: '#A8695C', material: 'textile', lamps: [[0.5, 0.5]] },
-  { id: 'bath',    x: 8.8, y: 5.2, w: 2.8, h: 4.4, fa: 'سرویس',   en: 'Bathroom', paint: '#7C9AA6', material: 'tile',    lamps: [[0.5, 0.4]] }
+  { id: 'living',  x: 0, y: 0, w: 6.4, h: 5.2, fa: 'نشیمن',     en: 'Living',   paint: '#C7B49B', material: 'wood',    lamps: [[0.5, 0.42], [0.78, 0.72]] },
+  { id: 'kitchen', x: 6.4, y: 0, w: 5.2, h: 5.2, fa: 'آشپزخانه', en: 'Kitchen',  paint: '#7E8F80', material: 'stone',   lamps: [[0.5, 0.3]] },
+  { id: 'bed1',    x: 0, y: 5.2, w: 5.0, h: 4.4, fa: 'خواب اصلی', en: 'Main bed', paint: '#5C6B7C', material: 'wood',    lamps: [[0.5, 0.55]] },
+  { id: 'bed2',    x: 5.0, y: 5.2, w: 3.8, h: 4.4, fa: 'خواب دوم', en: 'Bedroom 2', paint: '#A85F4A', material: 'textile', lamps: [[0.5, 0.5]] },
+  { id: 'bath',    x: 8.8, y: 5.2, w: 2.8, h: 4.4, fa: 'سرویس',   en: 'Bathroom', paint: '#5B7C8A', material: 'tile',    lamps: [[0.5, 0.4]] }
 ];
 
 const WALL_H = 2.6;

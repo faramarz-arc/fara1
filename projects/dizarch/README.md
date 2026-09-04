@@ -69,16 +69,35 @@ Implementation notes worth knowing before you edit it:
 - Below 60rem and under `prefers-reduced-motion`, the pin is dropped and the
   five steps stack as ordinary sections with the finished flat shown once.
 
-Palette — two opposed lights, never a single accent:
+## Palette
+
+Taken from the `ui-ux-pro-max` "Luxury/Premium Brand" entry, three-layer tokens
+(primitives → semantic → component) in `css/style.css`.
 
 | Token | Hex | Role |
 |---|---|---|
-| `--ink` | `#14110F` | umber black, warm-biased |
-| `--shadow` | `#241D18` | where light does not reach |
-| `--stone` | `#8B8279` | mid plaster, secondary text |
-| `--lit` | `#EFE7DA` | plaster with light on it |
-| `--lamp` | `#E8A33D` | warm light, 2700 K |
-| `--north` | `#7C9AA6` | cool light, 6500 K |
+| `--plaster-100` | `#F5F0E9` | the gallery ground the page sits on |
+| `--plaster-50` | `#FCFAF7` | lit surfaces, cards, inputs |
+| `--ink-900` | `#1C1917` | text, and the dark sections' walls |
+| `--ink-950` | `#12100E` | the two dark sections |
+| `--gold-600` | `#A16207` | accent, CTAs, active state |
+| `--north-500` | `#5B7C8A` | the cool counter-light |
+
+The chrome stays quiet; the **colour** comes from the work — the room palette
+(`--room-beige/sage/slate/clay/ink`) appears at full strength in the model's
+colour layer, the swatches under the hero words, and the colour lab.
+
+Two sections are dark on purpose (`class="on-dark"`, which re-points the
+semantic tokens rather than duplicating rules): you cannot show what light
+does to a room on a white page. That alternation is the design idea.
+
+## Type
+
+- **Vazirmatn** — all Persian, and Latin body text. Variable, 100–900.
+- **Playfair Display** — Latin display only, applied under `html[lang="en"]`.
+  Persian headings stay in Vazirmatn, where faking a Latin serif helps nobody.
+
+Both ship with the site; `build.py` inlines every `@font-face` file it finds.
 
 ## Before it goes live
 

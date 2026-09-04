@@ -1,19 +1,21 @@
 /* ════════════════════════════════════════════════════════════════
    DizArch — interior design studio, specialists in colour and light
    ────────────────────────────────────────────────────────────────
-   Design thesis: the studio's expertise is light, so the page is lit.
-   One light source travels down the page as you scroll and its colour
-   temperature moves through the day — cool north light at the top,
-   golden hour at the story, lamp light at the contact form. Section
-   eyebrows are clock times, because the sequence is a real one.
+   Direction, from ui-ux-pro-max:
+     palette   "Luxury/Premium Brand" — warm gallery ground #FAFAF9,
+               near-black #1C1917, gold #A16207
+     landing   "Portfolio Grid" — neutral ground, let the work shine
+     type      the catalogue's interior-design pairing is a display serif
+               over a clean sans: Playfair Display (Latin) + Vazirmatn
+               (Persian, and Latin body)
 
-   Palette — two opposed lights, never a single accent:
-     --ink      #14110F  umber black (warm-biased, not neutral)
-     --shadow   #241D18  where light does not reach
-     --stone    #8B8279  mid plaster
-     --lit      #EFE7DA  plaster with light on it
-     --lamp     #E8A33D  warm light  (2700K)
-     --north    #7C9AA6  cool light  (6500K)
+   The studio sells colour, so the chrome stays quiet and the COLOUR comes
+   from the work itself — the room palettes, the swatches, the materials.
+   Two sections go dark on purpose: you cannot show what light does to a
+   room on a white page. That light/dark alternation is the design idea,
+   not decoration.
+
+   Three-layer tokens: primitives → semantic → component.
    ════════════════════════════════════════════════════════════════ */
 
 @font-face {
@@ -24,40 +26,113 @@
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('../fonts/playfair-display-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('../fonts/playfair-display-latin-700-normal.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
-  --ink:      #14110F;
-  --shadow:   #241D18;
-  --shadow-2: #322922;
-  --stone:    #8B8279;
-  --stone-lo: #6A625A;
-  --lit:      #EFE7DA;
-  --lit-dim:  #C9C0B4;
-  --lamp:     #E8A33D;
-  --north:    #7C9AA6;
-  --danger:   #E0705F;
+  /* ── layer 1: primitives ─────────────────────────────────── */
+  --plaster-50:  #FCFAF7;   /* lit wall */
+  --plaster-100: #F5F0E9;   /* gallery ground */
+  --plaster-200: #EAE3D9;
+  --plaster-300: #D8CEC1;
+  --stone-400:   #A89E92;
+  --stone-500:   #7C7268;
+  --stone-600:   #57504A;
+  --ink-800:     #2A241F;
+  --ink-900:     #1C1917;   /* catalogue primary */
+  --ink-950:     #12100E;
+
+  --gold-500:    #C08A2E;
+  --gold-600:    #A16207;   /* catalogue accent */
+  --gold-700:    #7C4A05;
+  --north-500:   #5B7C8A;   /* the cool counter-light */
+  --north-700:   #3A5460;
+  --red-600:     #B3452F;
+
+  /* the studio's working palette — these are the colour, and they appear
+     at full strength in the work, never diluted into the chrome */
+  --room-beige:  #C7B49B;
+  --room-sage:   #7E8F80;
+  --room-slate:  #5C6B7C;
+  --room-clay:   #A85F4A;
+  --room-ink:    #2E2A28;
+
+  /* ── layer 2: semantic ───────────────────────────────────── */
+  --bg:            var(--plaster-100);
+  --bg-raised:     var(--plaster-50);
+  --bg-sunk:       var(--plaster-200);
+  --fg:            var(--ink-900);
+  --fg-muted:      var(--stone-600);
+  --fg-subtle:     var(--stone-500);
+  --line:          var(--plaster-300);
+  --line-strong:   var(--stone-400);
+  --accent:        var(--gold-600);
+  --accent-hover:  var(--gold-700);
+  --on-accent:     #FFFFFF;
+  --cool:          var(--north-500);
+  --danger:        var(--red-600);
+
+  /* dark surfaces, used only where light must be shown */
+  --dark-bg:       var(--ink-950);
+  --dark-raised:   var(--ink-800);
+  --dark-fg:       var(--plaster-50);
+  --dark-fg-muted: #A79C8E;
+  --dark-line:     rgb(252 250 247 / 0.14);
+  --dark-accent:   var(--gold-500);
 
   /* the travelling light — js writes these */
   --light-x: 62%;
   --light-y: 18%;
-  --light-hue: var(--north);
-  --light-strength: 0.30;
+  --light-hue: var(--north-500);
+  --light-strength: 0.18;
 
+  /* ── type ────────────────────────────────────────────────── */
   --font: 'Vazirmatn', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Playfair Display', 'Vazirmatn', Georgia, serif;
 
-  --step--1: clamp(0.78rem, 0.74rem + 0.2vw, 0.88rem);
-  --step-0:  clamp(1rem, 0.95rem + 0.25vw, 1.13rem);
-  --step-1:  clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
-  --step-2:  clamp(1.6rem, 1.35rem + 1.2vw, 2.5rem);
-  --step-3:  clamp(2.1rem, 1.6rem + 2.4vw, 4rem);
-  --step-4:  clamp(2.8rem, 1.7rem + 5vw, 7rem);
+  --step--1: clamp(0.8rem, 0.76rem + 0.2vw, 0.9rem);
+  --step-0:  clamp(1.02rem, 0.97rem + 0.25vw, 1.18rem);
+  --step-1:  clamp(1.25rem, 1.12rem + 0.6vw, 1.6rem);
+  --step-2:  clamp(1.7rem, 1.35rem + 1.5vw, 2.9rem);
+  --step-3:  clamp(2rem, 1.5rem + 2.2vw, 3.6rem);
+  --step-4:  clamp(2.6rem, 1.6rem + 3.6vw, 5.2rem);
 
-  --gap:   clamp(1rem, 2.5vw, 2rem);
-  --bleed: clamp(1.25rem, 6vw, 7rem);
-  --rhythm: clamp(5rem, 12vh, 10rem);
+  /* density dial 3/10 — spacious */
+  --gap:    clamp(1.25rem, 3vw, 2.5rem);
+  --bleed:  clamp(1.5rem, 7vw, 9rem);
+  --rhythm: clamp(6rem, 16vh, 13rem);
 
-  --edge: 1px solid rgb(239 231 218 / 0.12);
+  --edge: 1px solid var(--line);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* A section can opt into the dark surface; everything inside it then
+   resolves against dark tokens instead of duplicating rules. */
+.on-dark {
+  --bg: var(--dark-bg);
+  --bg-raised: var(--dark-raised);
+  --bg-sunk: var(--ink-900);
+  --fg: var(--dark-fg);
+  --fg-muted: var(--dark-fg-muted);
+  --fg-subtle: var(--stone-400);
+  --line: var(--dark-line);
+  --line-strong: rgb(252 250 247 / 0.28);
+  --accent: var(--dark-accent);
+  --edge: 1px solid var(--dark-line);
+  background: var(--bg);
+  color: var(--fg);
 }
 
 /* ── reset ───────────────────────────────────────────────────── */
@@ -69,8 +144,8 @@ img, video { display: block; max-width: 100%; height: auto; }
 button, input, select, textarea { font: inherit; color: inherit; }
 
 body {
-  background: var(--ink);
-  color: var(--lit-dim);
+  background: var(--bg);
+  color: var(--fg);
   font-family: var(--font);
   font-size: var(--step-0);
   font-weight: 300;
@@ -104,8 +179,8 @@ body {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.5;
-  mix-blend-mode: overlay;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E");
 }
 
@@ -117,8 +192,8 @@ main, .masthead, .footer { position: relative; z-index: 2; }
   inset-block-start: 0;
   inset-inline-start: 0;
   z-index: 99;
-  background: var(--lit);
-  color: var(--ink);
+  background: var(--fg);
+  color: var(--bg);
   padding: 0.75rem 1.25rem;
   transform: translateY(-150%);
   transition: transform 0.2s var(--ease);
@@ -135,7 +210,7 @@ main, .masthead, .footer { position: relative; z-index: 2; }
   align-items: center;
   gap: var(--gap);
   padding: 1rem var(--bleed);
-  background: color-mix(in oklab, var(--ink) 72%, transparent);
+  background: color-mix(in oklab, var(--bg) 72%, transparent);
   backdrop-filter: blur(14px);
   border-block-end: var(--edge);
 }
@@ -144,15 +219,15 @@ main, .masthead, .footer { position: relative; z-index: 2; }
   align-items: center;
   gap: 0.6rem;
   text-decoration: none;
-  color: var(--lit);
+  color: var(--fg);
 }
 .wordmark__mark {
   width: 0.9rem;
   height: 0.9rem;
   border-radius: 50%;
-  background: var(--lamp);
-  box-shadow: 0 0 0 4px color-mix(in oklab, var(--lamp) 22%, transparent),
-              0 0 22px 2px color-mix(in oklab, var(--lamp) 55%, transparent);
+  background: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 22%, transparent),
+              0 0 22px 2px color-mix(in oklab, var(--accent) 55%, transparent);
 }
 .wordmark__text {
   font-weight: 800;
@@ -167,13 +242,13 @@ main, .masthead, .footer { position: relative; z-index: 2; }
   font-size: var(--step--1);
 }
 .masthead__nav a {
-  color: var(--stone);
+  color: var(--fg-muted);
   text-decoration: none;
   padding-block: 0.35rem;
   border-block-end: 1px solid transparent;
   transition: color 0.25s, border-color 0.25s;
 }
-.masthead__nav a:hover { color: var(--lit); border-block-end-color: var(--lamp); }
+.masthead__nav a:hover { color: var(--fg); border-block-end-color: var(--accent); }
 .masthead__side { display: flex; align-items: center; gap: 0.75rem; }
 
 .langtoggle {
@@ -186,22 +261,22 @@ main, .masthead, .footer { position: relative; z-index: 2; }
   padding: 0.3rem 0.7rem;
   cursor: pointer;
   font-size: var(--step--1);
-  color: var(--stone);
+  color: var(--fg-muted);
   transition: border-color 0.25s, color 0.25s;
 }
-.langtoggle:hover { color: var(--lit); border-color: var(--lamp); }
-.langtoggle__on  { color: var(--lit); font-weight: 600; }
+.langtoggle:hover { color: var(--fg); border-color: var(--accent); }
+.langtoggle__on  { color: var(--fg); font-weight: 600; }
 .langtoggle__off { opacity: 0.55; }
 
 /* ── buttons & quiet links ───────────────────────────────────── */
 .btn {
-  --btn-bg: var(--lamp);
+  --btn-bg: var(--accent);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   background: var(--btn-bg);
-  color: #241503;
+  color: var(--on-accent);
   font-weight: 600;
   text-decoration: none;
   border: 0;
@@ -212,7 +287,8 @@ main, .masthead, .footer { position: relative; z-index: 2; }
 }
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 34px -12px color-mix(in oklab, var(--lamp) 80%, transparent);
+  background: var(--accent-hover);
+  box-shadow: 0 14px 30px -14px color-mix(in oklab, var(--accent) 70%, transparent);
 }
 .btn--sm { padding: 0.45rem 0.95rem; font-size: var(--step--1); }
 .btn--lg { padding: 0.95rem 2rem; font-size: var(--step-1); }
@@ -220,16 +296,16 @@ main, .masthead, .footer { position: relative; z-index: 2; }
 .btn[disabled] { opacity: 0.55; cursor: progress; transform: none; box-shadow: none; }
 
 .link-quiet {
-  color: var(--stone);
+  color: var(--fg-muted);
   text-decoration: none;
-  border-block-end: 1px solid color-mix(in oklab, var(--stone) 45%, transparent);
+  border-block-end: 1px solid color-mix(in oklab, var(--fg-muted) 45%, transparent);
   padding-block-end: 2px;
   transition: color 0.25s, border-color 0.25s;
 }
-.link-quiet:hover { color: var(--lit); border-block-end-color: var(--lit); }
+.link-quiet:hover { color: var(--fg); border-block-end-color: var(--fg); }
 
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--lamp);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -244,11 +320,11 @@ main, .masthead, .footer { position: relative; z-index: 2; }
   gap: 0.7rem;
   font-size: var(--step--1);
   letter-spacing: 0.08em;
-  color: var(--stone);
+  color: var(--fg-muted);
   margin-block-end: 1.5rem;
 }
 .eyebrow__time {
-  color: var(--lamp);
+  color: var(--accent);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
@@ -257,11 +333,11 @@ main, .masthead, .footer { position: relative; z-index: 2; }
   display: inline-block;
   inline-size: 2.5rem;
   block-size: 1px;
-  background: linear-gradient(to left, transparent, var(--lamp));
+  background: linear-gradient(to left, transparent, var(--accent));
   margin-inline-start: 0.7rem;
   vertical-align: middle;
 }
-html[dir="ltr"] .eyebrow__time::after { background: linear-gradient(to right, transparent, var(--lamp)); }
+html[dir="ltr"] .eyebrow__time::after { background: linear-gradient(to right, transparent, var(--accent)); }
 
 .section__head { max-inline-size: 62ch; margin-block-end: clamp(2.5rem, 6vh, 5rem); }
 .section__head--center { margin-inline: auto; text-align: center; }
@@ -272,13 +348,13 @@ html[dir="ltr"] .eyebrow__time::after { background: linear-gradient(to right, tr
   font-weight: 800;
   line-height: 1.18;
   letter-spacing: -0.02em;
-  color: var(--lit);
+  color: var(--fg);
   text-wrap: balance;
 }
 .section__lead {
   margin-block-start: 1.25rem;
   font-size: var(--step-1);
-  color: var(--stone);
+  color: var(--fg-muted);
   max-inline-size: 60ch;
 }
 .section__head--center .section__lead { margin-inline: auto; }
@@ -299,24 +375,37 @@ html[dir="ltr"] .eyebrow__time::after { background: linear-gradient(to right, tr
 }
 .hero__title {
   font-size: var(--step-4);
-  font-weight: 900;
-  line-height: 1.08;
+  font-weight: 800;
+  line-height: 1.06;
   letter-spacing: -0.035em;
-  color: var(--lit);
+  color: var(--fg);
   text-wrap: balance;
 }
+/* In English the display serif takes over; Persian stays in Vazirmatn,
+   where a Latin serif has no equivalent worth faking. */
+html[lang="en"] .hero__title,
+html[lang="en"] .section__title,
+html[lang="en"] .panel__title,
+html[lang="en"] .service__name { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.01em; }
+html[lang="en"] .wordmark__text { font-family: var(--font-display); letter-spacing: 0.2em; }
 /* light falls across the headline, warm at the top edge */
 .hero__title em {
+  --swatch: var(--room-beige);
   font-style: normal;
-  background: linear-gradient(160deg, var(--lamp) 8%, var(--lit) 78%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--accent);
+  padding-inline: 0.1em;
+  background-image: linear-gradient(var(--swatch), var(--swatch));
+  background-repeat: no-repeat;
+  background-size: 100% 0.34em;
+  background-position: 0 88%;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
+.hero__title em:nth-of-type(2) { --swatch: var(--room-sage); }
 .hero__lead {
   margin-block-start: 1.75rem;
   font-size: var(--step-1);
-  color: var(--stone);
+  color: var(--fg-muted);
   max-inline-size: 46ch;
 }
 .hero__actions {
@@ -335,12 +424,9 @@ html[dir="ltr"] .eyebrow__time::after { background: linear-gradient(to right, tr
   border-radius: 40vw 40vw 3px 3px;   /* arched opening */
   overflow: hidden;
   background:
-    linear-gradient(190deg,
-      color-mix(in oklab, var(--lit) 26%, var(--shadow)) 0%,
-      var(--shadow) 55%,
-      var(--ink) 100%);
-  box-shadow: inset 0 0 90px 20px rgb(0 0 0 / 0.55);
-  border: 1px solid rgb(239 231 218 / 0.16);
+    linear-gradient(195deg, var(--plaster-50) 0%, var(--plaster-200) 48%, var(--plaster-300) 100%);
+  box-shadow: inset 0 -40px 70px -30px rgb(28 25 23 / 0.28);
+  border: 1px solid var(--line);
 }
 .aperture__media { inline-size: 100%; block-size: 100%; object-fit: cover; }
 .aperture__empty {
@@ -361,16 +447,14 @@ html[dir="ltr"] .eyebrow__time::after { background: linear-gradient(to right, tr
   block-size: 78%;
   border-radius: 50%;
   background: radial-gradient(closest-side,
-    color-mix(in oklab, var(--lit) 82%, transparent),
-    color-mix(in oklab, var(--lit) 28%, transparent) 55%,
-    transparent);
+    rgb(255 252 246 / 0.95), rgb(255 246 228 / 0.5) 55%, transparent);
   filter: blur(26px);
 }
 .aperture__hint {
   position: relative;
   font-size: var(--step--1);
-  color: var(--stone-lo);
-  background: color-mix(in oklab, var(--ink) 70%, transparent);
+  color: var(--fg-subtle);
+  background: color-mix(in oklab, var(--bg) 70%, transparent);
   padding: 0.4rem 0.8rem;
   border-radius: 2px;
   direction: ltr;
@@ -378,7 +462,7 @@ html[dir="ltr"] .eyebrow__time::after { background: linear-gradient(to right, tr
 .aperture__caption {
   margin-block-start: 1rem;
   font-size: var(--step--1);
-  color: var(--stone-lo);
+  color: var(--fg-subtle);
   line-height: 1.6;
 }
 
@@ -387,16 +471,16 @@ html[dir="ltr"] .eyebrow__time::after { background: linear-gradient(to right, tr
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  color: var(--stone-lo);
+  color: var(--fg-subtle);
   font-size: var(--step--1);
 }
 .scrollcue__line {
   inline-size: 3.5rem;
   block-size: 1px;
-  background: linear-gradient(to left, var(--lamp), transparent);
+  background: linear-gradient(to left, var(--accent), transparent);
   animation: sweep 2.6s var(--ease) infinite;
 }
-html[dir="ltr"] .scrollcue__line { background: linear-gradient(to right, var(--lamp), transparent); }
+html[dir="ltr"] .scrollcue__line { background: linear-gradient(to right, var(--accent), transparent); }
 @keyframes sweep { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
 
 /* ═══ 2. services ════════════════════════════════════════════ */
@@ -404,24 +488,25 @@ html[dir="ltr"] .scrollcue__line { background: linear-gradient(to right, var(--l
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
   gap: 1px;
-  background: rgb(239 231 218 / 0.12);
+  background: var(--line);
   border-block: var(--edge);
 }
 .service {
-  background: var(--ink);
+  background: var(--bg);
   padding: clamp(1.75rem, 4vw, 3.25rem);
   transition: background-color 0.5s var(--ease);
 }
-.service:hover { background: var(--shadow); }
+.service:hover { background: var(--bg-raised); }
+.service { background: var(--bg); }
 .service__name {
   font-size: var(--step-2);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--lit);
+  color: var(--fg);
 }
 .service__blurb {
   margin-block: 1rem 2rem;
-  color: var(--stone);
+  color: var(--fg-muted);
   max-inline-size: 40ch;
 }
 .service__list { display: grid; gap: 0.9rem; }
@@ -431,7 +516,7 @@ html[dir="ltr"] .scrollcue__line { background: linear-gradient(to right, var(--l
   gap: 0.8rem;
   padding-block-end: 0.9rem;
   border-block-end: var(--edge);
-  color: var(--lit-dim);
+  color: var(--fg);
   font-size: var(--step-0);
 }
 .service__list li:last-child { border-block-end: 0; padding-block-end: 0; }
@@ -441,12 +526,12 @@ html[dir="ltr"] .scrollcue__line { background: linear-gradient(to right, var(--l
   inline-size: 0.4rem;
   block-size: 0.4rem;
   border-radius: 50%;
-  background: var(--north);
-  box-shadow: 0 0 10px color-mix(in oklab, var(--north) 70%, transparent);
+  background: var(--cool);
+  box-shadow: 0 0 10px color-mix(in oklab, var(--cool) 70%, transparent);
 }
 .service:nth-child(2) .service__list li::before {
-  background: var(--lamp);
-  box-shadow: 0 0 10px color-mix(in oklab, var(--lamp) 70%, transparent);
+  background: var(--accent);
+  box-shadow: 0 0 10px color-mix(in oklab, var(--accent) 70%, transparent);
 }
 
 /* ═══ 3. the light lab (signature interaction) ═══════════════ */
@@ -460,7 +545,7 @@ html[dir="ltr"] .scrollcue__line { background: linear-gradient(to right, var(--l
 }
 .lab__room { position: relative; }
 .lab__wall {
-  --paint: #CFC3B0;
+  --paint: #C7B49B;
   --beam: #FFB765;
   position: relative;
   aspect-ratio: 4 / 3;
@@ -496,24 +581,24 @@ html[dir="ltr"] .scrollcue__line { background: linear-gradient(to right, var(--l
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  background: color-mix(in oklab, var(--ink) 84%, transparent);
+  background: color-mix(in oklab, var(--bg) 84%, transparent);
   border: var(--edge);
   padding: 0.6rem 1rem;
   border-radius: 2px;
 }
 .lab__kelvin {
-  color: var(--lit);
+  color: var(--fg);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
-.lab__mood { font-size: var(--step--1); color: var(--stone); }
+.lab__mood { font-size: var(--step--1); color: var(--fg-muted); }
 
 .lab__controls { display: grid; gap: 2.5rem; }
 
 .field--range label {
   display: block;
   margin-block-end: 1rem;
-  color: var(--lit);
+  color: var(--fg);
   font-weight: 600;
 }
 input[type="range"] {
@@ -544,31 +629,31 @@ input[type="range"]::-webkit-slider-thumb {
   inline-size: 1.5rem;
   block-size: 1.5rem;
   border-radius: 50%;
-  background: var(--lit);
-  border: 3px solid var(--ink);
-  box-shadow: 0 0 0 1px var(--lit), 0 4px 16px rgb(0 0 0 / 0.6);
+  background: var(--fg);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--fg), 0 4px 16px rgb(0 0 0 / 0.6);
 }
 input[type="range"]::-moz-range-thumb {
   inline-size: 1.5rem;
   block-size: 1.5rem;
   border-radius: 50%;
-  background: var(--lit);
-  border: 3px solid var(--ink);
-  box-shadow: 0 0 0 1px var(--lit);
+  background: var(--fg);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--fg);
 }
 .field__ends {
   display: flex;
   justify-content: space-between;
   margin-block-start: 0.6rem;
   font-size: var(--step--1);
-  color: var(--stone-lo);
+  color: var(--fg-subtle);
   direction: ltr;
 }
 /* the track is always LTR, so its end labels must be too */
 
 .chips { border: 0; }
 .chips legend {
-  color: var(--lit);
+  color: var(--fg);
   font-weight: 600;
   margin-block-end: 1rem;
   padding: 0;
@@ -584,7 +669,7 @@ input[type="range"]::-moz-range-thumb {
   border-radius: 100px;
   cursor: pointer;
   font-size: var(--step--1);
-  color: var(--stone);
+  color: var(--fg-muted);
   transition: border-color 0.25s, color 0.25s, background-color 0.25s;
 }
 .chip input { position: absolute; opacity: 0; pointer-events: none; }
@@ -595,13 +680,13 @@ input[type="range"]::-moz-range-thumb {
   background: var(--chip);
   border: 1px solid rgb(0 0 0 / 0.3);
 }
-.chip:hover { color: var(--lit); border-color: var(--stone); }
+.chip:hover { color: var(--fg); border-color: var(--fg-muted); }
 .chip:has(input:checked) {
-  color: var(--ink);
-  background: var(--lit);
-  border-color: var(--lit);
+  color: var(--bg);
+  background: var(--fg);
+  border-color: var(--fg);
 }
-.chip:has(input:focus-visible) { outline: 2px solid var(--lamp); outline-offset: 3px; }
+.chip:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 /* ═══ 4. story ═══════════════════════════════════════════════ */
 .story__body {
@@ -610,13 +695,13 @@ input[type="range"]::-moz-range-thumb {
   gap: 1.6rem;
   font-size: var(--step-1);
   line-height: 1.9;
-  color: var(--lit-dim);
+  color: var(--fg);
 }
 .story__body p:first-child {
   font-size: var(--step-2);
   line-height: 1.55;
   font-weight: 500;
-  color: var(--lit);
+  color: var(--fg);
 }
 
 .figures {
@@ -629,7 +714,7 @@ input[type="range"]::-moz-range-thumb {
 }
 .figure dt {
   font-size: var(--step--1);
-  color: var(--stone);
+  color: var(--fg-muted);
   order: 2;
   margin-block-start: 0.4rem;
 }
@@ -640,13 +725,14 @@ input[type="range"]::-moz-range-thumb {
   font-size: var(--step-3);
   font-weight: 800;
   line-height: 1;
-  color: var(--lit);
+  color: var(--fg);
   font-variant-numeric: tabular-nums;
 }
-.figure__suffix { color: var(--lamp); }
+.figure__suffix { color: var(--accent); }
 
 /* ═══ 5. consultation form ═══════════════════════════════════ */
-.consult { background: var(--shadow); border-block: var(--edge); }
+.consult { background: var(--bg-raised); border-block: var(--edge); }
+.craft.on-dark, .light.on-dark { border-block: 1px solid var(--dark-line); }
 .consult__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -662,18 +748,18 @@ input[type="range"]::-moz-range-thumb {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  color: var(--lit-dim);
+  color: var(--fg);
 }
 .consult__promise li::before {
   content: '';
   flex: none;
   inline-size: 1.4rem;
   block-size: 1px;
-  background: var(--lamp);
+  background: var(--accent);
 }
 
 .form {
-  background: var(--ink);
+  background: var(--bg);
   border: var(--edge);
   border-radius: 3px;
   padding: clamp(1.5rem, 3.5vw, 2.75rem);
@@ -683,45 +769,45 @@ input[type="range"]::-moz-range-thumb {
 .form__title {
   font-size: var(--step-2);
   font-weight: 800;
-  color: var(--lit);
+  color: var(--fg);
   letter-spacing: -0.02em;
 }
 .form__alert {
   border-inline-start: 3px solid var(--danger);
   background: color-mix(in oklab, var(--danger) 12%, transparent);
-  color: var(--lit);
+  color: var(--fg);
   padding: 0.85rem 1rem;
   font-size: var(--step--1);
   border-radius: 2px;
 }
 .form__alert--ok {
-  border-inline-start-color: var(--lamp);
-  background: color-mix(in oklab, var(--lamp) 14%, transparent);
+  border-inline-start-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 14%, transparent);
 }
 .form__alert ul { margin-block-start: 0.5rem; display: grid; gap: 0.3rem; }
-.form__alert a { color: var(--lamp); }
-.form__note { font-size: var(--step--1); color: var(--stone-lo); line-height: 1.6; }
+.form__alert a { color: var(--accent); }
+.form__note { font-size: var(--step--1); color: var(--fg-subtle); line-height: 1.6; }
 
 .field { display: grid; gap: 0.5rem; }
 .field label {
   font-size: var(--step--1);
-  color: var(--stone);
+  color: var(--fg-muted);
   font-weight: 500;
 }
 .field input, .field select, .field textarea {
-  background: var(--shadow);
-  border: 1px solid rgb(239 231 218 / 0.14);
+  background: var(--plaster-50);
+  border: 1px solid var(--line-strong);
   border-radius: 2px;
-  padding: 0.75rem 0.9rem;
-  color: var(--lit);
+  padding: 0.8rem 0.95rem;
+  color: var(--fg);
   inline-size: 100%;
   transition: border-color 0.25s, background-color 0.25s;
 }
 .field textarea { resize: vertical; min-block-size: 5rem; }
-.field input::placeholder, .field textarea::placeholder { color: var(--stone-lo); }
+.field input::placeholder, .field textarea::placeholder { color: var(--fg-subtle); }
 .field input:focus, .field select:focus, .field textarea:focus {
-  border-color: var(--lamp);
-  background: var(--shadow-2);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 18%, transparent);
 }
 .field__error {
   display: none;
@@ -738,17 +824,17 @@ input[type="range"]::-moz-range-thumb {
   gap: clamp(2rem, 6vw, 6rem);
   align-items: start;
 }
-.about__text p { margin-block-start: 1.25rem; max-inline-size: 52ch; color: var(--lit-dim); }
+.about__text p { margin-block-start: 1.25rem; max-inline-size: 52ch; color: var(--fg); }
 .contact {
   border: var(--edge);
   border-radius: 3px;
   padding: clamp(1.5rem, 3vw, 2.25rem);
-  background: color-mix(in oklab, var(--shadow) 60%, transparent);
+  background: color-mix(in oklab, var(--bg-raised) 60%, transparent);
 }
 .contact__title {
   font-size: var(--step-1);
   font-weight: 700;
-  color: var(--lit);
+  color: var(--fg);
   margin-block-end: 1.5rem;
 }
 .contact__list { display: grid; gap: 1.1rem; }
@@ -761,10 +847,10 @@ input[type="range"]::-moz-range-thumb {
   border-block-end: var(--edge);
 }
 .contact__list > div:last-child { border-block-end: 0; padding-block-end: 0; }
-.contact__list dt { font-size: var(--step--1); color: var(--stone-lo); }
-.contact__list dd { margin: 0; color: var(--lit); }
-.contact__list a { color: var(--lit); text-decoration: none; border-block-end: 1px solid var(--lamp); }
-.contact__list a:hover { color: var(--lamp); }
+.contact__list dt { font-size: var(--step--1); color: var(--fg-subtle); }
+.contact__list dd { margin: 0; color: var(--fg); }
+.contact__list a { color: var(--fg); text-decoration: none; border-block-end: 1px solid var(--accent); }
+.contact__list a:hover { color: var(--accent); }
 
 /* ═══ footer ═════════════════════════════════════════════════ */
 .footer {
@@ -775,12 +861,12 @@ input[type="range"]::-moz-range-thumb {
   align-items: baseline;
   gap: 1rem var(--gap);
   font-size: var(--step--1);
-  color: var(--stone-lo);
+  color: var(--fg-subtle);
 }
 .footer__mark {
   font-weight: 800;
   letter-spacing: 0.14em;
-  color: var(--lit);
+  color: var(--fg);
   text-transform: uppercase;
 }
 .footer__legal { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
@@ -864,7 +950,7 @@ input[type="range"]::-moz-range-thumb {
   grid-template-columns: auto auto;
   align-items: center;
   gap: 0.7rem;
-  color: var(--stone-lo);
+  color: var(--fg-subtle);
   font-size: var(--step--1);
   transition: color 0.45s var(--ease);
 }
@@ -876,9 +962,9 @@ input[type="range"]::-moz-range-thumb {
   opacity: 0.5;
   transition: opacity 0.45s var(--ease), color 0.45s var(--ease);
 }
-.rail__step.is-active { color: var(--lit); }
-.rail__step.is-active .rail__num { color: var(--lamp); opacity: 1; }
-.rail__step.is-done { color: var(--stone); }
+.rail__step.is-active { color: var(--fg); }
+.rail__step.is-active .rail__num { color: var(--accent); opacity: 1; }
+.rail__step.is-done { color: var(--fg-muted); }
 
 /* ── the stage: rail | model | copy ──────────────────────────── */
 .apt {
@@ -902,28 +988,28 @@ input[type="range"]::-moz-range-thumb {
   justify-content: space-between;
   gap: 1rem;
   font-size: var(--step--1);
-  color: var(--stone-lo);
+  color: var(--fg-subtle);
   border-block-start: var(--edge);
   padding-block-start: 0.7rem;
 }
-.apt__layer { color: var(--lamp); font-weight: 600; }
+.apt__layer { color: var(--accent); font-weight: 600; }
 
 /* the model — every visual state of it is reached by tweening these */
-.floor           { fill: var(--stone); opacity: 0.12; }
+.floor           { fill: var(--fg-muted); opacity: 0.12; }
 .floor--paint    { opacity: 0; }
 .floor--material { opacity: 0; }
-.outline         { fill: none; stroke: var(--north); stroke-width: 1.6; }
-.wall            { fill: #3A3128; stroke: rgb(239 231 218 / 0.14); stroke-width: 0.8; }
+.outline         { fill: none; stroke: var(--cool); stroke-width: 1.6; }
+.wall            { fill: #3A3128; stroke: rgb(252 250 247 / 0.16); stroke-width: 0.8; }
 .wall--far       { fill: #463B30; }
 .wall--near      { fill: #2A231C; }
 .pool            { opacity: 0; }
 .bulb            { fill: #FFE2B6; opacity: 0; }
-.cord            { stroke: var(--stone-lo); stroke-width: 0.8; opacity: 0; }
+.cord            { stroke: var(--fg-subtle); stroke-width: 0.8; opacity: 0; }
 .rm__label {
   font-family: var(--font);
   font-size: 11px;
   font-weight: 600;
-  fill: var(--lit);
+  fill: var(--fg);
   opacity: 0.5;
   paint-order: stroke;
   stroke: rgb(20 17 15 / 0.75);
@@ -946,7 +1032,7 @@ input[type="range"]::-moz-range-thumb {
 .panel__kicker {
   font-size: var(--step--1);
   letter-spacing: 0.06em;
-  color: var(--lamp);
+  color: var(--accent);
   margin-block-end: 1rem;
 }
 .panel__title {
@@ -954,12 +1040,12 @@ input[type="range"]::-moz-range-thumb {
   font-weight: 800;
   line-height: 1.25;
   letter-spacing: -0.02em;
-  color: var(--lit);
+  color: var(--fg);
   text-wrap: balance;
 }
 .panel__body {
   margin-block-start: 1.1rem;
-  color: var(--stone);
+  color: var(--fg-muted);
   line-height: 1.85;
 }
 .panel__list { margin-block-start: 1.6rem; display: grid; gap: 0.75rem; }
@@ -967,7 +1053,7 @@ input[type="range"]::-moz-range-thumb {
   display: flex;
   align-items: baseline;
   gap: 0.7rem;
-  color: var(--lit-dim);
+  color: var(--fg);
   font-size: var(--step--1);
 }
 .panel__list li::before {
@@ -975,7 +1061,7 @@ input[type="range"]::-moz-range-thumb {
   flex: none;
   inline-size: 1.2rem;
   block-size: 1px;
-  background: var(--north);
+  background: var(--cool);
 }
 
 /* ── narrow screens: no pin, the steps just stack ────────────── */

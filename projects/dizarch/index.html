@@ -9,8 +9,9 @@
 <!-- Vazirmatn ships with the site (SIL OFL, see fonts/Vazirmatn-OFL.txt) rather
      than loading from a CDN: it renders on first paint, offline, and with no
      third-party request from your visitors' browsers. -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2314110F'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23E8A33D'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F5F0E9'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23A16207'/%3E%3C/svg%3E">
 <link rel="preload" href="fonts/Vazirmatn-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/playfair-display-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -145,7 +146,7 @@
      work is drawn over it — plan, light, colour, material, build. The model
      is generated in js/app.js from a room list, not hand-drawn, so changing
      the flat means editing five lines of data. -->
-<section class="craft" id="craft" data-hour="1230">
+<section class="craft on-dark" id="craft" data-hour="1230">
 
   <div class="craft__intro">
     <p class="eyebrow"><span class="eyebrow__time">۱۲:۳۰</span><span class="eyebrow__label" data-en="Midday" data-en-time="12:30">نیم‌روز</span></p>
@@ -268,7 +269,7 @@
 
 
 <!-- ═══════════════ 4. SIGNATURE — 16:30, the demo ═══════════════ -->
-<section class="section light" id="light" data-hour="1630" data-anim="scale-up">
+<section class="section light on-dark" id="light" data-hour="1630" data-anim="scale-up">
   <header class="section__head section__head--center">
     <p class="eyebrow"><span class="eyebrow__time">۱۶:۳۰</span><span class="eyebrow__label" data-en="Afternoon" data-en-time="16:30">عصر</span></p>
     <h2 class="section__title" data-en="A colour has no meaning until you say which light it stands in.">
@@ -303,10 +304,10 @@
 
       <fieldset class="chips">
         <legend data-en="Wall colour">رنگ دیوار</legend>
-        <label class="chip"><input type="radio" name="swatch" id="lab-swatch" value="#CFC3B0" checked><span class="chip__dot" style="--chip:#CFC3B0"></span><span class="chip__name" data-en="Warm beige">بژ گرم</span></label>
-        <label class="chip"><input type="radio" name="swatch" value="#8E9C93"><span class="chip__dot" style="--chip:#8E9C93"></span><span class="chip__name" data-en="Sage">مریم‌گلی</span></label>
-        <label class="chip"><input type="radio" name="swatch" value="#6E7A8A"><span class="chip__dot" style="--chip:#6E7A8A"></span><span class="chip__name" data-en="Slate blue">آبی دودی</span></label>
-        <label class="chip"><input type="radio" name="swatch" value="#A8695C"><span class="chip__dot" style="--chip:#A8695C"></span><span class="chip__name" data-en="Clay">خاک رس</span></label>
+        <label class="chip"><input type="radio" name="swatch" id="lab-swatch" value="#C7B49B" checked><span class="chip__dot" style="--chip:#C7B49B"></span><span class="chip__name" data-en="Warm beige">بژ گرم</span></label>
+        <label class="chip"><input type="radio" name="swatch" value="#7E8F80"><span class="chip__dot" style="--chip:#7E8F80"></span><span class="chip__name" data-en="Sage">مریم‌گلی</span></label>
+        <label class="chip"><input type="radio" name="swatch" value="#5C6B7C"><span class="chip__dot" style="--chip:#5C6B7C"></span><span class="chip__name" data-en="Slate blue">آبی دودی</span></label>
+        <label class="chip"><input type="radio" name="swatch" value="#A85F4A"><span class="chip__dot" style="--chip:#A85F4A"></span><span class="chip__name" data-en="Clay">خاک رس</span></label>
       </fieldset>
     </div>
   </div>
