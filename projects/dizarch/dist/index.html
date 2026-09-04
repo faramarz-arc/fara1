@@ -96,12 +96,13 @@ body {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  overflow: hidden;
 }
 .lightfall__pool {
   position: absolute;
-  inset: -30%;
+  inset: 0;
   background:
-    radial-gradient(46vw 46vw at var(--light-x) var(--light-y),
+    radial-gradient(70vw 70vw at var(--light-x) var(--light-y),
       color-mix(in oklab, var(--light-hue) 62%, transparent) 0%,
       color-mix(in oklab, var(--light-hue) 22%, transparent) 34%,
       transparent 68%);
@@ -796,6 +797,12 @@ input[type="range"]::-moz-range-thumb {
 }
 .footer__legal { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
 
+/* A section whose entrance comes from the side sits translated sideways
+   until its trigger fires, and in RTL that counts as document overflow —
+   which shifts every section on the page. `clip` contains it without
+   creating a scroll container, so `position: sticky` still works. */
+[data-anim="slide-start"] { overflow-x: clip; }
+
 /* ── entrance states (js removes .is-armed once GSAP takes over) ── */
 .is-armed [data-anim-child] { opacity: 0; }
 
@@ -850,8 +857,8 @@ input[type="range"]::-moz-range-thumb {
   inset-block-start: 0;
   block-size: 100svh;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: clamp(1.5rem, 4vw, 4rem);
+  grid-template-columns: auto minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(1.25rem, 3vw, 3rem);
   align-items: center;
   padding: 5.5rem var(--bleed) 3rem;
   overflow: hidden;
@@ -885,34 +892,69 @@ input[type="range"]::-moz-range-thumb {
 .rail__step.is-active .rail__num { color: var(--lamp); opacity: 1; }
 .rail__step.is-done { color: var(--stone); }
 
-/* ── the stage viewport ──────────────────────────────────────── */
-.craft__viewport { position: relative; block-size: 100%; }
+/* ── the stage: rail | model | copy ──────────────────────────── */
+.apt {
+  position: relative;
+  min-inline-size: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  align-self: center;
+}
+.apt__svg {
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 62svh;
+  overflow: visible;
+}
+.apt__caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: var(--step--1);
+  color: var(--stone-lo);
+  border-block-start: var(--edge);
+  padding-block-start: 0.7rem;
+}
+.apt__layer { color: var(--lamp); font-weight: 600; }
 
+/* the model — every visual state of it is reached by tweening these */
+.floor           { fill: var(--stone); opacity: 0.12; }
+.floor--paint    { opacity: 0; }
+.floor--material { opacity: 0; }
+.outline         { fill: none; stroke: var(--north); stroke-width: 1.6; }
+.wall            { fill: #3A3128; stroke: rgb(239 231 218 / 0.14); stroke-width: 0.8; }
+.wall--far       { fill: #463B30; }
+.wall--near      { fill: #2A231C; }
+.pool            { opacity: 0; }
+.bulb            { fill: #FFE2B6; opacity: 0; }
+.cord            { stroke: var(--stone-lo); stroke-width: 0.8; opacity: 0; }
+.rm__label {
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--lit);
+  opacity: 0.5;
+  paint-order: stroke;
+  stroke: rgb(20 17 15 / 0.75);
+  stroke-width: 3px;
+}
+
+/* ── the copy, one panel at a time ───────────────────────────── */
+.panels { position: relative; align-self: center; min-block-size: 24rem; }
 .step {
   position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  gap: clamp(1.5rem, 4vw, 4rem);
-  align-items: center;
+  inset-block-start: 50%;
+  inset-inline: 0;
+  transform: translateY(-50%);
   visibility: hidden;
   opacity: 0;
 }
 .step.is-active { visibility: visible; opacity: 1; }
 
-.scene {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  max-block-size: min(66svh, 32rem);
-  inline-size: 100%;
-  margin-inline: auto;
-  border: var(--edge);
-  border-radius: 3px;
-  background: linear-gradient(200deg, var(--shadow) 0%, var(--ink) 100%);
-  overflow: hidden;
-}
-
-.panel { max-inline-size: 46ch; }
+.panel { max-inline-size: 44ch; }
 .panel__kicker {
   font-size: var(--step--1);
   letter-spacing: 0.06em;
@@ -932,11 +974,7 @@ input[type="range"]::-moz-range-thumb {
   color: var(--stone);
   line-height: 1.85;
 }
-.panel__list {
-  margin-block-start: 1.6rem;
-  display: grid;
-  gap: 0.75rem;
-}
+.panel__list { margin-block-start: 1.6rem; display: grid; gap: 0.75rem; }
 .panel__list li {
   display: flex;
   align-items: baseline;
@@ -952,183 +990,12 @@ input[type="range"]::-moz-range-thumb {
   background: var(--north);
 }
 
-/* ── 01 plan ─────────────────────────────────────────────────── */
-.scene--plan { display: grid; place-items: center; padding: 8%; color: var(--north); }
-.scene--plan svg { inline-size: 100%; block-size: 100%; }
-.plan__walls path, .plan__openings path {
-  stroke-dasharray: var(--len, 1200);
-  stroke-dashoffset: var(--len, 1200);
-}
-.plan__furniture rect, .plan__furniture circle {
-  fill: color-mix(in oklab, var(--lamp) 26%, transparent);
-  stroke: var(--lamp);
-  stroke-width: 1.5;
-  opacity: 0;
-}
-.plan__north { opacity: 0; color: var(--lit); }
-
-/* ── 02 light ────────────────────────────────────────────────── */
-.scene--light { padding: 0; }
-.room { position: absolute; inset: 0; }
-.room__wall {
-  position: absolute;
-  inset: 0 0 26% 0;
-  background: linear-gradient(180deg, #2A2420, #211B17);
-}
-.room__floor {
-  position: absolute;
-  inset: 74% 0 0 0;
-  background: linear-gradient(180deg, #171310, #0F0C0A);
-}
-.layer { position: absolute; opacity: 0; }
-.layer--ambient {
-  inset: 6% 8% 22% 8%;
-  background: radial-gradient(60% 70% at 50% 20%,
-    rgb(255 226 186 / 0.28), transparent 70%);
-}
-.layer--task {
-  inset: 22% 34% 26% 34%;
-  background: linear-gradient(180deg,
-    rgb(255 205 140 / 0.42), rgb(255 205 140 / 0.04));
-  clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
-}
-.layer--accent {
-  inset: 14% 8% 30% 72%;
-  background: linear-gradient(180deg,
-    rgb(255 190 120 / 0.5), transparent);
-  filter: blur(3px);
-}
-.pendant { position: absolute; inset-block-start: 0; inset-inline-start: 50%; opacity: 0; }
-.pendant__cord {
-  display: block;
-  inline-size: 1px;
-  block-size: 4.5rem;
-  background: var(--stone-lo);
-  margin-inline: auto;
-}
-.pendant__shade {
-  display: block;
-  inline-size: 3.2rem;
-  block-size: 1.5rem;
-  margin-inline-start: -1.6rem;
-  border-radius: 0 0 100px 100px / 0 0 60px 60px;
-  background: linear-gradient(180deg, #4A3D31, #2B2119);
-  box-shadow: 0 10px 40px 6px rgb(255 190 120 / 0.35);
-}
-
-/* ── 03 colour ───────────────────────────────────────────────── */
-.scene--colour { display: grid; grid-template-rows: 1fr auto; }
-.swatchwall { display: grid; grid-template-columns: repeat(5, 1fr); }
-.band {
-  background: var(--band);
-  transform: scaleY(0);
-  transform-origin: bottom;
-}
-.palettebar {
-  display: flex;
-  gap: 0;
-  padding: 0.9rem 1rem;
-  background: var(--ink);
-  border-block-start: var(--edge);
-}
-.palettebar span {
-  flex: 1;
-  block-size: 1.5rem;
-  background: var(--chip);
-  opacity: 0;
-}
-
-/* ── 04 material ─────────────────────────────────────────────── */
-.scene--material { display: grid; place-items: center; }
-.samples { position: relative; inline-size: 74%; aspect-ratio: 3 / 2; }
-.sample {
-  position: absolute;
-  inset-block-start: 8%;
-  inset-inline-start: 50%;
-  inline-size: 31%;
-  aspect-ratio: 3 / 4;
-  margin-inline-start: -15.5%;
-  border-radius: 2px;
-  box-shadow: 0 24px 50px -20px rgb(0 0 0 / 0.85);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-block-end: 0.6rem;
-  opacity: 0;
-}
-.sample span {
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  color: rgb(20 17 15 / 0.75);
-  background: rgb(255 255 255 / 0.55);
-  padding: 0.15rem 0.5rem;
-  border-radius: 100px;
-}
-.sample--oak    { background: linear-gradient(155deg, #C08E52, #8A5F31); }
-.sample--stone  { background: linear-gradient(155deg, #E4DCCB, #BCB09A); }
-.sample--brass  { background: linear-gradient(155deg, #D8B26A, #93763C); }
-.sample--linen  { background: linear-gradient(155deg, #E8E2D6, #C6BEAE); }
-
-/* ── 05 build ────────────────────────────────────────────────── */
-.scene--build { padding: 0; }
-.site { position: absolute; inset: 0; }
-.site__before, .site__after { position: absolute; inset: 0; }
-.site__before {
-  background:
-    repeating-linear-gradient(90deg, #2A2420 0 42px, #251F1B 42px 44px),
-    #241E1A;
-}
-.site__after {
-  background:
-    radial-gradient(70% 60% at 60% 25%, rgb(255 214 160 / 0.22), transparent 70%),
-    linear-gradient(180deg, #C9BFB0 0%, #A79C8C 62%, #6B6154 62%, #554C42 100%);
-  clip-path: inset(0 0 0 100%);
-}
-.site__wipe {
-  position: absolute;
-  inset-block: 0;
-  inline-size: 2px;
-  left: 0;
-  background: var(--lamp);
-  box-shadow: 0 0 26px 4px color-mix(in oklab, var(--lamp) 70%, transparent);
-  opacity: 0;
-}
-.site__meter {
-  position: absolute;
-  inset-block-end: 1rem;
-  inset-inline: 1rem;
-  block-size: 1.6rem;
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  background: color-mix(in oklab, var(--ink) 80%, transparent);
-  border: var(--edge);
-  border-radius: 100px;
-  padding-inline: 0.6rem;
-}
-.site__fill {
-  flex: 1;
-  block-size: 3px;
-  border-radius: 100px;
-  background: linear-gradient(to right, var(--lamp), var(--lamp));
-  background-size: 0% 100%;
-  background-repeat: no-repeat;
-  box-shadow: inset 0 0 0 1px rgb(239 231 218 / 0.14);
-}
-.site__pct {
-  font-size: 0.72rem;
-  color: var(--lit);
-  font-variant-numeric: tabular-nums;
-  min-inline-size: 3ch;
-  text-align: center;
-}
-
 /* ── narrow screens: no pin, the steps just stack ────────────── */
 @media (max-width: 60rem) {
   .craft__stage {
     position: static;
     block-size: auto;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     padding-block: 0 var(--rhythm);
     overflow: visible;
   }
@@ -1141,15 +1008,9 @@ input[type="range"]::-moz-range-thumb {
     scrollbar-width: none;
   }
   .rail::-webkit-scrollbar { display: none; }
-  .craft__viewport { display: grid; gap: clamp(3rem, 8vh, 5rem); }
-  .step {
-    position: static;
-    visibility: visible;
-    opacity: 1;
-    grid-template-columns: 1fr;
-    gap: 1.75rem;
-  }
-  .scene { max-block-size: 20rem; }
+  .panels { min-block-size: 0; display: grid; gap: clamp(2.5rem, 7vh, 4rem); }
+  .step { position: static; transform: none; visibility: visible; opacity: 1; }
+  .apt__svg { max-block-size: none; }
 }
 
 /* ── reduced motion: everything stacked and already arrived ──── */
@@ -1157,16 +1018,13 @@ input[type="range"]::-moz-range-thumb {
   .craft__stage {
     position: static;
     block-size: auto;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     overflow: visible;
   }
-  .craft__viewport { display: grid; gap: 4rem; }
-  .step { position: static; visibility: visible; opacity: 1; grid-template-columns: 1fr; }
-  .plan__walls path, .plan__openings path { stroke-dashoffset: 0; }
-  .plan__furniture rect, .plan__furniture circle,
-  .plan__north, .layer, .pendant, .palettebar span, .sample { opacity: 1; }
-  .band { transform: none; }
-  .site__after { clip-path: inset(0 0 0 0); }
+  .panels { min-block-size: 0; display: grid; gap: 3.5rem; }
+  .step { position: static; transform: none; visibility: visible; opacity: 1; }
+  .floor--material { opacity: 0.95; }
+  .pool, .bulb { opacity: 1; }
 }
 
 </style>
@@ -1298,23 +1156,24 @@ input[type="range"]::-moz-range-thumb {
 </section>
 
 
-<!-- ═══════════════ 3. CRAFT — 12:30, one step per scroll ═══════════════
-     A pinned stage. Each scroll advances one discipline: the scene animates
-     and its copy arrives with it. The order is the real order of a project,
-     which is why the steps are numbered. -->
+<!-- ═══════════════ 3. CRAFT — 12:30, one layer per scroll ═══════════════
+     One apartment stays on screen; each scroll switches which layer of the
+     work is drawn over it — plan, light, colour, material, build. The model
+     is generated in js/app.js from a room list, not hand-drawn, so changing
+     the flat means editing five lines of data. -->
 <section class="craft" id="craft" data-hour="1230">
 
   <div class="craft__intro">
     <p class="eyebrow"><span class="eyebrow__time">۱۲:۳۰</span><span class="eyebrow__label" data-en="Midday" data-en-time="12:30">نیم‌روز</span></p>
-    <h2 class="section__title" data-en="Five disciplines, in the order we actually work.">
-      پنج تخصص، به همان ترتیبی که واقعاً کار می‌کنیم.
+    <h2 class="section__title" data-en="One flat. Five layers of work, one per scroll.">
+      یک خانه. پنج لایه کار، با هر اسکرول یکی.
     </h2>
   </div>
 
   <div class="craft__track">
     <div class="craft__stage">
 
-      <ol class="rail" aria-label="مراحل کار">
+      <ol class="rail" aria-label="لایه‌های کار">
         <li class="rail__step is-active"><span class="rail__num">۰۱</span><span class="rail__name" data-en="Plan">پلان</span></li>
         <li class="rail__step"><span class="rail__num">۰۲</span><span class="rail__name" data-en="Light">نور</span></li>
         <li class="rail__step"><span class="rail__num">۰۳</span><span class="rail__name" data-en="Colour">رنگ</span></li>
@@ -1322,34 +1181,18 @@ input[type="range"]::-moz-range-thumb {
         <li class="rail__step"><span class="rail__num">۰۵</span><span class="rail__name" data-en="Build">اجرا</span></li>
       </ol>
 
-      <div class="craft__viewport">
+      <!-- the model: built by js from the room list, layers toggled per step -->
+      <figure class="apt">
+        <svg class="apt__svg" id="apt-svg" viewBox="0 0 720 560" role="img"
+             aria-label="نمای سه‌بعدی یک آپارتمان دوخوابه که لایه‌های پلان، نور، رنگ، متریال و اجرا روی آن نمایش داده می‌شود"></svg>
+        <figcaption class="apt__caption">
+          <span class="apt__layer" data-en="Layer: plan">لایه: پلان</span>
+          <span class="apt__meta" data-en="2 bed · 92 m²">۲ خوابه · ۹۲ متر مربع</span>
+        </figcaption>
+      </figure>
 
-        <!-- ─── 01 plan ─── -->
+      <div class="panels">
         <article class="step is-active" data-step="0">
-          <div class="scene scene--plan">
-            <svg viewBox="0 0 400 300" role="img" aria-label="پلان خطی یک آپارتمان با چیدمان مبلمان">
-              <g class="plan__walls" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round">
-                <path d="M30 40 H370 V260 H30 Z"/>
-                <path d="M215 40 V150 H370"/>
-                <path d="M30 190 H215"/>
-              </g>
-              <g class="plan__openings" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M215 90 A28 28 0 0 1 243 118"/>
-                <path d="M120 190 h48"/>
-              </g>
-              <g class="plan__furniture">
-                <rect x="52" y="62" width="104" height="46" rx="3"/>
-                <rect x="52" y="120" width="46" height="46" rx="3"/>
-                <rect x="252" y="66" width="86" height="34" rx="3"/>
-                <rect x="60" y="212" width="120" height="30" rx="3"/>
-                <circle cx="300" cy="200" r="26"/>
-              </g>
-              <g class="plan__north" stroke="currentColor" fill="none" stroke-width="2">
-                <circle cx="352" cy="232" r="16"/>
-                <path d="M352 220 v24 M346 226 l6 -6 l6 6"/>
-              </g>
-            </svg>
-          </div>
           <div class="panel">
             <p class="panel__kicker" data-en="Step 01 — Plan &amp; layout">مرحلهٔ ۰۱ — پلان و چیدمان</p>
             <h3 class="panel__title" data-en="Where the walls go decides everything after.">
@@ -1366,18 +1209,7 @@ input[type="range"]::-moz-range-thumb {
           </div>
         </article>
 
-        <!-- ─── 02 light ─── -->
         <article class="step" data-step="1">
-          <div class="scene scene--light">
-            <div class="room">
-              <div class="room__wall"></div>
-              <div class="room__floor"></div>
-              <div class="layer layer--ambient"></div>
-              <div class="layer layer--task"></div>
-              <div class="layer layer--accent"></div>
-              <div class="pendant"><span class="pendant__cord"></span><span class="pendant__shade"></span></div>
-            </div>
-          </div>
           <div class="panel">
             <p class="panel__kicker" data-en="Step 02 — Lighting">مرحلهٔ ۰۲ — نورپردازی</p>
             <h3 class="panel__title" data-en="One ceiling light is not lighting design.">
@@ -1394,22 +1226,7 @@ input[type="range"]::-moz-range-thumb {
           </div>
         </article>
 
-        <!-- ─── 03 colour ─── -->
         <article class="step" data-step="2">
-          <div class="scene scene--colour">
-            <div class="swatchwall">
-              <div class="band" style="--band:#B9A793"></div>
-              <div class="band" style="--band:#8E9C93"></div>
-              <div class="band" style="--band:#6E7A8A"></div>
-              <div class="band" style="--band:#A8695C"></div>
-              <div class="band" style="--band:#2F2A26"></div>
-            </div>
-            <div class="palettebar">
-              <span style="--chip:#B9A793"></span><span style="--chip:#8E9C93"></span>
-              <span style="--chip:#6E7A8A"></span><span style="--chip:#A8695C"></span>
-              <span style="--chip:#2F2A26"></span>
-            </div>
-          </div>
           <div class="panel">
             <p class="panel__kicker" data-en="Step 03 — Colour">مرحلهٔ ۰۳ — رنگ</p>
             <h3 class="panel__title" data-en="We paint the sample on your wall, not on a card.">
@@ -1426,16 +1243,7 @@ input[type="range"]::-moz-range-thumb {
           </div>
         </article>
 
-        <!-- ─── 04 material ─── -->
         <article class="step" data-step="3">
-          <div class="scene scene--material">
-            <div class="samples">
-              <div class="sample sample--oak"><span data-en="Oak">بلوط</span></div>
-              <div class="sample sample--stone"><span data-en="Travertine">تراورتن</span></div>
-              <div class="sample sample--brass"><span data-en="Brushed brass">برنج مات</span></div>
-              <div class="sample sample--linen"><span data-en="Linen">کتان</span></div>
-            </div>
-          </div>
           <div class="panel">
             <p class="panel__kicker" data-en="Step 04 — Materials">مرحلهٔ ۰۴ — متریال و بافت</p>
             <h3 class="panel__title" data-en="Texture is what a room feels like before you touch it.">
@@ -1452,16 +1260,7 @@ input[type="range"]::-moz-range-thumb {
           </div>
         </article>
 
-        <!-- ─── 05 build ─── -->
         <article class="step" data-step="4">
-          <div class="scene scene--build">
-            <div class="site">
-              <div class="site__before"></div>
-              <div class="site__after"></div>
-              <div class="site__wipe"></div>
-              <div class="site__meter"><span class="site__fill"></span><span class="site__pct">۰٪</span></div>
-            </div>
-          </div>
           <div class="panel">
             <p class="panel__kicker" data-en="Step 05 — Build &amp; delivery">مرحلهٔ ۰۵ — اجرا و بازسازی</p>
             <h3 class="panel__title" data-en="The drawing is the easy half.">
@@ -1477,8 +1276,8 @@ input[type="range"]::-moz-range-thumb {
             </ul>
           </div>
         </article>
-
       </div>
+
     </div>
   </div>
 </section>
@@ -2124,89 +1923,263 @@ function initForm() {
   });
 }
 
-/* ═══ 7. the craft sequence ═════════════════════════════════ */
-/* A pinned stage: one scroll advances one discipline. Each step owns a
-   timeline that plays when it becomes active and rewinds when it leaves,
-   so scrolling back up replays it rather than showing a spent scene.
-   Every step gets a different entrance — the copy never arrives the same
-   way twice in a row. */
+/* ═══ 7. the apartment, and the layers over it ══════════════ */
+/* One isometric flat stays on screen through the whole sequence; each
+   scroll switches which layer of the work is drawn over it. The model is
+   generated from the room list below rather than hand-drawn, so changing
+   the flat means editing five rows of data. */
+
+const ROOMS = [
+  { id: 'living',  x: 0, y: 0, w: 6.4, h: 5.2, fa: 'نشیمن',     en: 'Living',   paint: '#B9A793', material: 'wood',    lamps: [[0.5, 0.42], [0.78, 0.72]] },
+  { id: 'kitchen', x: 6.4, y: 0, w: 5.2, h: 5.2, fa: 'آشپزخانه', en: 'Kitchen',  paint: '#8E9C93', material: 'stone',   lamps: [[0.5, 0.3]] },
+  { id: 'bed1',    x: 0, y: 5.2, w: 5.0, h: 4.4, fa: 'خواب اصلی', en: 'Main bed', paint: '#6E7A8A', material: 'wood',    lamps: [[0.5, 0.55]] },
+  { id: 'bed2',    x: 5.0, y: 5.2, w: 3.8, h: 4.4, fa: 'خواب دوم', en: 'Bedroom 2', paint: '#A8695C', material: 'textile', lamps: [[0.5, 0.5]] },
+  { id: 'bath',    x: 8.8, y: 5.2, w: 2.8, h: 4.4, fa: 'سرویس',   en: 'Bathroom', paint: '#7C9AA6', material: 'tile',    lamps: [[0.5, 0.4]] }
+];
+
+const WALL_H = 2.6;
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+const apartment = (() => {
+  const svg = document.getElementById('apt-svg');
+  if (!svg) return null;
+
+  const S = 34;                       // pixels per plan metre
+  const COS = Math.cos(Math.PI / 6);  // 30° isometric
+  const SIN = Math.sin(Math.PI / 6);
+  const OX = 360, OY = 120;
+
+  const iso = (x, y, z = 0) => [
+    OX + (x - y) * COS * S,
+    OY + (x + y) * SIN * S - z * S
+  ];
+  const poly = pts => pts.map(p => p.join(',')).join(' ');
+  const el = (tag, attrs = {}) => {
+    const n = document.createElementNS(SVG_NS, tag);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    return n;
+  };
+
+  /* ── material hatches, defined once and referenced per room ── */
+  function defs() {
+    const d = el('defs');
+    const pat = (id, inner, size = 10, angle = 0) => {
+      const p = el('pattern', {
+        id, width: size, height: size, patternUnits: 'userSpaceOnUse',
+        patternTransform: `rotate(${angle})`
+      });
+      inner.forEach(n => p.appendChild(n));
+      d.appendChild(p);
+    };
+    pat('m-wood', [
+      el('rect', { width: 10, height: 10, fill: '#8A5F31' }),
+      el('rect', { width: 10, height: 1, y: 0, fill: '#6E4A24' })
+    ], 10, 30);
+    pat('m-stone', [
+      el('rect', { width: 14, height: 14, fill: '#BCB09A' }),
+      el('circle', { cx: 4, cy: 5, r: 1.4, fill: '#A99C86' }),
+      el('circle', { cx: 10, cy: 10, r: 1, fill: '#CDC2AE' })
+    ], 14);
+    pat('m-tile', [
+      el('rect', { width: 12, height: 12, fill: '#7C9AA6' }),
+      el('rect', { width: 12, height: 1, fill: '#5F7C88' }),
+      el('rect', { width: 1, height: 12, fill: '#5F7C88' })
+    ], 12, 45);
+    pat('m-textile', [
+      el('rect', { width: 8, height: 8, fill: '#A8695C' }),
+      el('rect', { width: 8, height: 1, y: 3, fill: '#94574B', opacity: 0.7 }),
+      el('rect', { width: 1, height: 8, x: 3, fill: '#B87D70', opacity: 0.7 })
+    ], 8);
+
+    const glow = el('radialGradient', { id: 'lampglow' });
+    glow.appendChild(el('stop', { offset: '0%', 'stop-color': '#FFD9A0', 'stop-opacity': '0.95' }));
+    glow.appendChild(el('stop', { offset: '55%', 'stop-color': '#E8A33D', 'stop-opacity': '0.35' }));
+    glow.appendChild(el('stop', { offset: '100%', 'stop-color': '#E8A33D', 'stop-opacity': '0' }));
+    d.appendChild(glow);
+    return d;
+  }
+
+  // the outer boundary of the whole flat
+  const BOUNDS = {
+    minX: Math.min(...ROOMS.map(r => r.x)),
+    minY: Math.min(...ROOMS.map(r => r.y)),
+    maxX: Math.max(...ROOMS.map(r => r.x + r.w)),
+    maxY: Math.max(...ROOMS.map(r => r.y + r.h))
+  };
+  const same = (a, b) => Math.abs(a - b) < 0.01;
+
+  /* ── one room: walls, floor, outline, glow, label ── */
+  function room(r) {
+    const g = el('g', { class: 'rm', 'data-room': r.id });
+    const c = [[r.x, r.y], [r.x + r.w, r.y], [r.x + r.w, r.y + r.h], [r.x, r.y + r.h]];
+    const floor = c.map(([x, y]) => iso(x, y, 0));
+
+    // The two edges nearest the viewer are left open — this is a doll's
+    // house, you look in from the front. Interior partitions stay low so
+    // every room is visible at once; only the real exterior walls go up.
+    const walls = el('g', { class: 'rm__walls' });
+    const edges = [
+      { i: 0, back: true,  exterior: same(r.y, BOUNDS.minY) },
+      { i: 3, back: true,  exterior: same(r.x, BOUNDS.minX) },
+      { i: 1, back: false, exterior: same(r.x + r.w, BOUNDS.maxX) },
+      { i: 2, back: false, exterior: same(r.y + r.h, BOUNDS.maxY) }
+    ];
+    edges.forEach(({ i, back, exterior }) => {
+      if (!back && !exterior) return;              // nothing between two open rooms
+      const h = back ? (exterior ? WALL_H : WALL_H * 0.34) : WALL_H * 0.16;
+      const a = c[i], b = c[(i + 1) % 4];
+      walls.appendChild(el('polygon', {
+        class: `wall ${(i === 0 || i === 1) ? 'wall--far' : 'wall--near'}`,
+        points: poly([iso(...a, 0), iso(...b, 0), iso(...b, h), iso(...a, h)])
+      }));
+    });
+    g.appendChild(walls);
+
+    g.appendChild(el('polygon', { class: 'floor', points: poly(floor) }));
+    g.appendChild(el('polygon', { class: 'floor floor--paint', points: poly(floor) }));
+    g.appendChild(el('polygon', {
+      class: 'floor floor--material', points: poly(floor),
+      fill: `url(#m-${r.material})`
+    }));
+    g.appendChild(el('polygon', { class: 'outline', points: poly(floor) }));
+
+    const lamps = el('g', { class: 'rm__lamps' });
+    r.lamps.forEach(([fx, fy]) => {
+      const [cx, cy] = iso(r.x + r.w * fx, r.y + r.h * fy, 0);
+      lamps.appendChild(el('ellipse', {
+        class: 'pool', cx, cy, rx: Math.min(r.w, r.h) * S * 0.62,
+        ry: Math.min(r.w, r.h) * S * 0.34, fill: 'url(#lampglow)'
+      }));
+      lamps.appendChild(el('circle', { class: 'bulb', cx, cy: cy - WALL_H * S * 0.55, r: 3 }));
+      lamps.appendChild(el('line', {
+        class: 'cord', x1: cx, y1: cy - WALL_H * S * 0.55, x2: cx, y2: cy - WALL_H * S
+      }));
+    });
+    g.appendChild(lamps);
+
+    const [lx, ly] = iso(r.x + r.w / 2, r.y + r.h / 2, 0);
+    const label = el('text', { class: 'rm__label', x: lx, y: ly, 'text-anchor': 'middle' });
+    label.textContent = r.fa;
+    label.dataset.fa = r.fa;
+    label.dataset.en = r.en;
+    g.appendChild(label);
+
+    return g;
+  }
+
+  svg.textContent = '';
+  svg.appendChild(defs());
+  const model = el('g', { class: 'apt__model' });
+  // painter's algorithm: far rooms first
+  [...ROOMS].sort((a, b) => (a.x + a.y) - (b.x + b.y)).forEach(r => model.appendChild(room(r)));
+  svg.appendChild(model);
+
+  const q = sel => svg.querySelectorAll(sel);
+  const paints = [...q('.floor--paint')];
+  paints.forEach((el2, i) => {
+    const r = [...ROOMS].sort((a, b) => (a.x + a.y) - (b.x + b.y))[i];
+    el2.setAttribute('fill', r.paint);
+  });
+
+  function relabel() {
+    q('.rm__label').forEach(t => { t.textContent = t.dataset[state.lang]; });
+  }
+
+  return { svg, q, relabel, rise: WALL_H * S };
+})();
+
 craft = (() => {
   const section = document.getElementById('craft');
-  if (!section) return { rebuild() {} };
+  if (!section || !apartment) return { rebuild() {} };
 
   const steps = [...section.querySelectorAll('.step')];
   const rail = [...section.querySelectorAll('.rail__step')];
   const track = section.querySelector('.craft__track');
+  const layerTag = section.querySelector('.apt__layer');
+  const q = apartment.q;
   const stacked = () => reduced || !hasGSAP || window.matchMedia('(max-width: 60rem)').matches;
 
-  /* Each scene animates in its own terms: the plan draws, the light
-     switches on layer by layer, the colour floods up the wall, the
-     samples fan out, the site wipes from before to after. */
-  function scene(step, index) {
+  const LAYER_NAMES = [
+    { fa: 'لایه: پلان', en: 'Layer: plan' },
+    { fa: 'لایه: نور', en: 'Layer: light' },
+    { fa: 'لایه: رنگ', en: 'Layer: colour' },
+    { fa: 'لایه: متریال', en: 'Layer: material' },
+    { fa: 'لایه: اجرا', en: 'Layer: build' }
+  ];
+
+  /* Each step is a state of the same model, so a step's timeline says what
+     the model should look like — GSAP tweens from wherever it currently is,
+     which is what makes scrolling back up read as switching layers rather
+     than replaying an intro. */
+  function layer(index) {
     const tl = gsap.timeline({ paused: true });
-    const q = sel => step.querySelectorAll(sel);
+    const outlines = q('.outline'), walls = q('.wall'), floors = q('.floor:not(.floor--paint):not(.floor--material)');
+    const paint = q('.floor--paint'), material = q('.floor--material');
+    const pools = q('.pool'), bulbs = q('.bulb'), cords = q('.cord'), labels = q('.rm__label');
+    const D = 0.75, E = 'power2.out', RISE = apartment.rise;
 
     if (index === 0) {
-      q('.plan__walls path, .plan__openings path').forEach(path => {
-        const len = path.getTotalLength();
-        path.style.setProperty('--len', len);
-        tl.fromTo(path, { strokeDashoffset: len }, {
-          strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut'
-        }, '<0.12');
+      // flat on the ground: outlines draw, nothing has risen yet
+      tl.to(walls, { y: RISE, opacity: 0, duration: D, ease: E }, 0)
+        .to([...floors], { opacity: 0.10, duration: D, ease: E }, 0)
+        .to([...paint, ...material], { opacity: 0, duration: D, ease: E }, 0)
+        .to([...pools, ...bulbs, ...cords], { opacity: 0, duration: D * 0.6 }, 0)
+        .to(labels, { opacity: 0.55, duration: D }, 0);
+      outlines.forEach((o, i) => {
+        const len = o.getTotalLength();
+        o.style.strokeDasharray = len;
+        tl.fromTo(o, { strokeDashoffset: len, opacity: 1 },
+          { strokeDashoffset: 0, duration: 0.85, ease: 'power2.inOut' }, i * 0.1);
       });
-      tl.to(q('.plan__furniture rect, .plan__furniture circle'), {
-        opacity: 1, duration: 0.5, stagger: 0.09, ease: 'power2.out'
-      }, '-=0.3')
-        .to(q('.plan__north'), { opacity: 0.7, duration: 0.5 }, '-=0.2');
 
     } else if (index === 1) {
-      tl.to(q('.pendant'), { opacity: 1, duration: 0.5, ease: 'power2.out' })
-        .to(q('.layer--ambient'), { opacity: 1, duration: 0.7 }, '-=0.1')
-        .to(q('.layer--task'), { opacity: 1, duration: 0.6 }, '+=0.15')
-        .to(q('.layer--accent'), { opacity: 1, duration: 0.6 }, '+=0.15');
+      // the volume goes up and the light goes on, layer by layer
+      tl.to(outlines, { opacity: 0.35, duration: D }, 0)
+        .to([...floors], { opacity: 0.5, duration: D, ease: E }, 0)
+        .to([...paint, ...material], { opacity: 0, duration: D, ease: E }, 0)
+        .fromTo(walls, { y: RISE, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', stagger: 0.03 }, 0)
+        .to(cords, { opacity: 0.6, duration: 0.3 }, 0.5)
+        .to(bulbs, { opacity: 1, duration: 0.3, stagger: 0.08 }, 0.6)
+        .to(pools, { opacity: 0.95, duration: 0.7, stagger: 0.1, ease: E }, 0.7)
+        .to(labels, { opacity: 0.7, duration: D }, 0);
 
     } else if (index === 2) {
-      tl.to(q('.band'), {
-        scaleY: 1, duration: 0.7, stagger: 0.1, ease: 'power3.out'
-      })
-        .to(q('.palettebar span'), {
-          opacity: 1, duration: 0.35, stagger: 0.07
-        }, '-=0.4');
+      // paint arrives room by room, the light stays on underneath
+      tl.to(walls, { y: 0, opacity: 1, duration: 0.4 }, 0)
+        .to(outlines, { opacity: 0.25, duration: D }, 0)
+        .to(material, { opacity: 0, duration: D }, 0)
+        .to([...floors], { opacity: 0.25, duration: D }, 0)
+        .fromTo(paint, { opacity: 0 }, { opacity: 1, duration: 0.7, stagger: 0.12, ease: E }, 0.1)
+        .to(pools, { opacity: 0.16, duration: D }, 0)
+        .to([...bulbs, ...cords], { opacity: 0.4, duration: D }, 0)
+        .to(labels, { opacity: 0.8, duration: D }, 0);
 
     } else if (index === 3) {
-      const fan = [-24, -8, 8, 24];
-      const lift = [10, -6, -6, 10];
-      q('.sample').forEach((el, i) => {
-        tl.fromTo(el,
-          { opacity: 0, rotate: 0, x: 0, y: 40 },
-          {
-            opacity: 1, rotate: fan[i], y: lift[i],
-            x: `${fan[i] * 5.2}%`, duration: 0.7, ease: 'back.out(1.4)'
-          }, i * 0.11);
-      });
+      // the same rooms, now as finishes rather than flat colour
+      tl.to(walls, { y: 0, opacity: 1, duration: 0.4 }, 0)
+        .to(outlines, { opacity: 0.2, duration: D }, 0)
+        .to(paint, { opacity: 0.2, duration: D }, 0)
+        .to([...floors], { opacity: 0.2, duration: D }, 0)
+        .fromTo(material, { opacity: 0 }, { opacity: 1, duration: 0.7, stagger: 0.12, ease: E }, 0.1)
+        .to(pools, { opacity: 0.2, duration: D }, 0)
+        .to([...bulbs, ...cords], { opacity: 0.4, duration: D }, 0)
+        .to(labels, { opacity: 0.85, duration: D }, 0);
 
     } else {
-      const pct = step.querySelector('.site__pct');
-      const counter = { n: 0 };
-      tl.to(q('.site__wipe'), { opacity: 1, duration: 0.25 })
-        .fromTo(q('.site__wipe'), { left: '0%' }, {
-          left: '100%', duration: 1.4, ease: 'power2.inOut'
-        }, 0.25)
-        .fromTo(q('.site__after'),
-          { clipPath: 'inset(0 0 0 100%)' },
-          { clipPath: 'inset(0 0 0 0%)', duration: 1.4, ease: 'power2.inOut' }, 0.25)
-        .to(q('.site__fill'), { backgroundSize: '100% 100%', duration: 1.4, ease: 'power2.inOut' }, 0.25)
-        .to(counter, {
-          n: 100, duration: 1.4, ease: 'power2.inOut',
-          onUpdate: () => { if (pct) pct.textContent = localeNum(Math.round(counter.n)) + '٪'; }
-        }, 0.25)
-        .to(q('.site__wipe'), { opacity: 0, duration: 0.3 }, '-=0.2');
+      // handover: everything on at once, warm
+      tl.to(walls, { y: 0, opacity: 1, duration: 0.4 }, 0)
+        .to(material, { opacity: 0.95, duration: D }, 0)
+        .to(paint, { opacity: 0.35, duration: D }, 0)
+        .to(outlines, { opacity: 0.3, duration: D }, 0)
+        .to([...bulbs, ...cords], { opacity: 1, duration: D }, 0)
+        .fromTo(pools, { opacity: 0.4 }, { opacity: 1, duration: 0.9, stagger: 0.09, ease: E }, 0)
+        .to(labels, { opacity: 1, duration: D }, 0)
+        .fromTo(apartment.svg, { scale: 1 }, { scale: 1.03, duration: 1.1, ease: E, transformOrigin: '50% 55%' }, 0);
     }
     return tl;
   }
 
-  /* The copy arrives with its scene, and no two neighbours use the same
-     entrance. */
   const COPY_IN = [
     { y: 40, opacity: 0 },
     { x: 60, opacity: 0 },
@@ -2214,9 +2187,7 @@ craft = (() => {
     { scale: 0.94, opacity: 0 },
     { clipPath: 'inset(0 0 100% 0)', opacity: 0 }
   ];
-
   const COPY_SEL = '.panel__kicker, .panel__title, .panel__body, .panel__list li';
-  const SCENE_SEL = '.scene *';
 
   function copy(step, index) {
     const from = { ...COPY_IN[index] };
@@ -2226,9 +2197,7 @@ craft = (() => {
     });
   }
 
-  let timelines = [];
-  let trigger = null;
-  let current = -1;
+  let layers = [], copies = [], trigger = null, current = -1;
 
   function show(index) {
     if (index === current) return;
@@ -2238,27 +2207,28 @@ craft = (() => {
       r.classList.toggle('is-active', i === index);
       r.classList.toggle('is-done', i < index);
     });
-    const t = timelines[index];
-    if (t) { t.scene.restart(); t.copy.restart(); }
+    if (layerTag) layerTag.textContent = LAYER_NAMES[index][state.lang];
+    section.dataset.layer = index;
+    if (layers[index]) layers[index].restart();
+    if (copies[index]) copies[index].restart();
   }
 
   function build() {
     teardown();
+    apartment.relabel();
     if (stacked()) {
       steps.forEach(s => s.classList.add('is-active'));
+      if (layers.length === 0 && hasGSAP) layer(4).progress(1);   // show the finished flat
       return;
     }
 
-    timelines = steps.map((step, i) => ({ scene: scene(step, i), copy: copy(step, i) }));
+    layers = steps.map((_, i) => layer(i));
+    copies = steps.map((s, i) => copy(s, i));
     track.style.height = `${steps.length * 100}svh`;
 
     // The stage is pinned by CSS `position: sticky`; ScrollTrigger only
-    // reports where we are inside the track. Handing the same element to
-    // GSAP's `pin` as well makes the two fight over positioning.
-    //
-    // There are five steps and therefore five snap points at i/5, one per
-    // step — not i/4, which would drop each landing on the *boundary* of the
-    // next step and show the wrong scene.
+    // reports progress. Snap points are i/5 — one per step; i/(n-1) would
+    // land each snap on the boundary of the next step.
     trigger = ScrollTrigger.create({
       trigger: track,
       start: 'top top',
@@ -2279,18 +2249,20 @@ craft = (() => {
 
   function teardown() {
     if (trigger) { trigger.kill(true); trigger = null; }
-    timelines.forEach(t => { t.scene.kill(); t.copy.kill(); });
-    timelines = [];
-    current = -1;
+    layers.forEach(t => t.kill());
+    copies.forEach(t => t.kill());
+    layers = []; copies = []; current = -1;
     track.style.height = '';
     steps.forEach(s => s.classList.remove('is-active'));
 
-    // Every element a killed tween touched has to lose its inline styles.
-    // Miss one and the next `gsap.from()` reads that leftover (opacity: 0)
-    // as the tween's *destination*, and the element never appears again.
-    steps.forEach(step => {
-      gsap.set(step.querySelectorAll(`${COPY_SEL}, ${SCENE_SEL}`), { clearProps: 'all' });
-    });
+    // Every element a killed tween touched must lose its inline styles. Miss
+    // one and the next gsap.from() reads that leftover (opacity: 0) as its
+    // destination, and the element never appears again.
+    if (hasGSAP) {
+      steps.forEach(s => gsap.set(s.querySelectorAll(COPY_SEL), { clearProps: 'all' }));
+      gsap.set(apartment.q('.wall, .floor, .outline, .pool, .bulb, .cord, .rm__label'), { clearProps: 'all' });
+      gsap.set(apartment.svg, { clearProps: 'all' });
+    }
   }
 
   // the rail is a real table of contents, so let it navigate
@@ -2299,8 +2271,8 @@ craft = (() => {
     r.setAttribute('role', 'button');
     const go = () => {
       if (stacked()) { steps[i].scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
-      const top = track.offsetTop + (i / steps.length) * (track.offsetHeight);
-      window.scrollTo({ top: top + 10, behavior: 'smooth' });
+      const range = track.offsetHeight - window.innerHeight;
+      window.scrollTo({ top: track.offsetTop + (i / steps.length) * range + 4, behavior: 'smooth' });
     };
     r.addEventListener('click', go);
     r.addEventListener('keydown', e => {

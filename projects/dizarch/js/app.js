@@ -390,89 +390,263 @@ function initForm() {
   });
 }
 
-/* ═══ 7. the craft sequence ═════════════════════════════════ */
-/* A pinned stage: one scroll advances one discipline. Each step owns a
-   timeline that plays when it becomes active and rewinds when it leaves,
-   so scrolling back up replays it rather than showing a spent scene.
-   Every step gets a different entrance — the copy never arrives the same
-   way twice in a row. */
+/* ═══ 7. the apartment, and the layers over it ══════════════ */
+/* One isometric flat stays on screen through the whole sequence; each
+   scroll switches which layer of the work is drawn over it. The model is
+   generated from the room list below rather than hand-drawn, so changing
+   the flat means editing five rows of data. */
+
+const ROOMS = [
+  { id: 'living',  x: 0, y: 0, w: 6.4, h: 5.2, fa: 'نشیمن',     en: 'Living',   paint: '#B9A793', material: 'wood',    lamps: [[0.5, 0.42], [0.78, 0.72]] },
+  { id: 'kitchen', x: 6.4, y: 0, w: 5.2, h: 5.2, fa: 'آشپزخانه', en: 'Kitchen',  paint: '#8E9C93', material: 'stone',   lamps: [[0.5, 0.3]] },
+  { id: 'bed1',    x: 0, y: 5.2, w: 5.0, h: 4.4, fa: 'خواب اصلی', en: 'Main bed', paint: '#6E7A8A', material: 'wood',    lamps: [[0.5, 0.55]] },
+  { id: 'bed2',    x: 5.0, y: 5.2, w: 3.8, h: 4.4, fa: 'خواب دوم', en: 'Bedroom 2', paint: '#A8695C', material: 'textile', lamps: [[0.5, 0.5]] },
+  { id: 'bath',    x: 8.8, y: 5.2, w: 2.8, h: 4.4, fa: 'سرویس',   en: 'Bathroom', paint: '#7C9AA6', material: 'tile',    lamps: [[0.5, 0.4]] }
+];
+
+const WALL_H = 2.6;
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+const apartment = (() => {
+  const svg = document.getElementById('apt-svg');
+  if (!svg) return null;
+
+  const S = 34;                       // pixels per plan metre
+  const COS = Math.cos(Math.PI / 6);  // 30° isometric
+  const SIN = Math.sin(Math.PI / 6);
+  const OX = 360, OY = 120;
+
+  const iso = (x, y, z = 0) => [
+    OX + (x - y) * COS * S,
+    OY + (x + y) * SIN * S - z * S
+  ];
+  const poly = pts => pts.map(p => p.join(',')).join(' ');
+  const el = (tag, attrs = {}) => {
+    const n = document.createElementNS(SVG_NS, tag);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    return n;
+  };
+
+  /* ── material hatches, defined once and referenced per room ── */
+  function defs() {
+    const d = el('defs');
+    const pat = (id, inner, size = 10, angle = 0) => {
+      const p = el('pattern', {
+        id, width: size, height: size, patternUnits: 'userSpaceOnUse',
+        patternTransform: `rotate(${angle})`
+      });
+      inner.forEach(n => p.appendChild(n));
+      d.appendChild(p);
+    };
+    pat('m-wood', [
+      el('rect', { width: 10, height: 10, fill: '#8A5F31' }),
+      el('rect', { width: 10, height: 1, y: 0, fill: '#6E4A24' })
+    ], 10, 30);
+    pat('m-stone', [
+      el('rect', { width: 14, height: 14, fill: '#BCB09A' }),
+      el('circle', { cx: 4, cy: 5, r: 1.4, fill: '#A99C86' }),
+      el('circle', { cx: 10, cy: 10, r: 1, fill: '#CDC2AE' })
+    ], 14);
+    pat('m-tile', [
+      el('rect', { width: 12, height: 12, fill: '#7C9AA6' }),
+      el('rect', { width: 12, height: 1, fill: '#5F7C88' }),
+      el('rect', { width: 1, height: 12, fill: '#5F7C88' })
+    ], 12, 45);
+    pat('m-textile', [
+      el('rect', { width: 8, height: 8, fill: '#A8695C' }),
+      el('rect', { width: 8, height: 1, y: 3, fill: '#94574B', opacity: 0.7 }),
+      el('rect', { width: 1, height: 8, x: 3, fill: '#B87D70', opacity: 0.7 })
+    ], 8);
+
+    const glow = el('radialGradient', { id: 'lampglow' });
+    glow.appendChild(el('stop', { offset: '0%', 'stop-color': '#FFD9A0', 'stop-opacity': '0.95' }));
+    glow.appendChild(el('stop', { offset: '55%', 'stop-color': '#E8A33D', 'stop-opacity': '0.35' }));
+    glow.appendChild(el('stop', { offset: '100%', 'stop-color': '#E8A33D', 'stop-opacity': '0' }));
+    d.appendChild(glow);
+    return d;
+  }
+
+  // the outer boundary of the whole flat
+  const BOUNDS = {
+    minX: Math.min(...ROOMS.map(r => r.x)),
+    minY: Math.min(...ROOMS.map(r => r.y)),
+    maxX: Math.max(...ROOMS.map(r => r.x + r.w)),
+    maxY: Math.max(...ROOMS.map(r => r.y + r.h))
+  };
+  const same = (a, b) => Math.abs(a - b) < 0.01;
+
+  /* ── one room: walls, floor, outline, glow, label ── */
+  function room(r) {
+    const g = el('g', { class: 'rm', 'data-room': r.id });
+    const c = [[r.x, r.y], [r.x + r.w, r.y], [r.x + r.w, r.y + r.h], [r.x, r.y + r.h]];
+    const floor = c.map(([x, y]) => iso(x, y, 0));
+
+    // The two edges nearest the viewer are left open — this is a doll's
+    // house, you look in from the front. Interior partitions stay low so
+    // every room is visible at once; only the real exterior walls go up.
+    const walls = el('g', { class: 'rm__walls' });
+    const edges = [
+      { i: 0, back: true,  exterior: same(r.y, BOUNDS.minY) },
+      { i: 3, back: true,  exterior: same(r.x, BOUNDS.minX) },
+      { i: 1, back: false, exterior: same(r.x + r.w, BOUNDS.maxX) },
+      { i: 2, back: false, exterior: same(r.y + r.h, BOUNDS.maxY) }
+    ];
+    edges.forEach(({ i, back, exterior }) => {
+      if (!back && !exterior) return;              // nothing between two open rooms
+      const h = back ? (exterior ? WALL_H : WALL_H * 0.34) : WALL_H * 0.16;
+      const a = c[i], b = c[(i + 1) % 4];
+      walls.appendChild(el('polygon', {
+        class: `wall ${(i === 0 || i === 1) ? 'wall--far' : 'wall--near'}`,
+        points: poly([iso(...a, 0), iso(...b, 0), iso(...b, h), iso(...a, h)])
+      }));
+    });
+    g.appendChild(walls);
+
+    g.appendChild(el('polygon', { class: 'floor', points: poly(floor) }));
+    g.appendChild(el('polygon', { class: 'floor floor--paint', points: poly(floor) }));
+    g.appendChild(el('polygon', {
+      class: 'floor floor--material', points: poly(floor),
+      fill: `url(#m-${r.material})`
+    }));
+    g.appendChild(el('polygon', { class: 'outline', points: poly(floor) }));
+
+    const lamps = el('g', { class: 'rm__lamps' });
+    r.lamps.forEach(([fx, fy]) => {
+      const [cx, cy] = iso(r.x + r.w * fx, r.y + r.h * fy, 0);
+      lamps.appendChild(el('ellipse', {
+        class: 'pool', cx, cy, rx: Math.min(r.w, r.h) * S * 0.62,
+        ry: Math.min(r.w, r.h) * S * 0.34, fill: 'url(#lampglow)'
+      }));
+      lamps.appendChild(el('circle', { class: 'bulb', cx, cy: cy - WALL_H * S * 0.55, r: 3 }));
+      lamps.appendChild(el('line', {
+        class: 'cord', x1: cx, y1: cy - WALL_H * S * 0.55, x2: cx, y2: cy - WALL_H * S
+      }));
+    });
+    g.appendChild(lamps);
+
+    const [lx, ly] = iso(r.x + r.w / 2, r.y + r.h / 2, 0);
+    const label = el('text', { class: 'rm__label', x: lx, y: ly, 'text-anchor': 'middle' });
+    label.textContent = r.fa;
+    label.dataset.fa = r.fa;
+    label.dataset.en = r.en;
+    g.appendChild(label);
+
+    return g;
+  }
+
+  svg.textContent = '';
+  svg.appendChild(defs());
+  const model = el('g', { class: 'apt__model' });
+  // painter's algorithm: far rooms first
+  [...ROOMS].sort((a, b) => (a.x + a.y) - (b.x + b.y)).forEach(r => model.appendChild(room(r)));
+  svg.appendChild(model);
+
+  const q = sel => svg.querySelectorAll(sel);
+  const paints = [...q('.floor--paint')];
+  paints.forEach((el2, i) => {
+    const r = [...ROOMS].sort((a, b) => (a.x + a.y) - (b.x + b.y))[i];
+    el2.setAttribute('fill', r.paint);
+  });
+
+  function relabel() {
+    q('.rm__label').forEach(t => { t.textContent = t.dataset[state.lang]; });
+  }
+
+  return { svg, q, relabel, rise: WALL_H * S };
+})();
+
 craft = (() => {
   const section = document.getElementById('craft');
-  if (!section) return { rebuild() {} };
+  if (!section || !apartment) return { rebuild() {} };
 
   const steps = [...section.querySelectorAll('.step')];
   const rail = [...section.querySelectorAll('.rail__step')];
   const track = section.querySelector('.craft__track');
+  const layerTag = section.querySelector('.apt__layer');
+  const q = apartment.q;
   const stacked = () => reduced || !hasGSAP || window.matchMedia('(max-width: 60rem)').matches;
 
-  /* Each scene animates in its own terms: the plan draws, the light
-     switches on layer by layer, the colour floods up the wall, the
-     samples fan out, the site wipes from before to after. */
-  function scene(step, index) {
+  const LAYER_NAMES = [
+    { fa: 'لایه: پلان', en: 'Layer: plan' },
+    { fa: 'لایه: نور', en: 'Layer: light' },
+    { fa: 'لایه: رنگ', en: 'Layer: colour' },
+    { fa: 'لایه: متریال', en: 'Layer: material' },
+    { fa: 'لایه: اجرا', en: 'Layer: build' }
+  ];
+
+  /* Each step is a state of the same model, so a step's timeline says what
+     the model should look like — GSAP tweens from wherever it currently is,
+     which is what makes scrolling back up read as switching layers rather
+     than replaying an intro. */
+  function layer(index) {
     const tl = gsap.timeline({ paused: true });
-    const q = sel => step.querySelectorAll(sel);
+    const outlines = q('.outline'), walls = q('.wall'), floors = q('.floor:not(.floor--paint):not(.floor--material)');
+    const paint = q('.floor--paint'), material = q('.floor--material');
+    const pools = q('.pool'), bulbs = q('.bulb'), cords = q('.cord'), labels = q('.rm__label');
+    const D = 0.75, E = 'power2.out', RISE = apartment.rise;
 
     if (index === 0) {
-      q('.plan__walls path, .plan__openings path').forEach(path => {
-        const len = path.getTotalLength();
-        path.style.setProperty('--len', len);
-        tl.fromTo(path, { strokeDashoffset: len }, {
-          strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut'
-        }, '<0.12');
+      // flat on the ground: outlines draw, nothing has risen yet
+      tl.to(walls, { y: RISE, opacity: 0, duration: D, ease: E }, 0)
+        .to([...floors], { opacity: 0.10, duration: D, ease: E }, 0)
+        .to([...paint, ...material], { opacity: 0, duration: D, ease: E }, 0)
+        .to([...pools, ...bulbs, ...cords], { opacity: 0, duration: D * 0.6 }, 0)
+        .to(labels, { opacity: 0.55, duration: D }, 0);
+      outlines.forEach((o, i) => {
+        const len = o.getTotalLength();
+        o.style.strokeDasharray = len;
+        tl.fromTo(o, { strokeDashoffset: len, opacity: 1 },
+          { strokeDashoffset: 0, duration: 0.85, ease: 'power2.inOut' }, i * 0.1);
       });
-      tl.to(q('.plan__furniture rect, .plan__furniture circle'), {
-        opacity: 1, duration: 0.5, stagger: 0.09, ease: 'power2.out'
-      }, '-=0.3')
-        .to(q('.plan__north'), { opacity: 0.7, duration: 0.5 }, '-=0.2');
 
     } else if (index === 1) {
-      tl.to(q('.pendant'), { opacity: 1, duration: 0.5, ease: 'power2.out' })
-        .to(q('.layer--ambient'), { opacity: 1, duration: 0.7 }, '-=0.1')
-        .to(q('.layer--task'), { opacity: 1, duration: 0.6 }, '+=0.15')
-        .to(q('.layer--accent'), { opacity: 1, duration: 0.6 }, '+=0.15');
+      // the volume goes up and the light goes on, layer by layer
+      tl.to(outlines, { opacity: 0.35, duration: D }, 0)
+        .to([...floors], { opacity: 0.5, duration: D, ease: E }, 0)
+        .to([...paint, ...material], { opacity: 0, duration: D, ease: E }, 0)
+        .fromTo(walls, { y: RISE, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', stagger: 0.03 }, 0)
+        .to(cords, { opacity: 0.6, duration: 0.3 }, 0.5)
+        .to(bulbs, { opacity: 1, duration: 0.3, stagger: 0.08 }, 0.6)
+        .to(pools, { opacity: 0.95, duration: 0.7, stagger: 0.1, ease: E }, 0.7)
+        .to(labels, { opacity: 0.7, duration: D }, 0);
 
     } else if (index === 2) {
-      tl.to(q('.band'), {
-        scaleY: 1, duration: 0.7, stagger: 0.1, ease: 'power3.out'
-      })
-        .to(q('.palettebar span'), {
-          opacity: 1, duration: 0.35, stagger: 0.07
-        }, '-=0.4');
+      // paint arrives room by room, the light stays on underneath
+      tl.to(walls, { y: 0, opacity: 1, duration: 0.4 }, 0)
+        .to(outlines, { opacity: 0.25, duration: D }, 0)
+        .to(material, { opacity: 0, duration: D }, 0)
+        .to([...floors], { opacity: 0.25, duration: D }, 0)
+        .fromTo(paint, { opacity: 0 }, { opacity: 1, duration: 0.7, stagger: 0.12, ease: E }, 0.1)
+        .to(pools, { opacity: 0.16, duration: D }, 0)
+        .to([...bulbs, ...cords], { opacity: 0.4, duration: D }, 0)
+        .to(labels, { opacity: 0.8, duration: D }, 0);
 
     } else if (index === 3) {
-      const fan = [-24, -8, 8, 24];
-      const lift = [10, -6, -6, 10];
-      q('.sample').forEach((el, i) => {
-        tl.fromTo(el,
-          { opacity: 0, rotate: 0, x: 0, y: 40 },
-          {
-            opacity: 1, rotate: fan[i], y: lift[i],
-            x: `${fan[i] * 5.2}%`, duration: 0.7, ease: 'back.out(1.4)'
-          }, i * 0.11);
-      });
+      // the same rooms, now as finishes rather than flat colour
+      tl.to(walls, { y: 0, opacity: 1, duration: 0.4 }, 0)
+        .to(outlines, { opacity: 0.2, duration: D }, 0)
+        .to(paint, { opacity: 0.2, duration: D }, 0)
+        .to([...floors], { opacity: 0.2, duration: D }, 0)
+        .fromTo(material, { opacity: 0 }, { opacity: 1, duration: 0.7, stagger: 0.12, ease: E }, 0.1)
+        .to(pools, { opacity: 0.2, duration: D }, 0)
+        .to([...bulbs, ...cords], { opacity: 0.4, duration: D }, 0)
+        .to(labels, { opacity: 0.85, duration: D }, 0);
 
     } else {
-      const pct = step.querySelector('.site__pct');
-      const counter = { n: 0 };
-      tl.to(q('.site__wipe'), { opacity: 1, duration: 0.25 })
-        .fromTo(q('.site__wipe'), { left: '0%' }, {
-          left: '100%', duration: 1.4, ease: 'power2.inOut'
-        }, 0.25)
-        .fromTo(q('.site__after'),
-          { clipPath: 'inset(0 0 0 100%)' },
-          { clipPath: 'inset(0 0 0 0%)', duration: 1.4, ease: 'power2.inOut' }, 0.25)
-        .to(q('.site__fill'), { backgroundSize: '100% 100%', duration: 1.4, ease: 'power2.inOut' }, 0.25)
-        .to(counter, {
-          n: 100, duration: 1.4, ease: 'power2.inOut',
-          onUpdate: () => { if (pct) pct.textContent = localeNum(Math.round(counter.n)) + '٪'; }
-        }, 0.25)
-        .to(q('.site__wipe'), { opacity: 0, duration: 0.3 }, '-=0.2');
+      // handover: everything on at once, warm
+      tl.to(walls, { y: 0, opacity: 1, duration: 0.4 }, 0)
+        .to(material, { opacity: 0.95, duration: D }, 0)
+        .to(paint, { opacity: 0.35, duration: D }, 0)
+        .to(outlines, { opacity: 0.3, duration: D }, 0)
+        .to([...bulbs, ...cords], { opacity: 1, duration: D }, 0)
+        .fromTo(pools, { opacity: 0.4 }, { opacity: 1, duration: 0.9, stagger: 0.09, ease: E }, 0)
+        .to(labels, { opacity: 1, duration: D }, 0)
+        .fromTo(apartment.svg, { scale: 1 }, { scale: 1.03, duration: 1.1, ease: E, transformOrigin: '50% 55%' }, 0);
     }
     return tl;
   }
 
-  /* The copy arrives with its scene, and no two neighbours use the same
-     entrance. */
   const COPY_IN = [
     { y: 40, opacity: 0 },
     { x: 60, opacity: 0 },
@@ -480,9 +654,7 @@ craft = (() => {
     { scale: 0.94, opacity: 0 },
     { clipPath: 'inset(0 0 100% 0)', opacity: 0 }
   ];
-
   const COPY_SEL = '.panel__kicker, .panel__title, .panel__body, .panel__list li';
-  const SCENE_SEL = '.scene *';
 
   function copy(step, index) {
     const from = { ...COPY_IN[index] };
@@ -492,9 +664,7 @@ craft = (() => {
     });
   }
 
-  let timelines = [];
-  let trigger = null;
-  let current = -1;
+  let layers = [], copies = [], trigger = null, current = -1;
 
   function show(index) {
     if (index === current) return;
@@ -504,27 +674,28 @@ craft = (() => {
       r.classList.toggle('is-active', i === index);
       r.classList.toggle('is-done', i < index);
     });
-    const t = timelines[index];
-    if (t) { t.scene.restart(); t.copy.restart(); }
+    if (layerTag) layerTag.textContent = LAYER_NAMES[index][state.lang];
+    section.dataset.layer = index;
+    if (layers[index]) layers[index].restart();
+    if (copies[index]) copies[index].restart();
   }
 
   function build() {
     teardown();
+    apartment.relabel();
     if (stacked()) {
       steps.forEach(s => s.classList.add('is-active'));
+      if (layers.length === 0 && hasGSAP) layer(4).progress(1);   // show the finished flat
       return;
     }
 
-    timelines = steps.map((step, i) => ({ scene: scene(step, i), copy: copy(step, i) }));
+    layers = steps.map((_, i) => layer(i));
+    copies = steps.map((s, i) => copy(s, i));
     track.style.height = `${steps.length * 100}svh`;
 
     // The stage is pinned by CSS `position: sticky`; ScrollTrigger only
-    // reports where we are inside the track. Handing the same element to
-    // GSAP's `pin` as well makes the two fight over positioning.
-    //
-    // There are five steps and therefore five snap points at i/5, one per
-    // step — not i/4, which would drop each landing on the *boundary* of the
-    // next step and show the wrong scene.
+    // reports progress. Snap points are i/5 — one per step; i/(n-1) would
+    // land each snap on the boundary of the next step.
     trigger = ScrollTrigger.create({
       trigger: track,
       start: 'top top',
@@ -545,18 +716,20 @@ craft = (() => {
 
   function teardown() {
     if (trigger) { trigger.kill(true); trigger = null; }
-    timelines.forEach(t => { t.scene.kill(); t.copy.kill(); });
-    timelines = [];
-    current = -1;
+    layers.forEach(t => t.kill());
+    copies.forEach(t => t.kill());
+    layers = []; copies = []; current = -1;
     track.style.height = '';
     steps.forEach(s => s.classList.remove('is-active'));
 
-    // Every element a killed tween touched has to lose its inline styles.
-    // Miss one and the next `gsap.from()` reads that leftover (opacity: 0)
-    // as the tween's *destination*, and the element never appears again.
-    steps.forEach(step => {
-      gsap.set(step.querySelectorAll(`${COPY_SEL}, ${SCENE_SEL}`), { clearProps: 'all' });
-    });
+    // Every element a killed tween touched must lose its inline styles. Miss
+    // one and the next gsap.from() reads that leftover (opacity: 0) as its
+    // destination, and the element never appears again.
+    if (hasGSAP) {
+      steps.forEach(s => gsap.set(s.querySelectorAll(COPY_SEL), { clearProps: 'all' }));
+      gsap.set(apartment.q('.wall, .floor, .outline, .pool, .bulb, .cord, .rm__label'), { clearProps: 'all' });
+      gsap.set(apartment.svg, { clearProps: 'all' });
+    }
   }
 
   // the rail is a real table of contents, so let it navigate
@@ -565,8 +738,8 @@ craft = (() => {
     r.setAttribute('role', 'button');
     const go = () => {
       if (stacked()) { steps[i].scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
-      const top = track.offsetTop + (i / steps.length) * (track.offsetHeight);
-      window.scrollTo({ top: top + 10, behavior: 'smooth' });
+      const range = track.offsetHeight - window.innerHeight;
+      window.scrollTo({ top: track.offsetTop + (i / steps.length) * range + 4, behavior: 'smooth' });
     };
     r.addEventListener('click', go);
     r.addEventListener('keydown', e => {

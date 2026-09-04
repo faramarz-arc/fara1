@@ -140,23 +140,24 @@
 </section>
 
 
-<!-- ═══════════════ 3. CRAFT — 12:30, one step per scroll ═══════════════
-     A pinned stage. Each scroll advances one discipline: the scene animates
-     and its copy arrives with it. The order is the real order of a project,
-     which is why the steps are numbered. -->
+<!-- ═══════════════ 3. CRAFT — 12:30, one layer per scroll ═══════════════
+     One apartment stays on screen; each scroll switches which layer of the
+     work is drawn over it — plan, light, colour, material, build. The model
+     is generated in js/app.js from a room list, not hand-drawn, so changing
+     the flat means editing five lines of data. -->
 <section class="craft" id="craft" data-hour="1230">
 
   <div class="craft__intro">
     <p class="eyebrow"><span class="eyebrow__time">۱۲:۳۰</span><span class="eyebrow__label" data-en="Midday" data-en-time="12:30">نیم‌روز</span></p>
-    <h2 class="section__title" data-en="Five disciplines, in the order we actually work.">
-      پنج تخصص، به همان ترتیبی که واقعاً کار می‌کنیم.
+    <h2 class="section__title" data-en="One flat. Five layers of work, one per scroll.">
+      یک خانه. پنج لایه کار، با هر اسکرول یکی.
     </h2>
   </div>
 
   <div class="craft__track">
     <div class="craft__stage">
 
-      <ol class="rail" aria-label="مراحل کار">
+      <ol class="rail" aria-label="لایه‌های کار">
         <li class="rail__step is-active"><span class="rail__num">۰۱</span><span class="rail__name" data-en="Plan">پلان</span></li>
         <li class="rail__step"><span class="rail__num">۰۲</span><span class="rail__name" data-en="Light">نور</span></li>
         <li class="rail__step"><span class="rail__num">۰۳</span><span class="rail__name" data-en="Colour">رنگ</span></li>
@@ -164,34 +165,18 @@
         <li class="rail__step"><span class="rail__num">۰۵</span><span class="rail__name" data-en="Build">اجرا</span></li>
       </ol>
 
-      <div class="craft__viewport">
+      <!-- the model: built by js from the room list, layers toggled per step -->
+      <figure class="apt">
+        <svg class="apt__svg" id="apt-svg" viewBox="0 0 720 560" role="img"
+             aria-label="نمای سه‌بعدی یک آپارتمان دوخوابه که لایه‌های پلان، نور، رنگ، متریال و اجرا روی آن نمایش داده می‌شود"></svg>
+        <figcaption class="apt__caption">
+          <span class="apt__layer" data-en="Layer: plan">لایه: پلان</span>
+          <span class="apt__meta" data-en="2 bed · 92 m²">۲ خوابه · ۹۲ متر مربع</span>
+        </figcaption>
+      </figure>
 
-        <!-- ─── 01 plan ─── -->
+      <div class="panels">
         <article class="step is-active" data-step="0">
-          <div class="scene scene--plan">
-            <svg viewBox="0 0 400 300" role="img" aria-label="پلان خطی یک آپارتمان با چیدمان مبلمان">
-              <g class="plan__walls" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round">
-                <path d="M30 40 H370 V260 H30 Z"/>
-                <path d="M215 40 V150 H370"/>
-                <path d="M30 190 H215"/>
-              </g>
-              <g class="plan__openings" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M215 90 A28 28 0 0 1 243 118"/>
-                <path d="M120 190 h48"/>
-              </g>
-              <g class="plan__furniture">
-                <rect x="52" y="62" width="104" height="46" rx="3"/>
-                <rect x="52" y="120" width="46" height="46" rx="3"/>
-                <rect x="252" y="66" width="86" height="34" rx="3"/>
-                <rect x="60" y="212" width="120" height="30" rx="3"/>
-                <circle cx="300" cy="200" r="26"/>
-              </g>
-              <g class="plan__north" stroke="currentColor" fill="none" stroke-width="2">
-                <circle cx="352" cy="232" r="16"/>
-                <path d="M352 220 v24 M346 226 l6 -6 l6 6"/>
-              </g>
-            </svg>
-          </div>
           <div class="panel">
             <p class="panel__kicker" data-en="Step 01 — Plan &amp; layout">مرحلهٔ ۰۱ — پلان و چیدمان</p>
             <h3 class="panel__title" data-en="Where the walls go decides everything after.">
@@ -208,18 +193,7 @@
           </div>
         </article>
 
-        <!-- ─── 02 light ─── -->
         <article class="step" data-step="1">
-          <div class="scene scene--light">
-            <div class="room">
-              <div class="room__wall"></div>
-              <div class="room__floor"></div>
-              <div class="layer layer--ambient"></div>
-              <div class="layer layer--task"></div>
-              <div class="layer layer--accent"></div>
-              <div class="pendant"><span class="pendant__cord"></span><span class="pendant__shade"></span></div>
-            </div>
-          </div>
           <div class="panel">
             <p class="panel__kicker" data-en="Step 02 — Lighting">مرحلهٔ ۰۲ — نورپردازی</p>
             <h3 class="panel__title" data-en="One ceiling light is not lighting design.">
@@ -236,22 +210,7 @@
           </div>
         </article>
 
-        <!-- ─── 03 colour ─── -->
         <article class="step" data-step="2">
-          <div class="scene scene--colour">
-            <div class="swatchwall">
-              <div class="band" style="--band:#B9A793"></div>
-              <div class="band" style="--band:#8E9C93"></div>
-              <div class="band" style="--band:#6E7A8A"></div>
-              <div class="band" style="--band:#A8695C"></div>
-              <div class="band" style="--band:#2F2A26"></div>
-            </div>
-            <div class="palettebar">
-              <span style="--chip:#B9A793"></span><span style="--chip:#8E9C93"></span>
-              <span style="--chip:#6E7A8A"></span><span style="--chip:#A8695C"></span>
-              <span style="--chip:#2F2A26"></span>
-            </div>
-          </div>
           <div class="panel">
             <p class="panel__kicker" data-en="Step 03 — Colour">مرحلهٔ ۰۳ — رنگ</p>
             <h3 class="panel__title" data-en="We paint the sample on your wall, not on a card.">
@@ -268,16 +227,7 @@
           </div>
         </article>
 
-        <!-- ─── 04 material ─── -->
         <article class="step" data-step="3">
-          <div class="scene scene--material">
-            <div class="samples">
-              <div class="sample sample--oak"><span data-en="Oak">بلوط</span></div>
-              <div class="sample sample--stone"><span data-en="Travertine">تراورتن</span></div>
-              <div class="sample sample--brass"><span data-en="Brushed brass">برنج مات</span></div>
-              <div class="sample sample--linen"><span data-en="Linen">کتان</span></div>
-            </div>
-          </div>
           <div class="panel">
             <p class="panel__kicker" data-en="Step 04 — Materials">مرحلهٔ ۰۴ — متریال و بافت</p>
             <h3 class="panel__title" data-en="Texture is what a room feels like before you touch it.">
@@ -294,16 +244,7 @@
           </div>
         </article>
 
-        <!-- ─── 05 build ─── -->
         <article class="step" data-step="4">
-          <div class="scene scene--build">
-            <div class="site">
-              <div class="site__before"></div>
-              <div class="site__after"></div>
-              <div class="site__wipe"></div>
-              <div class="site__meter"><span class="site__fill"></span><span class="site__pct">۰٪</span></div>
-            </div>
-          </div>
           <div class="panel">
             <p class="panel__kicker" data-en="Step 05 — Build &amp; delivery">مرحلهٔ ۰۵ — اجرا و بازسازی</p>
             <h3 class="panel__title" data-en="The drawing is the easy half.">
@@ -319,8 +260,8 @@
             </ul>
           </div>
         </article>
-
       </div>
+
     </div>
   </div>
 </section>

@@ -35,16 +35,18 @@ the studio sells rather than claiming it.
 
 ## The scroll sequence
 
-`#craft` is a pinned stage: the viewport holds still while one scroll advances
-one discipline — plan, light, colour, material, build — and each step's scene
-animates as its copy arrives with it. The order is the real order of a project,
-which is the only reason the steps carry numbers.
+`#craft` is a pinned stage holding one isometric flat. The viewport stays put
+while each scroll switches which **layer of the work** is drawn over the same
+model — plan, light, colour, material, build — and the matching copy arrives
+with it. The order is the real order of a project, which is the only reason the
+steps carry numbers.
 
-Each scene animates in its own terms rather than repeating one effect: the plan
-draws itself along its own path lengths, the lighting switches on layer by
-layer, the colour floods up the wall, the material samples fan out, and the site
-wipes from before to after with the progress meter counting up. No two
-consecutive steps share an entrance.
+The model is generated in `js/app.js` from the `ROOMS` array, not hand-drawn:
+each row is `{x, y, w, h}` in metres plus a paint colour, a material and lamp
+positions. Change those five rows and the whole flat changes. Walls are built
+per room, and only edges on the outer boundary of the plan get full height —
+interior partitions stay low, which is what lets you see into every room at
+once.
 
 Implementation notes worth knowing before you edit it:
 
@@ -53,11 +55,19 @@ Implementation notes worth knowing before you edit it:
   the two fight over positioning.
 - `overflow-x: hidden` anywhere up the tree (`body` included) turns that
   ancestor into a scroll container and silently kills the sticky behaviour.
-  `overflow-x: clip` on `html` does the clipping without that side effect.
+  `overflow-x: clip` does the clipping without that side effect.
 - The snap points are `i / 5`, one per step. `i / (n-1)` looks right and is
   wrong: it lands each snap on the boundary of the *next* step.
-- Below 60rem and under `prefers-reduced-motion`, the pin is dropped entirely
-  and the five steps simply stack as ordinary sections.
+- Walls animate with a vertical slide, never `scaleY`. GSAP scales around an
+  element's bounding box, and an isometric wall's "bottom" is a slope, not a
+  line, so scaling skews it.
+- A grid track for the model needs `minmax(0, 1fr)`. Bare `1fr` cannot shrink
+  below the SVG's intrinsic viewBox width and blows the layout apart on phones.
+- Anything translated sideways by an entrance animation must sit inside
+  `overflow-x: clip`. In RTL an element parked off-axis counts as document
+  overflow, and the whole page shifts sideways until the animation plays.
+- Below 60rem and under `prefers-reduced-motion`, the pin is dropped and the
+  five steps stack as ordinary sections with the finished flat shown once.
 
 Palette — two opposed lights, never a single accent:
 
