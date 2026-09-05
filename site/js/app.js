@@ -248,26 +248,30 @@
         var f = clamp(p - i, 0, 1);
         var blend = easeInOut(clamp((f - (1 - BLEND)) / BLEND, 0, 1));
 
-        /* Two panoramas facing different parts of the house never read as one
-           image when they overlap - a bright wall in one shows straight
-           through the other, and the frame looks split down the middle. So
-           the rooms hand off through the page's ink instead: the outgoing one
-           is gone before the incoming one starts, with a sliver of darkness
-           between them that reads as a cut rather than a double exposure. */
-        var out = 1 - easeInOut(clamp(blend / 0.46, 0, 1));
-        var into = easeInOut(clamp((blend - 0.54) / 0.46, 0, 1));
+        /* The rooms change on a straight cut - one frame the old room, the
+           next frame the new one, always at full opacity.
+
+           Neither obvious alternative works here. Cross-fading two panoramas
+           that face different parts of the house shows one straight through
+           the other and the frame reads as split down the middle. Fading out
+           through black avoids that but drops the screen to nothing, which
+           feels like a fault rather than a transition. A cut has neither
+           problem: never two images, never an empty frame. The lean below
+           carries the movement across it. */
+        var live = blend < 0.5 ? i : i + 1;
 
         rooms.forEach(function (r, k) {
-          var a = k === i ? out : k === i + 1 ? into : 0;
+          var a = k === live ? 1 : 0;
           r.mat.uniforms.alpha.value = a;
           r.mesh.visible = a > 0.003;
         });
 
-        /* The room's own sweep finishes exactly at the darkest point of the
-           handoff, and the next room's starting heading is taken up there —
-           so the change of facing happens while nothing is on screen. */
+        /* The room's own sweep finishes exactly on the cut, and the next
+           room's starting heading is taken up there — so the change of
+           facing lands on the same frame as the change of picture, and
+           reads as one edit rather than two. */
         var mid = 1 - BLEND / 2;
-        var live = blend < 0.5 ? rooms[i] : rooms[i + 1];
+        var room = rooms[live];
         var heading = blend < 0.5
           ? rooms[i].from + rooms[i].sweep * easeInOut(clamp(f / mid, 0, 1))
           : rooms[i + 1].from;
@@ -278,7 +282,7 @@
 
         /* Parallax and drag are added before the clamp, so nothing the viewer
            does can bring the seam into frame. */
-        var yaw = clamp(heading + look.x * 22 + user.yaw, live.limit[0], live.limit[1]);
+        var yaw = clamp(heading + look.x * 22 + user.yaw, room.limit[0], room.limit[1]);
         var pitch = -2.5 - look.y * 11 + user.pitch;
         cam.rotation.set(0, 0, 0, 'YXZ');
         cam.rotateY(T.MathUtils.degToRad(yaw));
