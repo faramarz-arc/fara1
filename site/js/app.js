@@ -55,7 +55,8 @@
 
   var canvas = $('gl'), stage = $('stage'), fallback = $('glFallback');
   var loader = $('loader'), loaderFill = $('loaderFill'), loaderPct = $('loaderPct');
-  var railEl = $('rail'), railNum = $('railNum'), railDots = $('railDots'), compass = $('compass');
+  var indexEl = $('tourIndex'), indexNow = $('indexNow'), indexName = $('indexName');
+  var indexFill = $('indexFill'), railDots = $('railDots'), compass = $('compass');
   var navProgress = $('navProgress'), dragHint = $('dragHint');
   var tourEl = $('tour');
   var sceneEls = [].slice.call(document.querySelectorAll('.scene'));
@@ -321,12 +322,21 @@
       if (cue) cue.style.opacity = o.toFixed(3);
     });
 
-    if (railNum) railNum.textContent = fa(String(idx + 1).padStart(2, '0'));
+    if (indexNow) indexNow.textContent = fa(String(idx + 1).padStart(2, '0'));
+    if (indexName) indexName.textContent = ROOMS[idx].label;
+    if (indexFill) {
+      /* the track runs across on a phone and down the rail on a desktop */
+      var through = (pos / (ROOMS.length - 1) * 100).toFixed(1) + '%';
+      indexFill.style.width = through;
+      indexFill.style.height = through;
+    }
     if (railDots) {
       [].forEach.call(railDots.children, function (b, i) {
         b.setAttribute('aria-current', i === idx ? 'true' : 'false');
       });
     }
+    if (arrowPrev) arrowPrev.disabled = idx === 0;
+    if (arrowNext) arrowNext.disabled = idx === ROOMS.length - 1;
     if (fallback) {
       fallback.style.backgroundImage = 'url("' + panoUrl(ROOMS[idx].id, '-sm') + '")';
     }
@@ -337,8 +347,17 @@
      Rail — a real control: click, arrow keys, roving tabindex
      ================================================================ */
   var nudge = null;   /* set once the look control exists */
+  var arrowPrev = $('indexPrev'), arrowNext = $('indexNext');
+
+  function currentRoom() { return Math.round(tourPosition()); }
 
   function buildRail() {
+    [[arrowPrev, -1], [arrowNext, 1]].forEach(function (pair) {
+      if (!pair[0]) return;
+      pair[0].addEventListener('click', function () {
+        gotoRoom(clamp(currentRoom() + pair[1], 0, ROOMS.length - 1));
+      });
+    });
     if (!railDots) return;
     var howto = document.createElement('p');
     howto.className = 'sr-only';
@@ -347,12 +366,12 @@
     ROOMS.forEach(function (cfg, i) {
       var b = document.createElement('button');
       b.type = 'button';
-      b.className = 'rail__dot';
+      b.className = 'index__dot';
       b.dataset.room = i;
       b.setAttribute('aria-current', i === 0 ? 'true' : 'false');
       b.tabIndex = i === 0 ? 0 : -1;
       b.innerHTML = '<span class="sr-only">' + cfg.label + '</span>' +
-                    '<span class="rail__tip" aria-hidden="true">' + cfg.label + '</span>';
+                    '<span class="index__tip" aria-hidden="true">' + cfg.label + '</span>';
       b.addEventListener('click', function () { gotoRoom(i); });
       railDots.appendChild(b);
     });
@@ -493,14 +512,14 @@
     var drag = null, lastAt = 0, pinch = null;
     var hintGone = false;
 
-    try { hintGone = localStorage.getItem('dz-hint') === '1'; } catch (e) {}
+    try { hintGone = sessionStorage.getItem('dz-hint') === '1'; } catch (e) {}
     if (hintGone && dragHint) dragHint.classList.add('is-gone');
 
     function dismissHint() {
       if (hintGone || !dragHint) return;
       hintGone = true;
       dragHint.classList.add('is-gone');
-      try { localStorage.setItem('dz-hint', '1'); } catch (e) {}
+      try { sessionStorage.setItem('dz-hint', '1'); } catch (e) {}
     }
     setTimeout(dismissHint, 9000);
 
@@ -759,7 +778,7 @@
     paintScenes(target);
     var past = tourEl && scrollY > tourEl.offsetTop + tourEl.offsetHeight - innerHeight * 0.6;
     stage.classList.toggle('is-parked', !!past);
-    railEl.classList.toggle('is-parked', !!past);
+    indexEl.classList.toggle('is-parked', !!past);
     if (dragHint && past) dragHint.classList.add('is-gone');
     inView = !past;
   }

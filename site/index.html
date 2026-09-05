@@ -88,15 +88,10 @@
     </span>
   </a>
   <div class="nav__links" id="navLinks">
-    <a href="#entry"     data-nav="entry">ورودی</a>
-    <a href="#living"    data-nav="living">نشیمن</a>
-    <a href="#kitchen"   data-nav="kitchen">آشپزخانه</a>
-    <a href="#dining"    data-nav="dining">ناهارخوری</a>
-    <a href="#corridor"  data-nav="corridor">راهرو</a>
-    <a href="#bedroom"   data-nav="bedroom">اتاق خواب</a>
-    <a href="#projects"  data-nav="projects">پروژه‌ها</a>
-    <a href="#studio"    data-nav="studio">استودیو</a>
-    <a href="#contact"   data-nav="contact">تماس</a>
+    <a href="#entry"    data-nav="tour">تور خانه</a>
+    <a href="#projects" data-nav="projects">پروژه‌ها</a>
+    <a href="#studio"   data-nav="studio">استودیو</a>
+    <a href="#contact"  data-nav="contact">تماس</a>
   </div>
   <div class="nav__actions">
     <a href="tel:+989120249136" class="nav__call" aria-label="تماس تلفنی با استودیو">
@@ -109,12 +104,21 @@
   <div class="nav__progress" aria-hidden="true"><span id="navProgress"></span></div>
 </nav>
 
-<!-- Room rail: clickable, keyboard-navigable, labelled. -->
-<nav class="rail" id="rail" aria-label="اتاق‌های تور">
-  <span class="rail__num" id="railNum" aria-hidden="true">۰۱</span>
+
+<!-- Where am I, how many are there, how do I move: on every screen size. -->
+<nav class="index" id="tourIndex" aria-label="فضاهای تور">
+  <button type="button" class="index__arrow" id="indexPrev" aria-label="فضای قبلی">↑</button>
+  <div class="index__body">
+    <p class="index__label">
+      <span class="index__now" id="indexNow">۰۱</span>
+      <span class="index__of">از ۰۶</span>
+      <span class="index__name" id="indexName">ورودی</span>
+    </p>
+    <span class="index__track" aria-hidden="true"><span class="index__fill" id="indexFill"></span></span>
+    <div class="index__dots" id="railDots"></div>
+  </div>
   <span class="compass" aria-hidden="true"><span class="compass__needle" id="compass"></span></span>
-  <div class="rail__dots" id="railDots"></div>
-  <span class="rail__num" style="opacity:.5" aria-hidden="true">۰۶</span>
+  <button type="button" class="index__arrow" id="indexNext" aria-label="فضای بعدی">↓</button>
 </nav>
 
 <div class="hint" id="dragHint" aria-hidden="true">
@@ -137,16 +141,7 @@
       </h1>
       <p class="caption__latin lat">THE HOUSE INTRODUCES ITSELF HERE</p>
       <p class="caption__detail">درِ گردوی توپر، کابینت‌بندی اختصاصی و فرش دستباف — اولین جمله‌ی روایت خانه</p>
-      <dl class="stats">
-        <div><dd class="stats__n">۱۸</dd><dt class="stats__l">سال تجربه</dt></div>
-        <div><dd class="stats__n">۱۴۰+</dd><dt class="stats__l">پروژه اجراشده</dt></div>
-        <div><dd class="stats__n">۹۸٪</dd><dt class="stats__l">رضایت کارفرما</dt></div>
-      </dl>
     </div>
-    <a href="#living" class="scroll-cue">
-      <span>اسکرول کنید</span>
-      <span class="disc" aria-hidden="true">↓</span>
-    </a>
   </section>
 
   <section id="living" class="scene" data-room="1">
@@ -158,7 +153,6 @@
       </h2>
       <p class="caption__detail">فرش تبریز، رومیزی برنز و نورپردازی مخفی در سقف — بدون هیچ منبع نور مزاحم</p>
     </div>
-    <a href="#kitchen" class="disc disc--corner" aria-label="اتاق بعدی: آشپزخانه">↓</a>
   </section>
 
   <section id="kitchen" class="scene" data-room="2">
@@ -170,7 +164,6 @@
       </h2>
       <p class="caption__detail">کابینت گردوی طبیعی و کانتر سنگ یکپارچه، هم‌راستا با پذیرایی</p>
     </div>
-    <a href="#dining" class="disc disc--corner" aria-label="اتاق بعدی: ناهارخوری">↓</a>
   </section>
 
   <section id="dining" class="scene" data-room="3">
@@ -182,7 +175,6 @@
       </h2>
       <p class="caption__detail">میز چوب گردوی یکپارچه با ظرفیت میزبانی جمع‌های خانوادگی</p>
     </div>
-    <a href="#corridor" class="disc disc--corner" aria-label="اتاق بعدی: راهرو">↓</a>
   </section>
 
   <section id="corridor" class="scene" data-room="4">
@@ -194,7 +186,6 @@
       </h2>
       <p class="caption__detail">نور مخفی لبه‌ی سقف، مسیر آرامی میان فضاهای عمومی و خصوصی خانه می‌سازد</p>
     </div>
-    <a href="#bedroom" class="disc disc--corner" aria-label="اتاق بعدی: اتاق خواب">↓</a>
   </section>
 
   <section id="bedroom" class="scene" data-room="5">
@@ -206,9 +197,26 @@
       </h2>
       <p class="caption__detail">پرده‌ی دولایه، جنس‌های خنثی و نور قابل‌تنظیم برای خوابی بی‌وقفه</p>
     </div>
-    <a href="#projects" class="disc disc--corner" aria-label="ادامه: پروژه‌ها">↓</a>
   </section>
 </div>
+
+<!-- The tour ends here. Scrolling stops driving the camera and starts
+     moving the page, so the change is named rather than sprung. -->
+<section id="tour-end" class="close">
+  <div class="wrap">
+    <p class="close__k">پایان تور</p>
+    <h2 class="close__t">خانه را دیدید.<br>حالا ببینیم خانه‌ی شما چه می‌خواهد.</h2>
+    <dl class="stats">
+      <div><dd class="stats__n">۱۸</dd><dt class="stats__l">سال تجربه</dt></div>
+      <div><dd class="stats__n">۱۴۰+</dd><dt class="stats__l">پروژه اجراشده</dt></div>
+      <div><dd class="stats__n">۹۸٪</dd><dt class="stats__l">رضایت کارفرما</dt></div>
+    </dl>
+    <div class="close__acts">
+      <a class="btn" href="#contact">رزرو بازدید</a>
+      <a class="btn btn--ghost" href="#projects">دیدن پروژه‌ها</a>
+    </div>
+  </div>
+</section>
 
 <!-- A text equivalent of the canvas tour, for screen readers and search. -->
 <h2 class="sr-only">فضاهای این پروژه</h2>
@@ -224,7 +232,7 @@
 <!-- ── projects ── -->
 <section id="projects" class="sheet">
   <div class="wrap">
-    <p class="sec__eyebrow">۰۷ — پروژه‌ها <span class="lat">/ WORK</span></p>
+    <p class="sec__eyebrow">پروژه‌ها <span class="lat">/ WORK</span></p>
     <h2 class="sec__title">آپارتمان فرشته، فضا به فضا</h2>
     <p class="sec__lede">شش فضای همین پروژه — همان خانه‌ای که در تور بالا قدم زدید.</p>
     <!-- CONTENT-TODO: منشأ تصاویر (عکس محل اجرا یا رندر) اینجا صادقانه ذکر شود. -->
@@ -290,13 +298,12 @@
   <div class="wrap">
     <div class="split">
       <div>
-        <p class="sec__eyebrow">۰۸ — استودیو <span class="lat">/ STUDIO</span></p>
+        <p class="sec__eyebrow">استودیو <span class="lat">/ STUDIO</span></p>
         <h2 class="sec__title">یک تیم، از طراحی تا کلید</h2>
         <p class="sec__lede">دیزآرچ از سال ۱۳۸۵ روی معماری داخلی مسکونی و اداری کار می‌کند. طراحی، انتخاب متریال، پیمانکاری و نظارت همه داخل خود استودیو انجام می‌شود؛ کارفرما با یک تیم طرف است، نه با چند مجموعه‌ی جدا.</p>
 
         <dl class="facts">
           <div class="fact"><dt>سال تأسیس</dt><dd>۱۳۸۵</dd></div>
-          <div class="fact"><dt>پروژه‌های اجراشده</dt><dd>۱۴۰+</dd></div>
           <div class="fact"><dt>میانگین مدت اجرا</dt><dd>۴ تا ۷ ماه</dd></div>
           <div class="fact"><dt>حداقل متراژ پروژه</dt><dd>۸۰ متر مربع</dd></div>
           <div class="fact"><dt>گارانتی اجرا</dt><dd>۲۴ ماه</dd></div>
@@ -344,7 +351,7 @@
 <!-- ── contact ── -->
 <section id="contact" class="sheet">
   <div class="wrap">
-    <p class="sec__eyebrow">۰۹ — تماس <span class="lat">/ CONTACT</span></p>
+    <p class="sec__eyebrow">تماس <span class="lat">/ CONTACT</span></p>
     <h2 class="sec__title">فضای بعدی‌تان را بسازیم.</h2>
 
     <div class="contact">
