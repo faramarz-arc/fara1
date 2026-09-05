@@ -1,0 +1,89 @@
+# DizArch — 360 tour
+
+Static site. No build step: serve `site/` as-is.
+
+```
+content/                build-time content (rendered into index.html)
+  projects.json         the project grid
+  process.json          the four stages, with durations, payments, deliverables
+site/
+  content/pricing.json  estimator rates, read at runtime — no rebuild needed
+  index.html            markup, metadata, JSON-LD
+  css/styles.css        all styling
+  css/fonts.css         generated @font-face sheet (tools/fetch-fonts.py)
+  assets/fonts/         self-hosted woff2 — Google Fonts does not reach Iran reliably
+  js/app.js             tour runtime, look control, nav, form
+  js/vendor/            three.js (minified subset, MIT)
+  assets/panos/         six equirectangular rooms
+      <room>.webp       full frame, desktop
+      <room>-sm.webp    1440px, phones
+      <room>-lqip.webp  ~0.5 KB placeholder, loaded up front
+  assets/projects/      rectilinear card crops, reprojected from the panoramas
+```
+
+## Local
+
+```sh
+cd site && python3 -m http.server 8000
+```
+
+## Serving notes
+
+- Enable gzip/brotli. `js/vendor/three.bundle.js` is 480 KB raw and compresses hard.
+- Cache `assets/` and `js/vendor/` long (they are content-stable); keep `index.html` short.
+
+## Rebuilding the images
+
+`tools/build-images.py` regenerates every `.webp` from a directory of source
+equirectangular JPEGs — the panorama variants, the project-card crops, and the
+Open Graph cover.
+
+```sh
+python3 tools/build-images.py path/to/source-panoramas
+```
+
+## Single-file preview
+
+`tools/build-preview.py` bundles the whole site into one HTML file with every
+image and script inlined, for sharing a running preview where a static host
+isn't available. It is a preview build only — it throws away the progressive
+loading the real site depends on.
+
+```sh
+python3 tools/build-preview.py
+```
+
+## Editing content
+
+```sh
+python3 tools/build-content.py     # content/*.json -> index.html
+```
+
+Projects and the process schedule are rendered into the regions of
+`index.html` marked `<!-- BUILD:name --> … <!-- /BUILD:name -->`. Everything
+else in the file is hand-written and left alone, so changes stay diffable.
+
+Estimator rates live in `site/content/pricing.json` and are fetched by the
+page, so changing a rate needs no rebuild. While `rates_confirmed` is false
+the estimator tells visitors the rates are unconfirmed.
+
+## Fonts
+
+```sh
+python3 tools/fetch-fonts.py       # re-download woff2 + regenerate fonts.css
+```
+
+## Before publishing
+
+```sh
+python3 tools/check-content.py
+```
+
+Lists every value on the site that was invented or carried over as a
+stand-in and still reads as a statement of fact — and blocks outright on any
+claim the images cannot support. Exits non-zero while anything is unresolved.
+
+## Configuration
+
+Contact details and the form endpoint are `data-*` attributes on `<body>`.
+See `../CONTENT-TODO.md`.

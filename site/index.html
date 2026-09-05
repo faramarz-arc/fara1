@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>تور مجازی ۳۶۰ درجه خانه | استودیو معماری داخلی دیزآرچ</title>
+<meta name="description" content="تور مجازی ۳۶۰ درجه یک پروژه مسکونی اجراشده توسط استودیو دیزآرچ — ورودی، نشیمن، آشپزخانه، ناهارخوری، راهرو و اتاق خواب. طراحی و اجرای معماری داخلی در تهران.">
+<meta name="theme-color" content="#0c0b09">
+<link rel="canonical" href="https://dizarch.com/">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fa_IR">
+<meta property="og:site_name" content="استودیو دیزآرچ">
+<meta property="og:title" content="تور مجازی ۳۶۰ درجه خانه | استودیو دیزآرچ">
+<meta property="og:description" content="شش فضای یک پروژه مسکونی اجراشده را به‌صورت ۳۶۰ درجه ببینید.">
+<meta property="og:url" content="https://dizarch.com/">
+<meta property="og:image" content="https://dizarch.com/assets/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="نمای ورودی پروژه مسکونی با درِ گردوی توپر و فرش دستباف">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230c0b09'/%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%23f6f1e7' stroke-width='1.4'/%3E%3Ccircle cx='16' cy='16' r='3.4' fill='%23c9a45c'/%3E%3C/svg%3E">
+
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/styles.css">
+<!-- The body face carries every Persian glyph on the page; fetch it with the
+     stylesheet rather than after it. -->
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/vazirmatn-300-normal-arabic.woff2" crossorigin>
+
+<!-- The first room is what gates the loader; give it a head start. -->
+<link rel="preload" as="image" href="assets/panos/entry-lqip.webp" crossorigin>
+<link rel="preload" as="image" href="assets/panos/entry.webp" media="(min-width: 901px)" crossorigin>
+<link rel="preload" as="image" href="assets/panos/entry-sm.webp" media="(max-width: 900px)" crossorigin>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "InteriorDesignBusiness",
+  "name": "استودیو معماری داخلی دیزآرچ",
+  "alternateName": "DizArch Studio",
+  "url": "https://dizarch.com/",
+  "image": "https://dizarch.com/assets/og-cover.jpg",
+  "description": "طراحی و اجرای معماری داخلی مسکونی، ویلایی، اداری و تجاری در تهران.",
+  "telephone": ["+98-21-88415176", "+98-912-0249136"],
+  "email": "studio@dizarch.com",
+  "priceRange": "$$$",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "خیابان فرشته، کوچه بیدار، شماره ۱۲",
+    "addressLocality": "تهران",
+    "addressCountry": "IR"
+  },
+  "areaServed": "تهران",
+  "sameAs": []
+}
+</script>
+</head>
+<body
+  data-form-endpoint=""
+  data-whatsapp="989120249136"
+  data-phone="+982188415176"
+  data-mobile="+989120249136"
+  data-email="studio@dizarch.com">
+
+<a class="skip-link" href="#contact">رفتن به فرم تماس</a>
+
+<!-- ── the walk: one fixed canvas the whole tour moves through ── -->
+<div class="stage" id="stage">
+  <canvas id="gl" aria-label="نمای ۳۶۰ درجه فضا. برای چرخاندن بکشید." role="img"></canvas>
+  <div class="stage__fallback" id="glFallback" aria-hidden="true"></div>
+  <div class="stage__grade" aria-hidden="true"></div>
+  <div class="stage__vignette" aria-hidden="true"></div>
+</div>
+
+<div class="loader" id="loader" role="status" aria-live="polite">
+  <div class="loader__ring" aria-hidden="true"></div>
+  <div class="loader__mark" aria-hidden="true">DIZARCH</div>
+  <div class="loader__bar" aria-hidden="true"><span id="loaderFill"></span></div>
+  <div class="loader__pct" id="loaderPct">۰٪</div>
+  <div class="loader__note">در حال بارگذاری پانورامای خانه…</div>
+</div>
+
+<nav class="nav" id="siteNav" aria-label="ناوبری اصلی">
+  <a class="nav__brand" href="#entry" aria-label="دیزآرچ، بازگشت به ابتدا">
+    <span class="nav__logo" aria-hidden="true"></span>
+    <span class="nav__brandText">
+      <span class="nav__name" aria-hidden="true">DIZARCH</span>
+      <span class="nav__sub">استودیو معماری داخلی</span>
+    </span>
+  </a>
+  <div class="nav__links" id="navLinks">
+    <a href="#entry"    data-nav="tour">تور خانه</a>
+    <a href="#projects" data-nav="projects">پروژه‌ها</a>
+    <a href="#studio"   data-nav="studio">استودیو</a>
+    <a href="#estimate" data-nav="estimate">برآورد هزینه</a>
+    <a href="#contact"  data-nav="contact">تماس</a>
+  </div>
+  <div class="nav__actions">
+    <a href="tel:+989120249136" class="nav__call" aria-label="تماس تلفنی با استودیو">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .7-.2 1l-2.3 2.2Z"/></svg>
+      <span class="nav__callText" dir="ltr">0912-024-9136</span>
+    </a>
+    <a href="#contact" class="btn">رزرو<span class="btn__long"> بازدید</span></a>
+    <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="باز کردن منو"><span></span></button>
+  </div>
+  <div class="nav__progress" aria-hidden="true"><span id="navProgress"></span></div>
+</nav>
+
+
+<!-- Where am I, how many are there, how do I move: on every screen size. -->
+<nav class="index" id="tourIndex" aria-label="فضاهای تور">
+  <button type="button" class="index__arrow" id="indexPrev" aria-label="فضای قبلی">↑</button>
+  <div class="index__body">
+    <p class="index__label">
+      <span class="index__now" id="indexNow">۰۱</span>
+      <span class="index__of">از ۰۶</span>
+      <span class="index__name" id="indexName">ورودی</span>
+    </p>
+    <span class="index__track" aria-hidden="true"><span class="index__fill" id="indexFill"></span></span>
+    <div class="index__dots" id="railDots"></div>
+  </div>
+  <span class="compass" aria-hidden="true"><span class="compass__needle" id="compass"></span></span>
+  <button type="button" class="index__arrow" id="indexNext" aria-label="فضای بعدی">↓</button>
+</nav>
+
+<div class="hint" id="dragHint" aria-hidden="true">
+  <div class="hint__inner">
+    <span class="hint__glyph">↔</span>
+    <span>بکشید تا اطراف را ببینید</span>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ── the 360 tour ── -->
+<div id="tour">
+  <section id="entry" class="scene" data-room="0">
+    <div class="caption">
+      <p class="caption__eyebrow">۰۱ — ورودی <span class="lat">/ ENTRANCE</span></p>
+      <h1 class="caption__title">
+        <span class="line"><span>خانه از همین‌جا</span></span>
+        <span class="line"><span>خودش را معرفی می‌کند.</span></span>
+      </h1>
+      <p class="caption__latin lat">THE HOUSE INTRODUCES ITSELF HERE</p>
+      <p class="caption__detail">درِ گردوی توپر، کابینت‌بندی اختصاصی و فرش دستباف — اولین جمله‌ی روایت خانه</p>
+    </div>
+  </section>
+
+  <section id="living" class="scene" data-room="1">
+    <div class="caption">
+      <p class="caption__eyebrow">۰۲ — نشیمن <span class="lat">/ LIVING</span></p>
+      <h2 class="caption__title">
+        <span class="line"><span>یک اتاق بلند،</span></span>
+        <span class="line"><span>و نوری که دور می‌زند.</span></span>
+      </h2>
+      <p class="caption__detail">فرش تبریز، رومیزی برنز و نورپردازی مخفی در سقف — بدون هیچ منبع نور مزاحم</p>
+    </div>
+  </section>
+
+  <section id="kitchen" class="scene" data-room="2">
+    <div class="caption">
+      <p class="caption__eyebrow">۰۳ — آشپزخانه <span class="lat">/ KITCHEN</span></p>
+      <h2 class="caption__title">
+        <span class="line"><span>گردو و سنگ،</span></span>
+        <span class="line"><span>بدون درِ جداکننده.</span></span>
+      </h2>
+      <p class="caption__detail">کابینت گردوی طبیعی و کانتر سنگ یکپارچه، هم‌راستا با پذیرایی</p>
+    </div>
+  </section>
+
+  <section id="dining" class="scene" data-room="3">
+    <div class="caption">
+      <p class="caption__eyebrow">۰۴ — ناهارخوری <span class="lat">/ DINING</span></p>
+      <h2 class="caption__title">
+        <span class="line"><span>میز، برای</span></span>
+        <span class="line"><span>شب‌های طولانی.</span></span>
+      </h2>
+      <p class="caption__detail">میز چوب گردوی یکپارچه با ظرفیت میزبانی جمع‌های خانوادگی</p>
+    </div>
+  </section>
+
+  <section id="corridor" class="scene" data-room="4">
+    <div class="caption">
+      <p class="caption__eyebrow">۰۵ — راهرو <span class="lat">/ CORRIDOR</span></p>
+      <h2 class="caption__title">
+        <span class="line"><span>مسیر خصوصی،</span></span>
+        <span class="line"><span>با نور غیرمستقیم.</span></span>
+      </h2>
+      <p class="caption__detail">نور مخفی لبه‌ی سقف، مسیر آرامی میان فضاهای عمومی و خصوصی خانه می‌سازد</p>
+    </div>
+  </section>
+
+  <section id="bedroom" class="scene" data-room="5">
+    <div class="caption">
+      <p class="caption__eyebrow">۰۶ — اتاق خواب <span class="lat">/ BEDROOM</span></p>
+      <h2 class="caption__title">
+        <span class="line"><span>آرام‌ترین اتاق،</span></span>
+        <span class="line"><span>عمدی طراحی می‌شود.</span></span>
+      </h2>
+      <p class="caption__detail">پرده‌ی دولایه، جنس‌های خنثی و نور قابل‌تنظیم برای خوابی بی‌وقفه</p>
+    </div>
+  </section>
+</div>
+
+<!-- The tour ends here. Scrolling stops driving the camera and starts
+     moving the page, so the change is named rather than sprung. -->
+<section id="tour-end" class="close">
+  <div class="wrap">
+    <p class="close__k">پایان تور</p>
+    <h2 class="close__t">خانه را دیدید.<br>حالا ببینیم خانه‌ی شما چه می‌خواهد.</h2>
+    <dl class="stats">
+      <div><dd class="stats__n">۱۸</dd><dt class="stats__l">سال تجربه</dt></div>
+      <div><dd class="stats__n">۱۴۰+</dd><dt class="stats__l">پروژه اجراشده</dt></div>
+      <div><dd class="stats__n">۹۸٪</dd><dt class="stats__l">رضایت کارفرما</dt></div>
+    </dl>
+    <div class="close__acts">
+      <a class="btn" href="#contact">رزرو بازدید</a>
+      <a class="btn btn--ghost" href="#projects">دیدن پروژه‌ها</a>
+    </div>
+  </div>
+</section>
+
+<!-- A text equivalent of the canvas tour, for screen readers and search. -->
+<h2 class="sr-only">فضاهای این پروژه</h2>
+<ul class="sr-only" id="tourText">
+  <li>ورودی: درِ گردوی توپر، کابینت‌بندی اختصاصی و فرش دستباف.</li>
+  <li>نشیمن: اتاقی کشیده با فرش تبریز، رومیزی برنز و نورپردازی مخفی سقفی.</li>
+  <li>آشپزخانه: کابینت گردوی طبیعی و کانتر سنگ یکپارچه، باز به سمت پذیرایی.</li>
+  <li>ناهارخوری: میز چوب گردوی یکپارچه برای جمع‌های خانوادگی.</li>
+  <li>راهرو: نور مخفی لبه‌ی سقف در مسیر میان فضاهای عمومی و خصوصی.</li>
+  <li>اتاق خواب: پرده‌ی دولایه، جنس‌های خنثی و نور قابل‌تنظیم.</li>
+</ul>
+
+<!-- ── projects ── -->
+<section id="projects" class="sheet">
+  <div class="wrap">
+    <p class="sec__eyebrow">پروژه‌ها <span class="lat">/ WORK</span></p>
+    <h2 class="sec__title">آپارتمان فرشته، فضا به فضا</h2>
+    <p class="sec__lede">شش فضای همین پروژه — همان خانه‌ای که در تور بالا قدم زدید.</p>
+    <!-- CONTENT-TODO: منشأ تصاویر (عکس محل اجرا یا رندر) اینجا صادقانه ذکر شود. -->
+
+    <!-- BUILD:projects -->
+    <div class="grid">
+      <article class="card">
+        <div class="card__media"><img src="assets/projects/entry.webp" width="800" height="600" loading="lazy" decoding="async" alt="درِ گردوی توپر و کابینت‌بندی اختصاصی ورودی"></div>
+        <div class="card__body">
+          <p class="card__k">آپارتمان فرشته · تهران</p>
+          <h3 class="card__t">ورودی</h3>
+          <p class="card__m">چوب گردو · سنگ یکپارچه</p>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card__media"><img src="assets/projects/living.webp" width="800" height="600" loading="lazy" decoding="async" alt="فرش تبریز، مبلمان کرم و نورپردازی مخفی سقفی"></div>
+        <div class="card__body">
+          <p class="card__k">آپارتمان فرشته · تهران</p>
+          <h3 class="card__t">نشیمن</h3>
+          <p class="card__m">فرش دستباف · نور مخفی سقفی</p>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card__media"><img src="assets/projects/kitchen.webp" width="800" height="600" loading="lazy" decoding="async" alt="کابینت گردوی طبیعی و کانتر جزیره با صندلی بار"></div>
+        <div class="card__body">
+          <p class="card__k">آپارتمان فرشته · تهران</p>
+          <h3 class="card__t">آشپزخانه</h3>
+          <p class="card__m">کابینت گردو · کانتر سنگی · پلان باز</p>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card__media"><img src="assets/projects/dining.webp" width="800" height="600" loading="lazy" decoding="async" alt="میز چوب گردوی یکپارچه زیر نور آویز مرکزی"></div>
+        <div class="card__body">
+          <p class="card__k">آپارتمان فرشته · تهران</p>
+          <h3 class="card__t">ناهارخوری</h3>
+          <p class="card__m">میز چوب یکپارچه · نور آویز</p>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card__media"><img src="assets/projects/corridor.webp" width="800" height="600" loading="lazy" decoding="async" alt="مسیر خصوصی با نور مخفی لبه‌ی سقف"></div>
+        <div class="card__body">
+          <p class="card__k">آپارتمان فرشته · تهران</p>
+          <h3 class="card__t">راهرو</h3>
+          <p class="card__m">نور مخفی لبه‌ی سقف · فرش دستباف</p>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card__media"><img src="assets/projects/bedroom.webp" width="800" height="600" loading="lazy" decoding="async" alt="پرده‌ی دولایه، جنس‌های خنثی و دیوار تلویزیون گردو"></div>
+        <div class="card__body">
+          <p class="card__k">آپارتمان فرشته · تهران</p>
+          <h3 class="card__t">اتاق خواب</h3>
+          <p class="card__m">دیوار گردو · پرده‌ی دولایه</p>
+        </div>
+      </article>
+    </div>
+    <!-- /BUILD:projects -->
+
+    <!-- CONTENT-TODO: پروژه‌های دیگر استودیو با عکس و مشخصات واقعی به همین گرید اضافه شوند. -->
+    <p class="sec__lede" style="margin-top:26px">برای دیدن پروژه‌های دیگر با متراژ و بودجه‌ی نزدیک به کار شما، در <a href="#contact" style="border-bottom:1px solid var(--gold-dim)">فرم تماس</a> متراژ را وارد کنید.</p>
+  </div>
+</section>
+
+<!-- ── studio ── -->
+<section id="studio" class="sheet">
+  <div class="wrap">
+    <div class="split">
+      <div>
+        <p class="sec__eyebrow">استودیو <span class="lat">/ STUDIO</span></p>
+        <h2 class="sec__title">یک تیم، از طراحی تا کلید</h2>
+        <p class="sec__lede">دیزآرچ از سال ۱۳۸۵ روی معماری داخلی مسکونی و اداری کار می‌کند. طراحی، انتخاب متریال، پیمانکاری و نظارت همه داخل خود استودیو انجام می‌شود؛ کارفرما با یک تیم طرف است، نه با چند مجموعه‌ی جدا.</p>
+
+        <dl class="facts">
+          <div class="fact"><dt>سال تأسیس</dt><dd>۱۳۸۵</dd></div>
+          <div class="fact"><dt>میانگین مدت اجرا</dt><dd>۴ تا ۷ ماه</dd></div>
+          <div class="fact"><dt>حداقل متراژ پروژه</dt><dd>۸۰ متر مربع</dd></div>
+          <div class="fact"><dt>گارانتی اجرا</dt><dd>۲۴ ماه</dd></div>
+        </dl>
+
+        <!-- BUILD:process -->
+        <div class="process">
+          <div class="process__step">
+            <p class="process__n">۰۱</p>
+            <p class="process__l">مشاوره و بازدید</p>
+            <p class="process__when">هفتهٔ اول</p>
+            <p class="process__d">بازدید حضوری، برداشت ابعاد و گفت‌وگو دربارهٔ بودجه و سبک زندگی شما.</p>
+            <dl class="process__terms">
+              <div><dt>تحویل می‌گیرید</dt><dd>گزارش بازدید و بازهٔ بودجهٔ واقعی</dd></div>
+              <div><dt>پرداخت</dt><dd>رایگان</dd></div>
+            </dl>
+          </div>
+          <div class="process__step">
+            <p class="process__n">۰۲</p>
+            <p class="process__l">طراحی</p>
+            <p class="process__when">۳ تا ۵ هفته</p>
+            <p class="process__d">پلان، نماهای سه‌بعدی و برگهٔ متریال. تا دو دور اصلاح روی همان قرارداد.</p>
+            <dl class="process__terms">
+              <div><dt>تحویل می‌گیرید</dt><dd>نقشهٔ اجرایی و برگهٔ متریال امضاشده</dd></div>
+              <div><dt>پرداخت</dt><dd>۲۰٪ در شروع طراحی</dd></div>
+            </dl>
+          </div>
+          <div class="process__step">
+            <p class="process__n">۰۳</p>
+            <p class="process__l">اجرا</p>
+            <p class="process__when">۳ تا ۵ ماه</p>
+            <p class="process__d">پیمانکاری، خرید متریال و مدیریت کارگاه با گزارش هفتگی پیشرفت و هزینه.</p>
+            <dl class="process__terms">
+              <div><dt>تحویل می‌گیرید</dt><dd>گزارش هفتگی و کنترل هزینه در برابر برآورد</dd></div>
+              <div><dt>پرداخت</dt><dd>۶۰٪ مرحله‌ای، بر اساس پیشرفت</dd></div>
+            </dl>
+          </div>
+          <div class="process__step">
+            <p class="process__n">۰۴</p>
+            <p class="process__l">تحویل</p>
+            <p class="process__when">هفتهٔ آخر</p>
+            <p class="process__d">چیدمان نهایی، رفع نواقص فهرست‌شده و آموزش نگهداری سطوح و تجهیزات.</p>
+            <dl class="process__terms">
+              <div><dt>تحویل می‌گیرید</dt><dd>صورت‌جلسهٔ تحویل و گارانتی اجرا</dd></div>
+              <div><dt>پرداخت</dt><dd>۲۰٪ پس از تأیید تحویل</dd></div>
+            </dl>
+          </div>
+        </div>
+        <p class="process__draft">زمان‌بندی و پرداخت‌های بالا نمونه‌اند و پیش از انتشار باید با شرایط واقعی استودیو جایگزین شوند.</p>
+        <!-- /BUILD:process -->
+        </div>
+      </div>
+
+      <div>
+        <h3 class="sec__title" style="font-size:clamp(20px,2.2vw,28px)">از زبان کارفرما</h3>
+        <div class="quotes">
+          <blockquote class="quote">
+            «از اولین جلسه تا تحویل، هر جزئیات با ما در میان گذاشته شد. نتیجه دقیقاً همان حسی‌ست که می‌خواستیم.»
+            <footer class="quote__by">کارفرما · پروژه مسکونی فرشته</footer>
+          </blockquote>
+          <!-- CONTENT-TODO: دو نظر واقعی دیگر با نام و پروژه اینجا اضافه شود. -->
+        </div>
+        <p class="sec__lede" style="font-size:14.5px">برای دیدن پروژه‌های مشابه بودجه و متراژ خودتان، در فرم تماس متراژ را وارد کنید تا نمونه‌های مرتبط را بفرستیم.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── what will mine cost ── -->
+<section id="estimate" class="sheet">
+  <div class="wrap">
+    <p class="sec__eyebrow">برآورد <span class="lat">/ ESTIMATE</span></p>
+    <h2 class="sec__title">پروژه‌ی شما تقریباً چقدر می‌شود؟</h2>
+    <p class="sec__lede">سه عدد کافی است تا بازه‌ی هزینه و مدت تقریبی را ببینید — پیش از آنکه با کسی حرف بزنید.</p>
+
+    <div class="est">
+      <form class="est__form" id="estForm" novalidate>
+        <div class="est__field">
+          <label class="form__k" for="est-area">متراژ <span class="lat">/ AREA</span></label>
+          <div class="est__area">
+            <input id="est-area" type="text" inputmode="numeric" autocomplete="off" value="۱۲۰" aria-describedby="est-areaHint">
+            <span class="est__unit" id="est-areaHint">متر مربع</span>
+          </div>
+          <input class="est__range" id="est-areaRange" type="range" value="120" min="40" max="1200" step="5" aria-label="متراژ">
+        </div>
+        <div class="est__field">
+          <span class="form__k">نوع کار</span>
+          <div class="est__choices" id="estKinds" role="radiogroup" aria-label="نوع کار"></div>
+        </div>
+        <div class="est__field">
+          <span class="form__k">سطح متریال</span>
+          <div class="est__choices" id="estLevels" role="radiogroup" aria-label="سطح متریال"></div>
+        </div>
+      </form>
+
+      <output class="est__out" id="estOut" for="estForm" aria-live="polite">
+        <p class="est__k">برآورد اولیه</p>
+        <p class="est__figure" id="estFigure">—</p>
+        <p class="est__unitline" id="estPerSqm">—</p>
+        <p class="est__time" id="estTime">—</p>
+        <div class="est__lists">
+          <div><p class="est__lk">شامل می‌شود</p><ul id="estIncludes"></ul></div>
+          <div><p class="est__lk est__lk--no">شامل نمی‌شود</p><ul id="estExcludes"></ul></div>
+        </div>
+        <p class="est__note" id="estNote"></p>
+        <a class="btn btn--est" id="estCta" href="#contact">دریافت برآورد دقیق</a>
+      </output>
+    </div>
+  </div>
+</section>
+
+<!-- ── contact ── -->
+<section id="contact" class="sheet">
+  <div class="wrap">
+    <p class="sec__eyebrow">تماس <span class="lat">/ CONTACT</span></p>
+    <h2 class="sec__title">فضای بعدی‌تان را بسازیم.</h2>
+
+    <div class="contact">
+      <div>
+        <p class="sec__lede">ظرفیت هر فصل محدود است. فرم را پر کنید یا مستقیم تماس بگیرید — کمتر از ۲۴ ساعت پاسخ می‌دهیم.</p>
+
+        <div class="contact__meta">
+          <div><p class="contact__k lat">PHONE</p><a href="tel:+982188415176" dir="ltr">021-88415176</a></div>
+          <div><p class="contact__k lat">MOBILE</p><a href="tel:+989120249136" dir="ltr">0912-024-9136</a></div>
+          <div><p class="contact__k lat">EMAIL</p><a href="mailto:studio@dizarch.com" dir="ltr">studio@dizarch.com</a></div>
+          <div><p class="contact__k lat">ATELIER</p><span>تهران، خیابان فرشته، کوچه بیدار، شماره ۱۲</span></div>
+          <div><p class="contact__k lat">HOURS</p><span>شنبه تا چهارشنبه، ۱۰ تا ۱۸</span></div>
+        </div>
+
+        <div class="alts">
+          <a class="btn btn--ghost" href="tel:+982188415176">تماس با دفتر</a>
+          <a class="btn btn--ghost" href="tel:+989120249136">تماس با همراه</a>
+          <a class="btn btn--ghost" id="waAlt" href="#" rel="noopener">گفتگو در واتساپ</a>
+        </div>
+      </div>
+
+      <form class="form" id="contactForm" novalidate>
+        <div class="form__field form__field--wide">
+          <label class="form__k" for="f-name">نام و نام خانوادگی <span class="lat">/ NAME</span></label>
+          <input id="f-name" type="text" name="name" autocomplete="name" required aria-describedby="e-name">
+          <p class="form__err" id="e-name"></p>
+        </div>
+        <div class="form__field">
+          <label class="form__k" for="f-phone">شماره تماس <span class="lat">/ PHONE</span></label>
+          <input id="f-phone" type="tel" name="phone" dir="ltr" inputmode="tel" autocomplete="tel" required aria-describedby="e-phone">
+          <p class="form__err" id="e-phone"></p>
+        </div>
+        <div class="form__field">
+          <label class="form__k" for="f-area">متراژ (متر مربع) <span class="lat">/ AREA</span></label>
+          <input id="f-area" type="text" name="area" inputmode="numeric" autocomplete="off">
+        </div>
+        <div class="form__field form__field--wide">
+          <label class="form__k" for="f-type">نوع پروژه <span class="lat">/ TYPE</span></label>
+          <select id="f-type" name="type">
+            <option>مسکونی</option>
+            <option>ویلا</option>
+            <option>تجاری و رستورانی</option>
+            <option>اداری</option>
+            <option>بازسازی کامل</option>
+          </select>
+        </div>
+        <div class="form__field form__field--wide">
+          <label class="form__k" for="f-brief">توضیح پروژه <span class="lat">/ BRIEF</span></label>
+          <textarea id="f-brief" rows="3" name="brief"></textarea>
+        </div>
+
+        <div class="form__hp" aria-hidden="true">
+          <label for="f-company">شرکت</label>
+          <input id="f-company" type="text" name="company" tabindex="-1" autocomplete="off">
+        </div>
+
+        <button type="submit" class="btn btn--submit" id="submitBtn">ارسال درخواست</button>
+        <p class="form__note" id="formNote" role="status" aria-live="polite"></p>
+        <p class="form__privacy">اطلاعات شما فقط برای هماهنگی همین پروژه استفاده می‌شود و با هیچ‌کس به اشتراک گذاشته نمی‌شود.</p>
+      </form>
+    </div>
+
+    <footer class="footer">
+      <div class="footer__brand"><span class="nav__logo" aria-hidden="true"></span><span>© ۱۴۰۳ استودیو دیزآرچ</span></div>
+      <span class="footer__badge">عضو انجمن معماران داخلی</span>
+      <div class="footer__links">
+        <a href="https://instagram.com/" rel="noopener me" target="_blank">اینستاگرام</a>
+        <a href="https://pinterest.com/" rel="noopener me" target="_blank">پینترست</a>
+        <a href="#entry">بازگشت به ابتدا ↑</a>
+      </div>
+    </footer>
+  </div>
+</section>
+
+</main>
+
+<a class="wa" id="waFloat" href="#" rel="noopener" aria-label="گفتگو در واتساپ">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.16c-.25.7-1.45 1.34-2 1.42-.53.08-1.18.11-1.9-.12-.44-.14-1-.33-1.72-.64-3.03-1.31-5.01-4.36-5.16-4.56-.15-.2-1.23-1.64-1.23-3.12 0-1.49.78-2.22 1.06-2.52.28-.3.6-.38.8-.38h.58c.19 0 .44-.07.68.52.25.6.85 2.08.93 2.23.08.15.13.33.03.53-.1.2-.15.32-.3.5-.15.17-.31.39-.44.52-.15.15-.3.31-.13.61.17.3.75 1.24 1.62 2.01 1.11.99 2.05 1.3 2.35 1.45.3.15.47.13.65-.08.17-.2.75-.87.95-1.17.2-.3.4-.25.67-.15.28.1 1.75.83 2.05.98.3.15.5.23.57.35.08.13.08.73-.17 1.42Z"/></svg>
+  <span>واتساپ</span>
+</a>
+
+<script src="js/vendor/three.bundle.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
