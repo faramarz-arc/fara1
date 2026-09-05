@@ -22,9 +22,11 @@
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230c0b09'/%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%23f6f1e7' stroke-width='1.4'/%3E%3Ccircle cx='16' cy='16' r='3.4' fill='%23c9a45c'/%3E%3C/svg%3E">
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/styles.css">
+<!-- The body face carries every Persian glyph on the page; fetch it with the
+     stylesheet rather than after it. -->
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/vazirmatn-300-normal-arabic.woff2" crossorigin>
 
 <!-- The first room is what gates the loader; give it a head start. -->
 <link rel="preload" as="image" href="assets/panos/entry-lqip.webp" crossorigin>
@@ -91,6 +93,7 @@
     <a href="#entry"    data-nav="tour">تور خانه</a>
     <a href="#projects" data-nav="projects">پروژه‌ها</a>
     <a href="#studio"   data-nav="studio">استودیو</a>
+    <a href="#estimate" data-nav="estimate">برآورد هزینه</a>
     <a href="#contact"  data-nav="contact">تماس</a>
   </div>
   <div class="nav__actions">
@@ -237,6 +240,7 @@
     <p class="sec__lede">شش فضای همین پروژه — همان خانه‌ای که در تور بالا قدم زدید.</p>
     <!-- CONTENT-TODO: منشأ تصاویر (عکس محل اجرا یا رندر) اینجا صادقانه ذکر شود. -->
 
+    <!-- BUILD:projects -->
     <div class="grid">
       <article class="card">
         <div class="card__media"><img src="assets/projects/entry.webp" width="800" height="600" loading="lazy" decoding="async" alt="درِ گردوی توپر و کابینت‌بندی اختصاصی ورودی"></div>
@@ -287,6 +291,7 @@
         </div>
       </article>
     </div>
+    <!-- /BUILD:projects -->
 
     <!-- CONTENT-TODO: پروژه‌های دیگر استودیو با عکس و مشخصات واقعی به همین گرید اضافه شوند. -->
     <p class="sec__lede" style="margin-top:26px">برای دیدن پروژه‌های دیگر با متراژ و بودجه‌ی نزدیک به کار شما، در <a href="#contact" style="border-bottom:1px solid var(--gold-dim)">فرم تماس</a> متراژ را وارد کنید.</p>
@@ -309,27 +314,51 @@
           <div class="fact"><dt>گارانتی اجرا</dt><dd>۲۴ ماه</dd></div>
         </dl>
 
+        <!-- BUILD:process -->
         <div class="process">
           <div class="process__step">
             <p class="process__n">۰۱</p>
             <p class="process__l">مشاوره و بازدید</p>
-            <p class="process__d">بازدید حضوری، برداشت ابعاد و گفت‌وگو دربارهٔ بودجه.</p>
+            <p class="process__when">هفتهٔ اول</p>
+            <p class="process__d">بازدید حضوری، برداشت ابعاد و گفت‌وگو دربارهٔ بودجه و سبک زندگی شما.</p>
+            <dl class="process__terms">
+              <div><dt>تحویل می‌گیرید</dt><dd>گزارش بازدید و بازهٔ بودجهٔ واقعی</dd></div>
+              <div><dt>پرداخت</dt><dd>رایگان</dd></div>
+            </dl>
           </div>
           <div class="process__step">
             <p class="process__n">۰۲</p>
-            <p class="process__l">طراحی اختصاصی</p>
-            <p class="process__d">پلان، سه‌بعدی و برگهٔ متریال تا رسیدن به تأیید نهایی.</p>
+            <p class="process__l">طراحی</p>
+            <p class="process__when">۳ تا ۵ هفته</p>
+            <p class="process__d">پلان، نماهای سه‌بعدی و برگهٔ متریال. تا دو دور اصلاح روی همان قرارداد.</p>
+            <dl class="process__terms">
+              <div><dt>تحویل می‌گیرید</dt><dd>نقشهٔ اجرایی و برگهٔ متریال امضاشده</dd></div>
+              <div><dt>پرداخت</dt><dd>۲۰٪ در شروع طراحی</dd></div>
+            </dl>
           </div>
           <div class="process__step">
             <p class="process__n">۰۳</p>
-            <p class="process__l">اجرا و نظارت</p>
-            <p class="process__d">پیمانکاری با گزارش هفتگی پیشرفت و کنترل هزینه.</p>
+            <p class="process__l">اجرا</p>
+            <p class="process__when">۳ تا ۵ ماه</p>
+            <p class="process__d">پیمانکاری، خرید متریال و مدیریت کارگاه با گزارش هفتگی پیشرفت و هزینه.</p>
+            <dl class="process__terms">
+              <div><dt>تحویل می‌گیرید</dt><dd>گزارش هفتگی و کنترل هزینه در برابر برآورد</dd></div>
+              <div><dt>پرداخت</dt><dd>۶۰٪ مرحله‌ای، بر اساس پیشرفت</dd></div>
+            </dl>
           </div>
           <div class="process__step">
             <p class="process__n">۰۴</p>
-            <p class="process__l">تحویل کلیدی</p>
-            <p class="process__d">چیدمان نهایی، آموزش نگهداری و گارانتی دو ساله.</p>
+            <p class="process__l">تحویل</p>
+            <p class="process__when">هفتهٔ آخر</p>
+            <p class="process__d">چیدمان نهایی، رفع نواقص فهرست‌شده و آموزش نگهداری سطوح و تجهیزات.</p>
+            <dl class="process__terms">
+              <div><dt>تحویل می‌گیرید</dt><dd>صورت‌جلسهٔ تحویل و گارانتی اجرا</dd></div>
+              <div><dt>پرداخت</dt><dd>۲۰٪ پس از تأیید تحویل</dd></div>
+            </dl>
           </div>
+        </div>
+        <p class="process__draft">زمان‌بندی و پرداخت‌های بالا نمونه‌اند و پیش از انتشار باید با شرایط واقعی استودیو جایگزین شوند.</p>
+        <!-- /BUILD:process -->
         </div>
       </div>
 
@@ -344,6 +373,49 @@
         </div>
         <p class="sec__lede" style="font-size:14.5px">برای دیدن پروژه‌های مشابه بودجه و متراژ خودتان، در فرم تماس متراژ را وارد کنید تا نمونه‌های مرتبط را بفرستیم.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── what will mine cost ── -->
+<section id="estimate" class="sheet">
+  <div class="wrap">
+    <p class="sec__eyebrow">برآورد <span class="lat">/ ESTIMATE</span></p>
+    <h2 class="sec__title">پروژه‌ی شما تقریباً چقدر می‌شود؟</h2>
+    <p class="sec__lede">سه عدد کافی است تا بازه‌ی هزینه و مدت تقریبی را ببینید — پیش از آنکه با کسی حرف بزنید.</p>
+
+    <div class="est">
+      <form class="est__form" id="estForm" novalidate>
+        <div class="est__field">
+          <label class="form__k" for="est-area">متراژ <span class="lat">/ AREA</span></label>
+          <div class="est__area">
+            <input id="est-area" type="text" inputmode="numeric" autocomplete="off" value="۱۲۰" aria-describedby="est-areaHint">
+            <span class="est__unit" id="est-areaHint">متر مربع</span>
+          </div>
+          <input class="est__range" id="est-areaRange" type="range" value="120" min="40" max="1200" step="5" aria-label="متراژ">
+        </div>
+        <div class="est__field">
+          <span class="form__k">نوع کار</span>
+          <div class="est__choices" id="estKinds" role="radiogroup" aria-label="نوع کار"></div>
+        </div>
+        <div class="est__field">
+          <span class="form__k">سطح متریال</span>
+          <div class="est__choices" id="estLevels" role="radiogroup" aria-label="سطح متریال"></div>
+        </div>
+      </form>
+
+      <output class="est__out" id="estOut" for="estForm" aria-live="polite">
+        <p class="est__k">برآورد اولیه</p>
+        <p class="est__figure" id="estFigure">—</p>
+        <p class="est__unitline" id="estPerSqm">—</p>
+        <p class="est__time" id="estTime">—</p>
+        <div class="est__lists">
+          <div><p class="est__lk">شامل می‌شود</p><ul id="estIncludes"></ul></div>
+          <div><p class="est__lk est__lk--no">شامل نمی‌شود</p><ul id="estExcludes"></ul></div>
+        </div>
+        <p class="est__note" id="estNote"></p>
+        <a class="btn btn--est" id="estCta" href="#contact">دریافت برآورد دقیق</a>
+      </output>
     </div>
   </div>
 </section>

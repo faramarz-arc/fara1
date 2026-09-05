@@ -21,8 +21,10 @@ def data_uri(rel):
     return 'data:%s;base64,%s' % (mime, base64.b64encode(open(p, 'rb').read()).decode())
 
 html = open(os.path.join(SITE, 'index.html'), encoding='utf-8').read()
+pricing = open(os.path.join(SITE, 'content', 'pricing.json'), encoding='utf-8').read()
 css  = open(os.path.join(SITE, 'css/styles.css'), encoding='utf-8').read()
 three = open(os.path.join(SITE, 'js/vendor/three.bundle.js'), encoding='utf-8').read()
+fontcss = open(os.path.join(SITE, 'css/fonts.css'), encoding='utf-8').read()
 app  = open(os.path.join(SITE, 'js/app.js'), encoding='utf-8').read()
 
 # ---- asset map: every path app.js can build at runtime ----
@@ -58,9 +60,14 @@ for m in set(re.findall(r'src="(assets/projects/[a-z]+\.webp)"', body)):
 # the external stylesheet and scripts are inlined below
 body = re.sub(r'\s*<script src="js/[^"]+"></script>', '', body)
 
-fonts = ('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-         '<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600'
-         '&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">')
+def font_uri(rel):
+    p = os.path.join(SITE, 'assets', 'fonts', rel)
+    return 'data:font/woff2;base64,' + base64.b64encode(open(p, 'rb').read()).decode()
+
+fonts = '<style>\n' + re.sub(
+    r'url\(\.\./assets/fonts/([^)]+)\)',
+    lambda m: 'url(' + font_uri(m.group(1)) + ')',
+    fontcss) + '\n</style>'
 
 setup = """<script>
 /* The artifact host owns <html>; carry over what index.html sets on it. */
@@ -80,6 +87,7 @@ out = '\n'.join([
     setup,
     body,
     '<script>window.__DZ_ASSETS = ' + repr(assets).replace("'", '"') + ';</script>',
+    '<script>window.__DZ_PRICING = ' + pricing + ';</script>',
     '<script>' + three + '</script>',
     '<script>' + app + '</script>',
 ])

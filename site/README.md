@@ -3,9 +3,15 @@
 Static site. No build step: serve `site/` as-is.
 
 ```
+content/                build-time content (rendered into index.html)
+  projects.json         the project grid
+  process.json          the four stages, with durations, payments, deliverables
 site/
+  content/pricing.json  estimator rates, read at runtime — no rebuild needed
   index.html            markup, metadata, JSON-LD
   css/styles.css        all styling
+  css/fonts.css         generated @font-face sheet (tools/fetch-fonts.py)
+  assets/fonts/         self-hosted woff2 — Google Fonts does not reach Iran reliably
   js/app.js             tour runtime, look control, nav, form
   js/vendor/            three.js (minified subset, MIT)
   assets/panos/         six equirectangular rooms
@@ -45,6 +51,26 @@ loading the real site depends on.
 
 ```sh
 python3 tools/build-preview.py
+```
+
+## Editing content
+
+```sh
+python3 tools/build-content.py     # content/*.json -> index.html
+```
+
+Projects and the process schedule are rendered into the regions of
+`index.html` marked `<!-- BUILD:name --> … <!-- /BUILD:name -->`. Everything
+else in the file is hand-written and left alone, so changes stay diffable.
+
+Estimator rates live in `site/content/pricing.json` and are fetched by the
+page, so changing a rate needs no rebuild. While `rates_confirmed` is false
+the estimator tells visitors the rates are unconfirmed.
+
+## Fonts
+
+```sh
+python3 tools/fetch-fonts.py       # re-download woff2 + regenerate fonts.css
 ```
 
 ## Before publishing

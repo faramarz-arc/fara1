@@ -45,6 +45,27 @@ FORBIDDEN = [
 ]
 
 
+def check_content_files():
+    """The estimator's rates and the process schedule are commercial terms.
+    They ship as samples so the page can be seen working; nobody should be
+    able to publish them by forgetting."""
+    import json
+    out = []
+    for rel, flag, what in [
+        ('site/content/pricing.json', 'rates_confirmed',
+         'estimator rates — the page tells visitors they are unconfirmed'),
+        ('content/process.json', 'terms_confirmed',
+         'process durations, payments and deliverables'),
+    ]:
+        path = os.path.join(HERE, rel)
+        if not os.path.exists(path):
+            out.append((rel, 0, 'missing file', 'expected by the site'))
+            continue
+        if not json.load(open(path, encoding='utf-8')).get(flag):
+            out.append((rel, 0, what, f'set "{flag}": true once real'))
+    return out
+
+
 def scan(path, rel):
     text = open(path, encoding='utf-8').read()
     lines = text.splitlines()
@@ -69,7 +90,7 @@ def main():
                 p = os.path.join(root, f)
                 targets.append((p, os.path.relpath(p, HERE)))
 
-    found, banned = [], []
+    found, banned = check_content_files(), []
     for p, rel in sorted(targets):
         a, b = scan(p, rel)
         found += a
@@ -85,7 +106,8 @@ def main():
         print(f'{len(found)} value(s) still unreviewed:\n')
         width = max(len(w) for _, _, w, _ in found)
         for rel, n, what, why in found:
-            print(f'  {rel}:{n}  {what.ljust(width)}  — {why}')
+            where = f'{rel}:{n}' if n else rel
+            print(f'  {where}  {what.ljust(width)}  — {why}')
         print('\nReplace each with the studio\'s real value, then delete its entry')
         print('from PLACEHOLDERS in tools/check-content.py.')
 

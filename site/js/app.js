@@ -722,6 +722,165 @@
     });
   }
 
+
+  /* ================================================================
+     Estimate — the first question every client asks, answered on the
+     page instead of behind a phone call. Rates come from
+     content/pricing.json so they can change without a rebuild, and the
+     page says so plainly until the studio confirms them.
+     ================================================================ */
+  function initEstimate() {
+    var form = $('estForm');
+    if (!form) return;
+
+    var area = $('est-area'), range = $('est-areaRange');
+    var kindsBox = $('estKinds'), levelsBox = $('estLevels');
+    var figure = $('estFigure'), perSqm = $('estPerSqm'), time = $('estTime');
+    var note = $('estNote'), cta = $('estCta');
+    var P = null, kind = null, level = null;
+
+    /* Prices here are said, not written out: nobody quotes a renovation in
+       rials to the last digit, they say one and a half billion. Matching
+       that is the difference between a figure you can hold in your head
+       and a row of zeros you have to count. */
+    function money(n) {
+      var trim = function (v) {
+        return fa(v % 1 ? v.toFixed(1).replace('.', '٫') : String(v));
+      };
+      if (n >= 1e9) return trim(Math.round(n / 1e8) / 10) + ' میلیارد';
+      if (n >= 1e6) return trim(Math.round(n / 1e5) / 10) + ' میلیون';
+      return fa(String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '٬'));
+    }
+
+    /* Accept whatever the visitor's keyboard produces. */
+    function digits(v) {
+      return parseInt(String(v).replace(/[۰-۹]/g, function (d) {
+        return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d);
+      }).replace(/[^\d]/g, ''), 10);
+    }
+
+    /* A price is read, not calculated, so round it to something a person
+       would actually say out loud. */
+    function tidy(n) {
+      var step = n >= 1e9 ? 5e7 : n >= 1e8 ? 1e7 : 1e6;
+      return Math.round(n / step) * step;
+    }
+
+    function chips(box, items, onPick) {
+      box.innerHTML = '';
+      items.forEach(function (it, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'est__chip';
+        b.textContent = it.label;
+        b.setAttribute('role', 'radio');
+        b.setAttribute('aria-checked', i === 0 ? 'true' : 'false');
+        b.addEventListener('click', function () {
+          [].forEach.call(box.children, function (c) { c.setAttribute('aria-checked', 'false'); });
+          b.setAttribute('aria-checked', 'true');
+          onPick(it);
+          render();
+        });
+        box.appendChild(b);
+      });
+      onPick(items[0]);
+    }
+
+    function list(el, items) {
+      el.innerHTML = '';
+      items.forEach(function (t) {
+        var li = document.createElement('li');
+        li.textContent = t;
+        el.appendChild(li);
+      });
+    }
+
+    function render() {
+      if (!P || !kind || !level) return;
+      var a = clamp(digits(area.value) || P.minArea, P.minArea, P.maxArea);
+      var low = tidy(a * level.low * kind.factor);
+      var high = tidy(a * level.high * kind.factor);
+      var weeks = Math.max(P.minWeeks, Math.round(a * kind.weeksPerSqm));
+      /* "۱٫۱ تا ۱٫۷ میلیارد تومان", not "۱٫۱ میلیارد تا ۱٫۷ میلیارد تومان" —
+         the scale word is said once when both ends share it. */
+      var lo = money(low), hi = money(high);
+      var scale = hi.replace(/^[۰-۹٫٬]+ ?/, '');
+      if (scale && lo.slice(-scale.length) === scale) lo = lo.slice(0, -scale.length).trim();
+      var band = lo + ' تا ' + hi + ' ' + P.currency;
+
+      figure.textContent = band;
+      var el = money(Math.round(low / a / 5e5) * 5e5);
+      var eh = money(Math.round(high / a / 5e5) * 5e5);
+      var es = eh.replace(/^[۰-۹٫٬]+ ?/, '');
+      if (es && el.slice(-es.length) === es) el = el.slice(0, -es.length).trim();
+      perSqm.textContent = 'حدود ' + el + ' تا ' + eh + ' ' + P.currency +
+                           ' برای هر ' + P.unit;
+      time.textContent = 'مدت اجرا: حدود ' + fa(weeks) + ' هفته' +
+                         (weeks >= 8 ? ' (' + fa(Math.round(weeks / 4.3)) + ' ماه)' : '');
+
+      cta.dataset.summary = fa(a) + ' متر · ' + kind.label + ' · ' + level.label +
+                            ' · برآورد ' + band;
+    }
+
+    /* The single-file preview build inlines the rates; the site fetches
+       them, so a rate change needs no rebuild. */
+    (window.__DZ_PRICING
+      ? Promise.resolve(window.__DZ_PRICING)
+      : fetch('content/pricing.json').then(function (r) {
+          if (!r.ok) throw new Error(r.status);
+          return r.json();
+        }))
+      .then(function (data) {
+        P = data;
+        range.min = P.minArea;
+        range.max = P.maxArea;
+        chips(kindsBox, P.kinds, function (k) { kind = k; });
+        chips(levelsBox, P.levels, function (l) { level = l; });
+        list($('estIncludes'), P.includes);
+        list($('estExcludes'), P.excludes);
+        note.textContent = P.rates_confirmed
+          ? 'برآورد اولیه است و جای بازدید حضوری را نمی‌گیرد. قیمت نهایی پس از برداشت ابعاد و انتخاب متریال بسته می‌شود.'
+          : 'نرخ‌های این برآوردگر هنوز نمونه‌اند و توسط استودیو تأیید نشده‌اند.';
+        note.classList.toggle('is-draft', !P.rates_confirmed);
+        render();
+      })
+      .catch(function () {
+        /* Without rates there is no estimate to give, and inventing one
+           would be worse than saying so. */
+        $('estOut').innerHTML =
+          '<p class="est__k">برآورد اولیه</p>' +
+          '<p class="est__note is-draft">برآوردگر در دسترس نیست. ' +
+          'برای دریافت بازهٔ هزینه تماس بگیرید یا فرم زیر را پر کنید.</p>' +
+          '<a class="btn btn--est" href="#contact">رفتن به فرم تماس</a>';
+      });
+
+    range.addEventListener('input', function () {
+      area.value = fa(range.value);
+      render();
+    });
+    area.addEventListener('input', function () {
+      var v = digits(area.value);
+      if (v) range.value = clamp(v, +range.min, +range.max);
+      render();
+    });
+    /* Snap the typed value into range and back into Persian on the way out,
+       so the field never sits showing something the estimate ignored. */
+    area.addEventListener('blur', function () {
+      area.value = fa(clamp(digits(area.value) || P.minArea, P.minArea, P.maxArea));
+      render();
+    });
+
+    /* The estimate travels with the enquiry, so nobody has to retype it. */
+    cta.addEventListener('click', function () {
+      var brief = document.getElementById('f-brief');
+      if (!brief || !cta.dataset.summary) return;
+      var line = 'برآورد سایت: ' + cta.dataset.summary;
+      if (brief.value.indexOf('برآورد سایت:') === -1) {
+        brief.value = brief.value ? brief.value + '\n' + line : line;
+      }
+    });
+  }
+
   /* ================================================================
      Boot
      ================================================================ */
@@ -736,6 +895,7 @@
   sectionKeys();
   initNav();
   initForm();
+  initEstimate();
   paintScenes(0);
 
   if (!T || !hasWebGL()) {
@@ -779,6 +939,9 @@
     var past = tourEl && scrollY > tourEl.offsetTop + tourEl.offsetHeight - innerHeight * 0.6;
     stage.classList.toggle('is-parked', !!past);
     indexEl.classList.toggle('is-parked', !!past);
+    /* the index bar is gone below the tour, so the floating button stops
+       reserving room for it and sits back down in the corner */
+    document.body.classList.toggle('past-tour', !!past);
     if (dragHint && past) dragHint.classList.add('is-gone');
     inView = !past;
   }
